@@ -1,0 +1,19 @@
+{
+  "name": "ai-virtual-fitting-backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Multi-Store AI Virtual Fitting Room Backend API for cPanel",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "prod": "NODE_ENV=production node app.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

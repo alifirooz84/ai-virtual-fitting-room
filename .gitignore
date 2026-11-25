@@ -3,8 +3,7 @@ node_modules/
 .pnp
 .pnp.js
 
-# Production builds and deployment artifacts
-dist/
+# Production deployment artifacts (dist is tracked for instant cPanel Git deployment)
 dist_cpanel/
 cpanel_deploy/
 temp_*

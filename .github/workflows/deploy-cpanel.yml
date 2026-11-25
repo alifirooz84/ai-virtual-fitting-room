@@ -119,6 +119,7 @@ jobs:
 
       - name: 🚀 Deploy Frontend to cPanel (public_html)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        continue-on-error: true
         with:
           server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
@@ -133,6 +134,7 @@ jobs:
 
       - name: 🚀 Deploy Backend to cPanel (api-server)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        continue-on-error: true
         with:
           server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}

@@ -1,16 +1,28 @@
 # cPanel Git Version Control Automated Deployment Config
-# این فایل در صورت استفاده از بخش Git™ Version Control در سی‌پنل استفاده می‌شود.
+# این فایل دستورات خودکار استقرار کدهای کامپایل‌شده را روی سی‌پنل اجرا می‌کند.
 ---
 deployment:
   tasks:
-    # 1. مسیر پوشه روت هاست خود را جایگزین کنید (مثلاً بجای YOUR_CPANEL_USER یوزرتان را بگذارید)
-    - export FRONTEND_PATH=/home/$USER/public_html/
-    - export BACKEND_PATH=/home/$USER/api-server/
+    - export FRONTEND_PATH=/home/jeanwalk/public_html/
+    - export BACKEND_PATH=/home/jeanwalk/api-server/
     
-    # 2. کپی فایل‌های فرانت‌اند
-    - /bin/cp -R dist/index.html $FRONTEND_PATH
-    - /bin/cp -R dist/assets $FRONTEND_PATH
-    
-    # 3. ایجاد تریگر راه‌اندازی مجدد Node.js در سرور Phusion Passenger
+    # 1. ساخت پوشه‌های لازم در صورت عدم وجود
+    - /bin/mkdir -p $FRONTEND_PATH
+    - /bin/mkdir -p $BACKEND_PATH/dist
+    - /bin/mkdir -p $BACKEND_PATH/server/data
     - /bin/mkdir -p $BACKEND_PATH/tmp
+    
+    # 2. انتقال فایل‌های کامپایل‌شده فرانت‌اند به public_html
+    - /bin/cp -f dist/index.html $FRONTEND_PATH
+    - /bin/cp -Rf dist/assets $FRONTEND_PATH
+    - /bin/cp -f dist/.htaccess $FRONTEND_PATH
+    
+    # 3. انتقال فایل‌های سرور بک‌اند به api-server
+    - /bin/cp -f app.js $BACKEND_PATH/app.js
+    - /bin/cp -f dist/server.cjs $BACKEND_PATH/dist/server.cjs
+    - /bin/cp -Rf server/db.ts $BACKEND_PATH/server/
+    - /bin/cp -n server/data/* $BACKEND_PATH/server/data/ 2>/dev/null || true
+    - /bin/cp -f package.cpanel.json $BACKEND_PATH/package.json
+    
+    # 4. ایجاد فلگ ری‌استارت اتوماتیک برای Phusion Passenger در سی‌پنل
     - /bin/touch $BACKEND_PATH/tmp/restart.txt
