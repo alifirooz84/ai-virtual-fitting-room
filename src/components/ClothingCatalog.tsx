@@ -57,14 +57,14 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
       <div className="pb-3 border-b border-slate-800/80">
         <div className="flex items-center justify-between">
           <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-            <span>کالکشن لباس‌های {storeName}</span>
+            <span>کالکشن لباس‌ها</span>
           </h2>
           <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
             {filteredProducts.length} مدل
           </span>
         </div>
         <p className="text-[11px] text-slate-400 mt-1">
-          برای پرو هر لباس روی آن کلیک کنید؛ لباس‌های هم‌رده به صورت خودکار جایگزین می‌شوند.
+          برای پرو هر لباس روی آن کلیک کنید (تی‌شرت با تی‌شرت، و شلوار با شلوار جایگزین می‌شود).
         </p>
 
         {/* Search Input */}
@@ -72,7 +72,7 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="جستجو در بین لباس‌های این فروشگاه..."
+            placeholder="جستجو در بین لباس‌ها..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pr-9 pl-3.5 py-2 text-xs rounded-xl bg-slate-950/80 border border-slate-800 focus:border-amber-500/70 focus:outline-none text-white placeholder-slate-500 transition-colors"

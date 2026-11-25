@@ -5,15 +5,14 @@ import { ClothingCatalog } from './components/ClothingCatalog';
 import { OutfitSummaryPanel } from './components/OutfitSummaryPanel';
 import { MerchantUploadView } from './components/MerchantUploadView';
 import { AiPromptGuideModal } from './components/AiPromptGuideModal';
-import { StoreDirectoryModal } from './components/StoreDirectoryModal';
 import { INITIAL_STORES, INITIAL_PRODUCTS } from './data/mockStoresAndProducts';
 import { StoreProfile, ClothingProduct, GarmentSlot, ActiveOutfit } from './types/clothing';
 import { apiFetch } from './utils/api';
-import { Sparkles, Store, Camera, HelpCircle, CheckCircle2 } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export default function App() {
-  // 1. Navigation View: 'tryon' (fitting room) vs 'upload' (merchant ingestion)
-  const [activeView, setActiveView] = useState<'tryon' | 'upload' | 'prompt-guide'>('tryon');
+  // 1. Navigation View: 'tryon' (fitting room) vs 'upload' (upload photo & JSON spec)
+  const [activeView, setActiveView] = useState<'tryon' | 'upload'>('tryon');
 
   // 2. Stores State
   const [stores, setStores] = useState<StoreProfile[]>(INITIAL_STORES);
@@ -34,7 +33,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 4. Modals State
-  const [isStoreModalOpen, setIsStoreModalOpen] = useState<boolean>(false);
   const [isPromptGuideOpen, setIsPromptGuideOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -217,13 +215,11 @@ export default function App() {
         </div>
       )}
 
-      {/* Global Luxury Header */}
+      {/* Global Clean Header */}
       <Navbar
-        currentStore={currentStore}
         activeOutfit={activeOutfit}
         activeView={activeView}
         onChangeView={setActiveView}
-        onOpenStoreModal={() => setIsStoreModalOpen(true)}
         onOpenPromptGuide={() => setIsPromptGuideOpen(true)}
       />
 
@@ -231,7 +227,7 @@ export default function App() {
       <main className="flex-1 max-w-[1780px] w-full mx-auto p-3 sm:p-5 lg:p-6 flex flex-col">
         {activeView === 'upload' ? (
           /* ======================================================== */
-          /* 1. MERCHANT UPLOAD VIEW WITH COMPANION JSON SPEC         */
+          /* 1. UPLOAD VIEW WITH PHOTO & COMPANION JSON SPEC          */
           /* ======================================================== */
           <MerchantUploadView
             currentStore={currentStore}
@@ -243,55 +239,12 @@ export default function App() {
           />
         ) : (
           /* ======================================================== */
-          /* 2. CUSTOMER VIRTUAL TRY-ON FITTING ROOM (3-COLUMN LUXURY) */
+          /* 2. CUSTOMER VIRTUAL TRY-ON FITTING ROOM (3-COLUMN STUDIO) */
           /* ======================================================== */
           <div className="flex-1 flex flex-col gap-4">
-            {/* Store Profile Highlight Strip */}
-            <div className="bg-gradient-to-r from-slate-900 via-slate-900/90 to-indigo-950/30 border border-slate-800 rounded-3xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
-                  {currentStore.logoEmoji || '🛍️'}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30">
-                      ویترین اختصاصی
-                    </span>
-                    <h1 className="text-sm sm:text-base font-black text-white">
-                      {currentStore.nameFa}
-                    </h1>
-                    <span className="text-xs text-slate-400">({currentStore.city})</span>
-                  </div>
-                  <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
-                    {currentStore.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setActiveView('upload')}
-                  className="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-500 hover:bg-amber-600 text-slate-950 transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
-                >
-                  <Camera className="w-3.5 h-3.5" />
-                  <span>📸 آپلود لباس و JSON برای این فروشگاه</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsStoreModalOpen(true)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1 cursor-pointer"
-                >
-                  <Store className="w-3.5 h-3.5 text-slate-400" />
-                  <span>تغییر فروشگاه</span>
-                </button>
-              </div>
-            </div>
-
             {/* Studio 3-Column Layout */}
-            <div className="flex-1 flex flex-col lg:flex-row items-stretch gap-4 lg:gap-6 min-h-[calc(100vh-160px)]">
-              {/* Left Column: Store Clothing Catalog */}
+            <div className="flex-1 flex flex-col lg:flex-row items-stretch gap-4 lg:gap-6 min-h-[calc(100vh-140px)]">
+              {/* Left Column: Clothing Catalog */}
               <ClothingCatalog
                 products={products}
                 activeOutfit={activeOutfit}
@@ -316,20 +269,6 @@ export default function App() {
           </div>
         )}
       </main>
-
-      {/* Store Directory Modal */}
-      <StoreDirectoryModal
-        stores={stores}
-        currentStoreSlug={currentStoreSlug}
-        isOpen={isStoreModalOpen}
-        onClose={() => setIsStoreModalOpen(false)}
-        onSelectStore={handleSelectStore}
-        onStoreCreated={(s) => {
-          setStores((prev) => [...prev, s]);
-          fetchStores();
-        }}
-        products={products}
-      />
 
       {/* AI Master Prompt Guide Modal */}
       <AiPromptGuideModal

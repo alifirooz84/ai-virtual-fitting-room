@@ -288,28 +288,6 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         </button>
       </div>
 
-      {/* Target Store Selector Banner */}
-      <div className="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs">
-          <Store className="w-4 h-4 text-amber-400" />
-          <span className="font-bold text-slate-300">انتخاب فروشگاه هدف برای ثبت این لباس در دیتابیس:</span>
-        </div>
-        <select
-          value={selectedStoreSlug}
-          onChange={(e) => {
-            setSelectedStoreSlug(e.target.value);
-            onSelectStore(e.target.value);
-          }}
-          className="text-xs font-bold text-white bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-700 focus:border-amber-400 focus:outline-none cursor-pointer"
-        >
-          {stores.map((s) => (
-            <option key={s.slug} value={s.slug}>
-              {s.logoEmoji || '🛍️'} {s.nameFa} ({s.city})
-            </option>
-          ))}
-        </select>
-      </div>
-
       {errorMessage && (
         <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
