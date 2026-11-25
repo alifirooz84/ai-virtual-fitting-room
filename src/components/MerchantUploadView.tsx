@@ -127,8 +127,14 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const handleManualCleanBg = async () => {
     if (!imagePreview) return;
     setIsProcessingBg(true);
+    const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
     try {
-      const cleaned = await removeWhiteBackground(imagePreview, { colorTolerance: 35, luminanceThreshold: 205 });
+      const cleaned = await removeWhiteBackground(imagePreview, {
+        colorTolerance: 35,
+        luminanceThreshold: 205,
+        normalizeScale: true,
+        slot: activeSlot,
+      });
       setImagePreview(cleaned);
     } catch (e: any) {
       console.warn('Manual clean error:', e);
@@ -250,11 +256,11 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   };
 
   // Helper to ensure uploaded images are ultra-lightweight WebP without filling up browser storage
-  const compressImageIfNeeded = async (dataUrl: string): Promise<string> => {
+  const compressImageIfNeeded = async (dataUrl: string, slot: string = 'slot_top'): Promise<string> => {
     let sourceToCompress = dataUrl;
     if (autoRemoveBg) {
       try {
-        sourceToCompress = await removeWhiteBackground(dataUrl);
+        sourceToCompress = await removeWhiteBackground(dataUrl, { normalizeScale: true, slot });
       } catch {}
     }
     return new Promise((resolve) => {
@@ -308,10 +314,10 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     setErrorMessage(null);
 
     try {
-      // 1. Optimize image resolution into lightweight WebP
-      const optimizedImage = await compressImageIfNeeded(imagePreview);
-
       const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
+
+      // 1. Optimize image resolution into lightweight WebP and normalize standard sizing
+      const optimizedImage = await compressImageIfNeeded(imagePreview, activeSlot);
       const currentSpec = parsedSpec || normalizeGarmentAiSpec({ slot: activeSlot }, customTitle || 'لباس جدید');
       currentSpec.slot = activeSlot;
       currentSpec.placement.offset_y_percent = offsetY;

@@ -15,6 +15,8 @@ export interface RemoveBackgroundOptions {
   saturationMax?: number; // Maximum color saturation difference (default: 30)
   feather?: boolean; // Smooth 1px anti-aliased edge softening (default: true)
   maxDimension?: number; // Max canvas dimension (default: 1024)
+  normalizeScale?: boolean; // Automatically scales & centers garment into canonical fashion grid
+  slot?: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string;
 }
 
 export function removeWhiteBackground(
@@ -259,16 +261,22 @@ export function removeWhiteBackground(
 
         ctx.putImageData(imgData, 0, 0);
 
+        // Optional Bounding-Box Normalization into canonical 1024x1024 fashion grid
+        let finalCanvas: HTMLCanvasElement = canvas;
+        if (options.normalizeScale) {
+          finalCanvas = normalizeGarmentScaleAndPosition(canvas, options.slot);
+        }
+
         // Convert to lightweight WebP with full alpha transparency support
         try {
-          const webpData = canvas.toDataURL('image/webp', 0.9);
+          const webpData = finalCanvas.toDataURL('image/webp', 0.9);
           if (webpData && webpData.startsWith('data:image/webp')) {
             transparencyCache.set(imageSource, webpData);
             return resolve(webpData);
           }
         } catch {}
 
-        const pngData = canvas.toDataURL('image/png');
+        const pngData = finalCanvas.toDataURL('image/png');
         transparencyCache.set(imageSource, pngData);
         resolve(pngData);
       } catch (err) {
@@ -283,4 +291,130 @@ export function removeWhiteBackground(
 
     img.src = imageSource;
   });
+}
+
+export interface BoundingBox {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Calculates the exact bounding box of non-transparent garment pixels.
+ */
+export function getGarmentBoundingBox(ctx: CanvasRenderingContext2D, width: number, height: number): BoundingBox | null {
+  const imgData = ctx.getImageData(0, 0, width, height);
+  const data = imgData.data;
+
+  let minX = width;
+  let maxX = 0;
+  let minY = height;
+  let maxY = 0;
+  let hasPixels = false;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4;
+      const alpha = data[idx + 3];
+      if (alpha > 20) {
+        hasPixels = true;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  if (!hasPixels || maxX <= minX || maxY <= minY) return null;
+
+  return {
+    minX,
+    maxX,
+    minY,
+    maxY,
+    width: maxX - minX + 1,
+    height: maxY - minY + 1,
+  };
+}
+
+/**
+ * Normalizes garment framing onto a standardized 1024x1024 canvas.
+ * Guarantees that ALL clothing items from ANY AI model have 100% uniform proportions:
+ * - Tops/Hoodies: Width is ~78% of canvas, neckline starts at 10% from top.
+ * - Bottoms/Pants: Height is ~84% of canvas, waistband starts at 10% from top.
+ * - Outerwear: Width is ~82% of canvas, neckline starts at 10% from top.
+ * - Shoes: Width is ~72% of canvas, centered horizontally and vertically.
+ */
+export function normalizeGarmentScaleAndPosition(
+  canvas: HTMLCanvasElement,
+  slot: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string = 'slot_top'
+): HTMLCanvasElement {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return canvas;
+
+  const box = getGarmentBoundingBox(ctx, canvas.width, canvas.height);
+  if (!box) return canvas;
+
+  const targetSize = 1024;
+  const outCanvas = document.createElement('canvas');
+  outCanvas.width = targetSize;
+  outCanvas.height = targetSize;
+  const outCtx = outCanvas.getContext('2d');
+  if (!outCtx) return canvas;
+
+  const aspect = box.width / box.height;
+
+  let targetW: number;
+  let targetH: number;
+  let targetX: number;
+  let targetY: number;
+
+  if (slot === 'slot_bottom') {
+    targetH = Math.round(targetSize * 0.84);
+    targetW = Math.round(targetH * aspect);
+    targetX = Math.round((targetSize - targetW) / 2);
+    targetY = Math.round(targetSize * 0.10);
+  } else if (slot === 'slot_shoes') {
+    targetW = Math.round(targetSize * 0.72);
+    targetH = Math.round(targetW / aspect);
+    targetX = Math.round((targetSize - targetW) / 2);
+    targetY = Math.round((targetSize - targetH) / 2);
+  } else if (slot === 'slot_outer') {
+    targetW = Math.round(targetSize * 0.82);
+    targetH = Math.round(targetW / aspect);
+    if (targetH > targetSize * 0.75) {
+      targetH = Math.round(targetSize * 0.75);
+      targetW = Math.round(targetH * aspect);
+    }
+    targetX = Math.round((targetSize - targetW) / 2);
+    targetY = Math.round(targetSize * 0.10);
+  } else {
+    // slot_top
+    targetW = Math.round(targetSize * 0.78);
+    targetH = Math.round(targetW / aspect);
+    if (targetH > targetSize * 0.72) {
+      targetH = Math.round(targetSize * 0.72);
+      targetW = Math.round(targetH * aspect);
+    }
+    targetX = Math.round((targetSize - targetW) / 2);
+    targetY = Math.round(targetSize * 0.10);
+  }
+
+  outCtx.drawImage(
+    canvas,
+    box.minX,
+    box.minY,
+    box.width,
+    box.height,
+    targetX,
+    targetY,
+    targetW,
+    targetH
+  );
+
+  return outCanvas;
 }
