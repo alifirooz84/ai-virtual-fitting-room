@@ -25,6 +25,14 @@ async function startServer() {
   app.use(express.json({ limit: '60mb' }));
   app.use(express.urlencoded({ extended: true, limit: '60mb' }));
 
+  // Static uploads directory for lightweight image serving
+  const uploadsDir = path.resolve(process.cwd(), 'public', 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch {}
+  }
+  app.use('/uploads', express.static(uploadsDir));
+  app.use('/api/uploads', express.static(uploadsDir));
+
   // --- REST API ROUTES ---
 
   // Health check
@@ -100,6 +108,13 @@ async function startServer() {
     res.json({ ...store, productsCount: products.length, products });
   });
 
+  // All Products across all stores (Universal Catalog Sync)
+  app.get('/api/products', (req, res) => {
+    const slot = req.query.slot as GarmentSlot | undefined;
+    const products = db.getAllProducts(undefined, slot);
+    res.json(products);
+  });
+
   // Store Products
   app.get('/api/stores/:storeSlug/products', (req, res) => {
     const { storeSlug } = req.params;
@@ -109,11 +124,11 @@ async function startServer() {
   });
 
   // Upload Clothing with Companion AI JSON Specification
-  app.post('/api/stores/:storeSlug/products', (req, res) => {
+  const handleProductUpload = (req: express.Request, res: express.Response) => {
     try {
-      const { storeSlug } = req.params;
+      const storeSlug = req.params.storeSlug || req.body.storeSlug || 'zara-modern';
       const store = db.getStoreBySlug(storeSlug);
-      const storeName = store ? store.nameFa : 'فروشگاه اختصاصی';
+      const storeName = store ? store.nameFa : (req.body.storeName || 'فروشگاه اختصاصی');
 
       const body = req.body || {};
       const {
@@ -135,16 +150,34 @@ async function startServer() {
 
       const title = customTitle || normalizedSpec.name_fa || 'لباس جدید';
       const price = customPrice ? Number(customPrice) : normalizedSpec.style_details.estimated_price_toman || 850000;
+      const newId = `prod-${storeSlug}-${Date.now()}`;
+
+      // Convert large base64 into a physical file on disk to prevent bloated JSON payloads
+      let finalImageUrl = image;
+      if (typeof image === 'string' && image.startsWith('data:image')) {
+        try {
+          const match = image.match(/^data:image\/(\w+);base64,(.+)$/);
+          if (match) {
+            const ext = match[1] === 'jpeg' ? 'jpg' : match[1];
+            const fileName = `${newId}.${ext}`;
+            const filePath = path.join(uploadsDir, fileName);
+            fs.writeFileSync(filePath, Buffer.from(match[2], 'base64'));
+            finalImageUrl = `/uploads/${fileName}`;
+          }
+        } catch (fileErr) {
+          console.warn('[server.ts] Could not write file to disk, using data URL:', fileErr);
+        }
+      }
 
       const newProduct: ClothingProduct = {
-        id: `prod-${storeSlug}-${Date.now()}`,
+        id: newId,
         storeSlug,
         storeName,
         title,
         price,
         category: normalizedSpec.category,
         slot: normalizedSpec.slot,
-        imageUrl: image,
+        imageUrl: finalImageUrl,
         placement: normalizedSpec.placement,
         spec: normalizedSpec,
         createdAt: new Date().toISOString(),
@@ -158,10 +191,13 @@ async function startServer() {
         message: `لباس "${saved.title}" با اسلات "${saved.slot}" در دیتابیس ذخیره شد.`,
       });
     } catch (err: any) {
-      console.error('[POST /api/stores/:storeSlug/products] Error:', err);
+      console.error('[POST products] Error:', err);
       res.status(500).json({ error: 'خطا در ثبت محصول: ' + err.message });
     }
-  });
+  };
+
+  app.post('/api/stores/:storeSlug/products', handleProductUpload);
+  app.post('/api/products', handleProductUpload);
 
   // Delete product
   app.delete('/api/products/:id', (req, res) => {

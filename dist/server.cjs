@@ -25163,7 +25163,36 @@ var JsonDatabase = class {
         const raw = import_fs.default.readFileSync(PRODUCTS_FILE, "utf-8");
         const list = JSON.parse(raw);
         if (Array.isArray(list) && list.length > 0) {
-          list.forEach((p) => this.products.set(p.id, p));
+          const uploadsDir = import_path.default.resolve(process.cwd(), "public", "uploads");
+          if (!import_fs.default.existsSync(uploadsDir)) {
+            try {
+              import_fs.default.mkdirSync(uploadsDir, { recursive: true });
+            } catch {
+            }
+          }
+          let migratedCount = 0;
+          list.forEach((p) => {
+            if (p.imageUrl && typeof p.imageUrl === "string" && p.imageUrl.startsWith("data:image")) {
+              try {
+                const match = p.imageUrl.match(/^data:image\/(\w+);base64,(.+)$/);
+                if (match) {
+                  const ext = match[1] === "jpeg" ? "jpg" : match[1];
+                  const fileName = `${p.id}.${ext}`;
+                  const filePath = import_path.default.join(uploadsDir, fileName);
+                  import_fs.default.writeFileSync(filePath, Buffer.from(match[2], "base64"));
+                  p.imageUrl = `/uploads/${fileName}`;
+                  migratedCount++;
+                }
+              } catch (err) {
+                console.warn("[JsonDatabase] Could not extract base64 for product:", p.id, err);
+              }
+            }
+            this.products.set(p.id, p);
+          });
+          if (migratedCount > 0) {
+            console.log(`[JsonDatabase] Successfully migrated ${migratedCount} base64 images to physical disk files in public/uploads/`);
+            this.saveProducts();
+          }
         } else {
           this.seedProducts();
         }
@@ -25270,6 +25299,15 @@ async function startServer() {
   });
   app.use(import_express.default.json({ limit: "60mb" }));
   app.use(import_express.default.urlencoded({ extended: true, limit: "60mb" }));
+  const uploadsDir = import_path2.default.resolve(process.cwd(), "public", "uploads");
+  if (!import_fs2.default.existsSync(uploadsDir)) {
+    try {
+      import_fs2.default.mkdirSync(uploadsDir, { recursive: true });
+    } catch {
+    }
+  }
+  app.use("/uploads", import_express.default.static(uploadsDir));
+  app.use("/api/uploads", import_express.default.static(uploadsDir));
   app.get("/api/health", (req, res) => {
     res.json({
       status: "ok",
@@ -25335,17 +25373,22 @@ async function startServer() {
     const products = db.getAllProducts(store.slug);
     res.json({ ...store, productsCount: products.length, products });
   });
+  app.get("/api/products", (req, res) => {
+    const slot = req.query.slot;
+    const products = db.getAllProducts(void 0, slot);
+    res.json(products);
+  });
   app.get("/api/stores/:storeSlug/products", (req, res) => {
     const { storeSlug } = req.params;
     const slot = req.query.slot;
     const products = db.getAllProducts(storeSlug, slot);
     res.json(products);
   });
-  app.post("/api/stores/:storeSlug/products", (req, res) => {
+  const handleProductUpload = (req, res) => {
     try {
-      const { storeSlug } = req.params;
+      const storeSlug = req.params.storeSlug || req.body.storeSlug || "zara-modern";
       const store = db.getStoreBySlug(storeSlug);
-      const storeName = store ? store.nameFa : "\u0641\u0631\u0648\u0634\u06AF\u0627\u0647 \u0627\u062E\u062A\u0635\u0627\u0635\u06CC";
+      const storeName = store ? store.nameFa : req.body.storeName || "\u0641\u0631\u0648\u0634\u06AF\u0627\u0647 \u0627\u062E\u062A\u0635\u0627\u0635\u06CC";
       const body = req.body || {};
       const {
         image,
@@ -25364,15 +25407,31 @@ async function startServer() {
       );
       const title = customTitle || normalizedSpec.name_fa || "\u0644\u0628\u0627\u0633 \u062C\u062F\u06CC\u062F";
       const price = customPrice ? Number(customPrice) : normalizedSpec.style_details.estimated_price_toman || 85e4;
+      const newId = `prod-${storeSlug}-${Date.now()}`;
+      let finalImageUrl = image;
+      if (typeof image === "string" && image.startsWith("data:image")) {
+        try {
+          const match = image.match(/^data:image\/(\w+);base64,(.+)$/);
+          if (match) {
+            const ext = match[1] === "jpeg" ? "jpg" : match[1];
+            const fileName = `${newId}.${ext}`;
+            const filePath = import_path2.default.join(uploadsDir, fileName);
+            import_fs2.default.writeFileSync(filePath, Buffer.from(match[2], "base64"));
+            finalImageUrl = `/uploads/${fileName}`;
+          }
+        } catch (fileErr) {
+          console.warn("[server.ts] Could not write file to disk, using data URL:", fileErr);
+        }
+      }
       const newProduct = {
-        id: `prod-${storeSlug}-${Date.now()}`,
+        id: newId,
         storeSlug,
         storeName,
         title,
         price,
         category: normalizedSpec.category,
         slot: normalizedSpec.slot,
-        imageUrl: image,
+        imageUrl: finalImageUrl,
         placement: normalizedSpec.placement,
         spec: normalizedSpec,
         createdAt: (/* @__PURE__ */ new Date()).toISOString()
@@ -25385,10 +25444,12 @@ async function startServer() {
         message: `\u0644\u0628\u0627\u0633 "${saved.title}" \u0628\u0627 \u0627\u0633\u0644\u0627\u062A "${saved.slot}" \u062F\u0631 \u062F\u06CC\u062A\u0627\u0628\u06CC\u0633 \u0630\u062E\u06CC\u0631\u0647 \u0634\u062F.`
       });
     } catch (err) {
-      console.error("[POST /api/stores/:storeSlug/products] Error:", err);
+      console.error("[POST products] Error:", err);
       res.status(500).json({ error: "\u062E\u0637\u0627 \u062F\u0631 \u062B\u0628\u062A \u0645\u062D\u0635\u0648\u0644: " + err.message });
     }
-  });
+  };
+  app.post("/api/stores/:storeSlug/products", handleProductUpload);
+  app.post("/api/products", handleProductUpload);
   app.delete("/api/products/:id", (req, res) => {
     const success = db.deleteProduct(req.params.id);
     if (!success) {

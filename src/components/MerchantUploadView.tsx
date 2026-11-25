@@ -350,7 +350,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
 
       // 4. Send to backend server database (cPanel PHP / Node.js)
       try {
-        const res = await apiFetch(`/api/stores/${selectedStoreSlug}/products`, {
+        let res = await apiFetch(`/api/stores/${selectedStoreSlug}/products`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -361,12 +361,29 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
             storeSlug: selectedStoreSlug,
             storeName: currentStore.nameFa,
           }),
-        }, 8000);
+        }, 12000);
+
+        if (!res.ok) {
+          // Fallback to universal /api/products
+          res = await apiFetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              image: optimizedImage,
+              jsonSpec: currentSpec,
+              customTitle: customTitle || currentSpec.name_fa,
+              customPrice,
+              storeSlug: selectedStoreSlug,
+              storeName: currentStore.nameFa,
+            }),
+          }, 12000);
+        }
 
         if (res.ok) {
-          const data = await res.json();
-          if (data && data.product) {
-            if (data.product.imageUrl) {
+          const isJson = res.headers.get('content-type')?.includes('application/json');
+          if (isJson) {
+            const data = await res.json();
+            if (data && data.product && data.product.imageUrl) {
               productObj.imageUrl = data.product.imageUrl;
               await dbStorage.saveProduct(productObj);
             }

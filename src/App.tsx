@@ -45,40 +45,79 @@ export default function App() {
   // Fetch stores from server
   const fetchStores = useCallback(async () => {
     try {
-      const res = await apiFetch('/api/stores');
-      if (res.ok) {
+      const res = await apiFetch('/api/stores', undefined, 8000);
+      const isJson = res.ok && (res.headers.get('content-type')?.includes('application/json') || false);
+      if (isJson) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
           setStores(data);
+          // If currentStoreSlug is not present in server stores, sync to first valid store
+          if (!data.some((s: any) => s.slug === currentStoreSlug)) {
+            setCurrentStoreSlug(data[0].slug);
+          }
         }
       }
     } catch {
       // Use fallback
     }
-  }, []);
+  }, [currentStoreSlug]);
 
-  // Fetch products with IndexedDB local persistence + Server API sync
+  // Fetch products with IndexedDB local persistence + Server API sync (Cross-device persistence)
   const fetchProducts = useCallback(async () => {
-    // 1. First migrate any legacy items from localStorage into IndexedDB
+    // 1. Get locally cached items from IndexedDB
     const localCustom = await dbStorage.migrateFromLocalStorage();
 
     let serverProducts: ClothingProduct[] = [];
     try {
-      const res = await apiFetch(`/api/stores/${currentStoreSlug}/products`, undefined, 3500);
-      if (res.ok) {
+      // 1. First try universal /api/products (to get all user uploads across all browser sessions)
+      let res = await apiFetch('/api/products', undefined, 8000);
+      let isJson = res.ok && (res.headers.get('content-type')?.includes('application/json') || false);
+      if (isJson) {
         const data = await res.json();
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           serverProducts = data;
         }
       }
-    } catch {
-      // Server unreachable or offline
+
+      // 2. If universal products is empty or not yet deployed on server, fetch from active store
+      if (serverProducts.length === 0) {
+        const targetSlug = currentStoreSlug || 'atelier-milano';
+        res = await apiFetch(`/api/stores/${targetSlug}/products`, undefined, 8000);
+        isJson = res.ok && (res.headers.get('content-type')?.includes('application/json') || false);
+        if (isJson) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            serverProducts = data;
+          }
+        }
+      }
+
+      // 3. Fallback to atelier-milano if currentStore was different
+      if (serverProducts.length === 0 && currentStoreSlug !== 'atelier-milano') {
+        res = await apiFetch('/api/stores/atelier-milano/products', undefined, 8000);
+        isJson = res.ok && (res.headers.get('content-type')?.includes('application/json') || false);
+        if (isJson) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            serverProducts = data;
+          }
+        }
+      }
+
+      // Synchronize server products into local IndexedDB for instant offline access
+      if (serverProducts.length > 0) {
+        for (const sp of serverProducts) {
+          await dbStorage.saveProduct(sp);
+        }
+      }
+    } catch (err) {
+      console.warn('[App.tsx] Server product sync warning:', err);
     }
 
-    // Merge: custom user uploads have highest priority, then server, then initial store products
+    // Merge: Server database products + local IndexedDB + Initial showroom products
     const seen = new Set<string>();
     const merged: ClothingProduct[] = [];
-    [...localCustom, ...serverProducts, ...INITIAL_PRODUCTS].forEach((p) => {
+    [...serverProducts, ...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
       if (!seen.has(p.id)) {
         seen.add(p.id);
         merged.push(p);

@@ -56,6 +56,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [showSilhouette, setShowSilhouette] = useState(true);
+  const [mannequinMode, setMannequinMode] = useState<'real' | 'ghost'>('real');
   const [zoom, setZoom] = useState(1);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -67,32 +68,32 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
   // Golden Anatomical Proportions (40% Torso to 60% Legs):
-  // Tops: centered around 27%, hem terminates at waistline ~38%.
+  // Tops: centered around 34%, collar emerges at 20-22% right under the neck, hem at waistline ~46%.
   const calcTopY = topItem
-    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 20 && topItem.placement.offset_y_percent <= 34
+    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 28 && topItem.placement.offset_y_percent <= 38
         ? topItem.placement.offset_y_percent
-        : 27)
-    : 27;
+        : 34)
+    : 34;
 
   const calcOuterY = outerItem
-    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 20 && outerItem.placement.offset_y_percent <= 34
+    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 28 && outerItem.placement.offset_y_percent <= 38
         ? outerItem.placement.offset_y_percent
-        : 27)
-    : 27;
+        : 34)
+    : 34;
 
-  // Bottoms: waistband begins at ~37% under top hem, legs flow down to ~84%
+  // Bottoms: waistband begins at ~45% under top hem, legs flow down to ~82%
   const calcBottomY = bottomItem
-    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 52 && bottomItem.placement.offset_y_percent <= 66
+    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 58 && bottomItem.placement.offset_y_percent <= 68
         ? bottomItem.placement.offset_y_percent
-        : 60)
-    : 60;
+        : 64)
+    : 64;
 
-  // Shoes: tuck directly underneath pant cuffs at 84% with zero floating gap!
+  // Shoes: tuck directly underneath pant cuffs at 88% with zero floating gap!
   const calcShoesY = shoesItem
-    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 80 && shoesItem.placement.offset_y_percent <= 87
+    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 84 && shoesItem.placement.offset_y_percent <= 92
         ? shoesItem.placement.offset_y_percent
-        : 84)
-    : 84;
+        : 88)
+    : 88;
 
   const handleDownloadSnapshot = () => {
     setIsExporting(true);
@@ -200,15 +201,51 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Mannequin Style Mode Selector: Real 3D Studio vs Ghost */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+            <button
+              type="button"
+              onClick={() => {
+                setMannequinMode('real');
+                setShowSilhouette(true);
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                mannequinMode === 'real' && showSilhouette
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900'
+              }`}
+              title="تن کردن لباس‌ها روی مانکن رئال ۳بعدی استودیویی"
+            >
+              <span>🧍‍♂️</span>
+              <span className="hidden sm:inline">مانکن رئال</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMannequinMode('ghost');
+                setShowSilhouette(true);
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                mannequinMode === 'ghost' && showSilhouette
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-900'
+              }`}
+              title="نمایش مانکن نامرئی (Ghost Mannequin)"
+            >
+              <span>👻</span>
+              <span className="hidden sm:inline">مانکن نامرئی</span>
+            </button>
+          </div>
+
           <button
             type="button"
             onClick={() => setShowSilhouette(!showSilhouette)}
-            className={`p-2 rounded-xl text-xs font-bold transition-all border ${
+            className={`p-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
               showSilhouette
                 ? 'bg-amber-50 text-amber-600 border-amber-300'
                 : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-900'
             }`}
-            title="نمایش / پنهان‌سازی سیلوئت مانکن"
+            title="نمایش / پنهان‌سازی کالبد مانکن"
           >
             {showSilhouette ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
           </button>
@@ -216,7 +253,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           <button
             type="button"
             onClick={() => setZoom((prev) => (prev === 1 ? 1.15 : 1))}
-            className="p-2 rounded-xl text-xs font-bold bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            className="p-2 rounded-xl text-xs font-bold bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
             title="بزرگنمایی مانکن"
           >
             {zoom === 1 ? <ZoomIn className="w-4 h-4" /> : <ZoomOut className="w-4 h-4" />}
@@ -268,12 +305,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           className="relative w-[340px] sm:w-[400px] md:w-[460px] h-[640px] sm:h-[700px] rounded-3xl bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border border-slate-200/90 shadow-xl flex items-center justify-center overflow-hidden"
         >
           {/* Studio Pedestal / Floor Shadow */}
-          <div className="absolute bottom-8 left-14 right-14 h-5 bg-slate-400/20 rounded-[100%] blur-sm pointer-events-none"></div>
-          <div className="absolute bottom-5 text-[10px] text-slate-400 font-mono tracking-wider">
-            3D GHOST MANNEQUIN STUDIO
+          <div className="absolute bottom-6 left-12 right-12 h-6 bg-slate-500/25 rounded-[100%] blur-sm pointer-events-none"></div>
+          <div className="absolute bottom-3 text-[10px] text-slate-400 font-mono tracking-wider">
+            {mannequinMode === 'real' ? '✦ 3D REAL STUDIO MANNEQUIN ✦' : '3D GHOST MANNEQUIN STUDIO'}
           </div>
 
-          {/* 1. Underlying 3D Invisible Mannequin Body Anatomical Silhouette */}
+          {/* 1. Underlying Mannequin Layer: Realistic 3D Studio Body OR Ghost Silhouette */}
           {showSilhouette && (
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
@@ -282,51 +319,222 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
-                <linearGradient id="mannequinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                {/* Real 3D Studio Mannequin Body Gradients */}
+                <linearGradient id="realBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#cbd5e1" />
+                  <stop offset="18%" stopColor="#e2e8f0" />
+                  <stop offset="50%" stopColor="#ffffff" />
+                  <stop offset="82%" stopColor="#e2e8f0" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+
+                <linearGradient id="head3DGrad" x1="25%" y1="0%" x2="75%" y2="100%">
+                  <stop offset="0%" stopColor="#ffffff" />
+                  <stop offset="45%" stopColor="#f1f5f9" />
+                  <stop offset="80%" stopColor="#cbd5e1" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+
+                <linearGradient id="armLeftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#cbd5e1" />
+                  <stop offset="40%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+
+                <linearGradient id="armRightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#cbd5e1" />
+                  <stop offset="60%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+
+                <linearGradient id="pedestalPlateGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#94a3b8" />
+                  <stop offset="30%" stopColor="#f8fafc" />
+                  <stop offset="70%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#64748b" />
+                </linearGradient>
+
+                {/* Ghost Mannequin Translucent Gradient */}
+                <linearGradient id="ghostGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#f8fafc" stopOpacity="0.85" />
                   <stop offset="60%" stopColor="#f1f5f9" stopOpacity="0.80" />
                   <stop offset="100%" stopColor="#e2e8f0" stopOpacity="0.75" />
                 </linearGradient>
+
+                <filter id="bodyShadow" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#0f172a" floodOpacity="0.12" />
+                </filter>
               </defs>
 
-              {/* Head / Oval Stylized Mannequin Head */}
-              <ellipse cx="240" cy="78" rx="28" ry="38" fill="url(#mannequinGrad)" stroke="#cbd5e1" strokeWidth="1.2" />
-              {/* Sleek Neck */}
-              <path d="M 226,112 L 226,145 Q 226,152 220,154 M 254,112 L 254,145 Q 254,152 260,154" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
+              {mannequinMode === 'real' ? (
+                /* ======================================================== */
+                /* REAL 3D SCULPTED BOUTIQUE MANNEQUIN BODY                 */
+                /* ======================================================== */
+                <g filter="url(#bodyShadow)">
+                  {/* Studio Pedestal Stand Plate */}
+                  <ellipse cx="240" cy="655" rx="110" ry="14" fill="url(#pedestalPlateGrad)" stroke="#64748b" strokeWidth="1.2" />
+                  <ellipse cx="240" cy="652" rx="90" ry="10" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.8" opacity="0.7" />
+                  {/* Stand vertical connection rods to ankles */}
+                  <line x1="202" y1="620" x2="202" y2="652" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
+                  <line x1="278" y1="620" x2="278" y2="652" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
 
-              {/* Full Anatomical Body Contour (Torso + Pelvis + Legs) */}
-              <path
-                d="M 220,154 
-                   C 195,156 160,165 142,176
-                   C 134,182 136,192 144,198
-                   C 162,212 178,245 174,282
-                   C 172,305 160,326 156,345
-                   C 152,364 162,430 172,490
-                   C 178,525 186,590 190,635
-                   L 214,635
-                   C 216,585 220,520 226,460
-                   C 230,420 236,365 240,355
-                   C 244,365 250,420 254,460
-                   C 260,520 264,585 266,635
-                   L 290,635
-                   C 294,590 302,525 308,490
-                   C 318,430 328,364 324,345
-                   C 320,326 308,305 306,282
-                   C 302,245 318,212 336,198
-                   C 344,192 346,182 338,176
-                   C 320,165 285,156 260,154
-                   Z"
-                fill="url(#mannequinGrad)"
-                stroke="#cbd5e1"
-                strokeWidth="1.2"
-              />
+                  {/* 1. Mannequin Legs & Feet (Extending from under pants/shorts to shoes) */}
+                  {/* Left Leg */}
+                  <path
+                    d="M 174,380
+                       C 168,430 174,480 182,520
+                       C 188,550 192,590 194,625
+                       L 214,625
+                       C 216,590 220,550 224,520
+                       C 228,480 234,430 238,380
+                       Z"
+                    fill="url(#realBodyGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1"
+                  />
+                  {/* Left Foot */}
+                  <ellipse cx="204" cy="630" rx="14" ry="7" fill="url(#realBodyGrad)" stroke="#94a3b8" strokeWidth="1" />
 
-              {/* Waist Guideline Indicator (Anatomical 40/60 Split at y=282) */}
-              <line x1="174" y1="282" x2="306" y2="282" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
+                  {/* Right Leg */}
+                  <path
+                    d="M 242,380
+                       C 246,430 252,480 256,520
+                       C 260,550 264,590 266,625
+                       L 286,625
+                       C 288,590 292,550 298,520
+                       C 306,480 312,430 306,380
+                       Z"
+                    fill="url(#realBodyGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1"
+                  />
+                  {/* Right Foot */}
+                  <ellipse cx="276" cy="630" rx="14" ry="7" fill="url(#realBodyGrad)" stroke="#94a3b8" strokeWidth="1" />
 
-              {/* Feet Pedestal Contact Baselines */}
-              <ellipse cx="202" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
-              <ellipse cx="278" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                  {/* 2. Mannequin Pelvis & Torso (Waist & Midriff connecting top to pants) */}
+                  <path
+                    d="M 148,188
+                       C 142,210 160,250 168,285
+                       C 174,312 176,335 174,380
+                       C 190,390 220,395 240,395
+                       C 260,395 290,390 306,380
+                       C 304,335 306,312 312,285
+                       C 320,250 338,210 332,188
+                       C 310,182 280,175 258,172
+                       L 222,172
+                       C 200,175 170,182 148,188
+                       Z"
+                    fill="url(#realBodyGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1.2"
+                  />
+
+                  {/* Defined Waist & Anatomical Midriff Shadowing */}
+                  <path d="M 188,320 Q 240,330 292,320" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M 205,355 Q 240,362 275,355" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+
+                  {/* 3. Mannequin Left Arm (Emerging naturally through t-shirt/jacket sleeves) */}
+                  <path
+                    d="M 148,188
+                       C 134,205 124,240 126,285
+                       C 128,320 134,360 142,400
+                       C 145,414 152,425 156,424
+                       C 160,423 158,410 155,398
+                       C 150,360 148,320 146,285
+                       C 146,250 156,220 164,198
+                       Z"
+                    fill="url(#armLeftGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1.1"
+                  />
+                  {/* Left Hand / Wrist Contours */}
+                  <ellipse cx="150" cy="416" rx="6" ry="12" fill="url(#armLeftGrad)" stroke="#94a3b8" strokeWidth="0.8" />
+
+                  {/* 4. Mannequin Right Arm */}
+                  <path
+                    d="M 332,188
+                       C 346,205 356,240 354,285
+                       C 352,320 346,360 338,400
+                       C 335,414 328,425 324,424
+                       C 320,423 322,410 325,398
+                       C 330,360 332,320 334,285
+                       C 334,250 324,220 316,198
+                       Z"
+                    fill="url(#armRightGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1.1"
+                  />
+                  {/* Right Hand / Wrist Contours */}
+                  <ellipse cx="330" cy="416" rx="6" ry="12" fill="url(#armRightGrad)" stroke="#94a3b8" strokeWidth="0.8" />
+
+                  {/* 5. Sculpted Neck with Clavicles (Visible right above garment neckline) */}
+                  <path
+                    d="M 224,118
+                       L 223,168
+                       Q 223,176 212,180
+                       L 268,180
+                       Q 257,176 257,168
+                       L 256,118
+                       Z"
+                    fill="url(#realBodyGrad)"
+                    stroke="#94a3b8"
+                    strokeWidth="1.2"
+                  />
+                  {/* Clavicle / Collarbone 3D Highlights (Right above shirt collar) */}
+                  <path d="M 214,180 Q 240,188 266,180" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M 226,176 Q 240,182 254,176" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+
+                  {/* 6. Sculpted Luxury Abstract Mannequin Head */}
+                  <ellipse cx="240" cy="74" rx="27" ry="36" fill="url(#head3DGrad)" stroke="#94a3b8" strokeWidth="1.2" />
+                  {/* Temple / Brow Sheen */}
+                  <ellipse cx="236" cy="64" rx="14" ry="18" fill="#ffffff" opacity="0.45" />
+                  {/* Chin / Jawline Contour */}
+                  <path d="M 226,98 Q 240,110 254,98" stroke="#94a3b8" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
+                </g>
+              ) : (
+                /* ======================================================== */
+                /* GHOST MANNEQUIN MINIMALIST SILHOUETTE                     */
+                /* ======================================================== */
+                <g>
+                  {/* Head Oval */}
+                  <ellipse cx="240" cy="78" rx="28" ry="38" fill="url(#ghostGrad)" stroke="#cbd5e1" strokeWidth="1.2" />
+                  {/* Sleek Neck */}
+                  <path d="M 226,112 L 226,145 Q 226,152 220,154 M 254,112 L 254,145 Q 254,152 260,154" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
+
+                  {/* Ghost Mannequin Body Contour */}
+                  <path
+                    d="M 220,154 
+                       C 195,156 160,165 142,176
+                       C 134,182 136,192 144,198
+                       C 162,212 178,245 174,282
+                       C 172,305 160,326 156,345
+                       C 152,364 162,430 172,490
+                       C 178,525 186,590 190,635
+                       L 214,635
+                       C 216,585 220,520 226,460
+                       C 230,420 236,365 240,355
+                       C 244,365 250,420 254,460
+                       C 260,520 264,585 266,635
+                       L 290,635
+                       C 294,590 302,525 308,490
+                       C 318,430 328,364 324,345
+                       C 320,326 308,305 306,282
+                       C 302,245 318,212 336,198
+                       C 344,192 346,182 338,176
+                       C 320,165 285,156 260,154
+                       Z"
+                    fill="url(#ghostGrad)"
+                    stroke="#cbd5e1"
+                    strokeWidth="1.2"
+                  />
+
+                  {/* Waist Guideline */}
+                  <line x1="174" y1="282" x2="306" y2="282" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
+                  {/* Feet Base */}
+                  <ellipse cx="202" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                  <ellipse cx="278" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                </g>
+              )}
             </svg>
           )}
 
