@@ -66,32 +66,33 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
-  // Auto-Snap Waistline Anchors (Zero Gap between Top & Bottom):
-  // Tops hem terminates at waistline ~50%. Pants waistband starts at ~45% and drapes down.
+  // Golden Anatomical Proportions (40% Torso to 60% Legs):
+  // Tops: centered around 27%, hem terminates at waistline ~38%.
   const calcTopY = topItem
-    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 24 && topItem.placement.offset_y_percent <= 36
+    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 20 && topItem.placement.offset_y_percent <= 34
         ? topItem.placement.offset_y_percent
-        : 30)
-    : 30;
+        : 27)
+    : 27;
 
   const calcOuterY = outerItem
-    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 24 && outerItem.placement.offset_y_percent <= 36
+    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 20 && outerItem.placement.offset_y_percent <= 34
         ? outerItem.placement.offset_y_percent
-        : 30)
-    : 30;
+        : 27)
+    : 27;
 
-  // Automatically snaps pants between 60%-66% so waistband ALWAYS meets top hem with ZERO gap!
+  // Bottoms: waistband begins at ~37% under top hem, legs flow down to ~84%
   const calcBottomY = bottomItem
-    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 58 && bottomItem.placement.offset_y_percent <= 66
+    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 52 && bottomItem.placement.offset_y_percent <= 66
         ? bottomItem.placement.offset_y_percent
-        : 64)
-    : 64;
+        : 60)
+    : 60;
 
+  // Shoes: tuck directly underneath pant cuffs at 84% with zero floating gap!
   const calcShoesY = shoesItem
-    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 84 && shoesItem.placement.offset_y_percent <= 92
+    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 80 && shoesItem.placement.offset_y_percent <= 87
         ? shoesItem.placement.offset_y_percent
-        : 88)
-    : 88;
+        : 84)
+    : 84;
 
   const handleDownloadSnapshot = () => {
     setIsExporting(true);
@@ -139,10 +140,19 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           const img = new Image();
           img.crossOrigin = 'anonymous';
           img.onload = () => {
-            const yPos = (garment.placement.offset_y_percent / 100) * 1380;
-            const scale = garment.placement.scale || 1.0;
-            const w = 580 * scale;
-            const h = 580 * scale;
+            const slotScale = garment.slot === 'slot_bottom'
+              ? (garment.placement.scale ? Math.max(garment.placement.scale, 1.15) : 1.20)
+              : garment.slot === 'slot_shoes'
+              ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.85) : 0.82)
+              : garment.slot === 'slot_outer'
+              ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.98) : 0.92)
+              : (garment.placement.scale ? Math.min(garment.placement.scale, 0.90) : 0.85);
+
+            const effectiveY = garment.slot === 'slot_bottom' ? calcBottomY : garment.slot === 'slot_shoes' ? calcShoesY : garment.slot === 'slot_outer' ? calcOuterY : calcTopY;
+            const yPos = (effectiveY / 100) * 1380;
+            const baseW = garment.slot === 'slot_bottom' ? 580 : garment.slot === 'slot_shoes' ? 440 : 490;
+            const w = baseW * slotScale;
+            const h = baseW * slotScale;
             const xPos = 512 - w / 2;
 
             ctx.drawImage(img, xPos, yPos - 50, w, h);
@@ -263,38 +273,60 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             3D GHOST MANNEQUIN STUDIO
           </div>
 
-          {/* 1. Underlying 3D Invisible Mannequin Body Wireframe Silhouette */}
+          {/* 1. Underlying 3D Invisible Mannequin Body Anatomical Silhouette */}
           {showSilhouette && (
             <svg
-              className="absolute inset-0 w-full h-full pointer-events-none text-slate-300 stroke-current"
+              className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
               viewBox="0 0 480 740"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Head / Neck */}
-              <ellipse cx="240" cy="95" rx="36" ry="46" strokeWidth="1.2" strokeDasharray="4 4"/>
-              <path d="M 226,140 L 226,170 M 254,140 L 254,170" strokeWidth="1.2"/>
+              <defs>
+                <linearGradient id="mannequinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#f8fafc" stopOpacity="0.85" />
+                  <stop offset="60%" stopColor="#f1f5f9" stopOpacity="0.80" />
+                  <stop offset="100%" stopColor="#e2e8f0" stopOpacity="0.75" />
+                </linearGradient>
+              </defs>
 
-              {/* Shoulders & Torso */}
+              {/* Head / Oval Stylized Mannequin Head */}
+              <ellipse cx="240" cy="78" rx="28" ry="38" fill="url(#mannequinGrad)" stroke="#cbd5e1" strokeWidth="1.2" />
+              {/* Sleek Neck */}
+              <path d="M 226,112 L 226,145 Q 226,152 220,154 M 254,112 L 254,145 Q 254,152 260,154" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
+
+              {/* Full Anatomical Body Contour (Torso + Pelvis + Legs) */}
               <path
-                d="M 140,185 Q 240,165 340,185 L 320,380 Q 240,390 160,380 Z"
+                d="M 220,154 
+                   C 195,156 160,165 142,176
+                   C 134,182 136,192 144,198
+                   C 162,212 178,245 174,282
+                   C 172,305 160,326 156,345
+                   C 152,364 162,430 172,490
+                   C 178,525 186,590 190,635
+                   L 214,635
+                   C 216,585 220,520 226,460
+                   C 230,420 236,365 240,355
+                   C 244,365 250,420 254,460
+                   C 260,520 264,585 266,635
+                   L 290,635
+                   C 294,590 302,525 308,490
+                   C 318,430 328,364 324,345
+                   C 320,326 308,305 306,282
+                   C 302,245 318,212 336,198
+                   C 344,192 346,182 338,176
+                   C 320,165 285,156 260,154
+                   Z"
+                fill="url(#mannequinGrad)"
+                stroke="#cbd5e1"
                 strokeWidth="1.2"
-                strokeDasharray="3 3"
               />
 
-              {/* Waist line (Waistband Snap Indicator) */}
-              <line x1="160" y1="380" x2="320" y2="380" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6"/>
+              {/* Waist Guideline Indicator (Anatomical 40/60 Split at y=282) */}
+              <line x1="174" y1="282" x2="306" y2="282" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
 
-              {/* Legs */}
-              <path
-                d="M 160,385 L 175,630 L 220,630 L 235,460 L 245,460 L 260,630 L 305,630 L 320,385"
-                strokeWidth="1.2"
-                strokeDasharray="4 4"
-              />
-
-              {/* Feet baseline */}
-              <ellipse cx="198" cy="650" rx="28" ry="10" strokeWidth="1.2"/>
-              <ellipse cx="282" cy="650" rx="28" ry="10" strokeWidth="1.2"/>
+              {/* Feet Pedestal Contact Baselines */}
+              <ellipse cx="202" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+              <ellipse cx="278" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
             </svg>
           )}
 
@@ -306,14 +338,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               style={{
                 top: `${calcShoesY}%`,
                 zIndex: shoesItem.placement.z_index || 10,
-                transform: `translate(-50%, -50%) scale(${shoesItem.placement.scale || 1.0})`,
+                transform: `translate(-50%, -50%) scale(${shoesItem.placement.scale ? Math.min(shoesItem.placement.scale, 0.85) : 0.82})`,
               }}
-              className="absolute left-1/2 w-[72%] aspect-[2/1] transition-all duration-300 pointer-events-auto group"
+              className="absolute left-1/2 w-[60%] aspect-[2.2/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.22)]"
             >
               <MannequinGarmentImage
                 src={shoesItem.imageUrl}
                 alt={shoesItem.title}
-                className="w-full h-full object-contain filter drop-shadow-md"
+                className="w-full h-full object-contain"
               />
               <button
                 type="button"
@@ -334,14 +366,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               style={{
                 top: `${calcBottomY}%`,
                 zIndex: bottomItem.placement.z_index || 20,
-                transform: `translate(-50%, -50%) scale(${bottomItem.placement.scale || 1.0})`,
+                transform: `translate(-50%, -50%) scale(${bottomItem.placement.scale ? Math.max(bottomItem.placement.scale, 1.15) : 1.20})`,
               }}
-              className="absolute left-1/2 w-[68%] aspect-[3/4] transition-all duration-300 pointer-events-auto group"
+              className="absolute left-1/2 w-[74%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.18)]"
             >
               <MannequinGarmentImage
                 src={bottomItem.imageUrl}
                 alt={bottomItem.title}
-                className="w-full h-full object-contain filter drop-shadow-lg"
+                className="w-full h-full object-contain"
               />
               <button
                 type="button"
@@ -355,21 +387,21 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 4. LAYER 30: TOPWEAR / T-SHIRT (Z-Index: 30 - روی شلوار)  */}
+          {/* 4. LAYER 30: TOPWEAR / T-SHIRT / HOODIE (Z-Index: 30)      */}
           {/* ======================================================== */}
           {topItem && (
             <div
               style={{
                 top: `${calcTopY}%`,
                 zIndex: topItem.placement.z_index || 30,
-                transform: `translate(-50%, -50%) scale(${topItem.placement.scale || 1.0})`,
+                transform: `translate(-50%, -50%) scale(${topItem.placement.scale ? Math.min(topItem.placement.scale, 0.90) : 0.85})`,
               }}
-              className="absolute left-1/2 w-[76%] aspect-square transition-all duration-300 pointer-events-auto group"
+              className="absolute left-1/2 w-[64%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_14px_22px_rgba(0,0,0,0.22)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
                 alt={topItem.title}
-                className="w-full h-full object-contain filter drop-shadow-lg"
+                className="w-full h-full object-contain"
               />
               <button
                 type="button"
@@ -390,14 +422,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               style={{
                 top: `${calcOuterY}%`,
                 zIndex: outerItem.placement.z_index || 40,
-                transform: `translate(-50%, -50%) scale(${outerItem.placement.scale || 1.05})`,
+                transform: `translate(-50%, -50%) scale(${outerItem.placement.scale ? Math.min(outerItem.placement.scale, 0.98) : 0.92})`,
               }}
-              className="absolute left-1/2 w-[82%] aspect-square transition-all duration-300 pointer-events-auto group"
+              className="absolute left-1/2 w-[68%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.26)] drop-shadow-[0_5px_8px_rgba(0,0,0,0.14)]"
             >
               <MannequinGarmentImage
                 src={outerItem.imageUrl}
                 alt={outerItem.title}
-                className="w-full h-full object-contain filter drop-shadow-xl"
+                className="w-full h-full object-contain"
               />
               <button
                 type="button"

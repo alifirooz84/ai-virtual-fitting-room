@@ -56,31 +56,31 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
  */
 export const AI_COMPANION_SPEC_PROMPT_FA = `
 شما یک هوش مصنوعی متخصص در تحلیل پوشاک و سیستم‌های پرو مجازی سه‌بعدی (3D VTON Auto-Snap Engine) هستید.
-عکس پیوست‌شده از لباس (خروجی کاملاً مستقیم و متقارن مانکن نامرئی شفاف) را به دقت آنالیز کنید و مشخصات کالیبراسیون و انطباق پرو را دقیقاً در قالب ساختار JSON زیر بازگردانید. هیچ متن اضافه‌ای خارج از ساختار JSON ننویسید.
+عکس پیوست‌شده از لباس (خروجی کاملاً مستقیم و متقارن مانکن نامرئی شفاف) را به دقت آنالیز کنید و مشخصات کالیبراسیون و انطباق پرو را با رعایت تناسبات طلایی آناتومی بدن (نسبت ۴۰٪ بالاتنه به ۶۰٪ پایین‌تنه) دقیقاً در قالب ساختار JSON زیر بازگردانید. هیچ متن اضافه‌ای خارج از ساختار JSON ننویسید.
 
-قوانین انطباق خودکار خط کمر و لایه‌بندی فیزیکی بدون نیاز به جابجایی دستی (Auto-Snap Layer Hierarchy):
-۱. تی‌شرت، پیراهن، هودی، پولوشرت (بالاتنه):
+قوانین انطباق خودکار خط کمر، تناسب عرضی و لایه‌بندی فیزیکی بدون نیاز به جابجایی دستی (Auto-Snap Layer Hierarchy):
+۱. هودی، تی‌شرت، دورس، پیراهن، سویشرت، پولوشرت (بالاتنه):
    - "slot": "slot_top"
    - لایه فیزیکی: روی کمر شلوار قرار می‌گیرد (Z-Index: 30)
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
    - "replacement_rules.replaces_slot": "slot_top"
 
-۲. شلوار، جین، اسلش، دامن، شلوارک (پایین‌تنه):
+۲. شلوار، جین، اسلش، بگ، کارگو، دامن (پایین‌تنه):
    - "slot": "slot_bottom"
-   - لایه فیزیکی: دقیقاً زیر لبه پایینی تی‌شرت فیکس می‌شود بدون هیچ فاصله‌ای (Z-Index: 20)
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
+   - لایه فیزیکی: کمر شلوار دقیقاً زیر لبه پایینی هودی/تی‌شرت فیکس می‌شود و پاهای بلند و کشیده می‌سازد (Z-Index: 20)
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replacement_rules.replaces_slot": "slot_bottom"
 
-۳. کت، کاپشن، پالتو، بارانی، سویشرت (لباس‌رو):
+۳. کت، کاپشن، پالتو، بارانی، پَفر (لباس‌رو):
    - "slot": "slot_outer"
    - لایه فیزیکی: روی تی‌شرت و شلوار قرار می‌گیرد (Z-Index: 40)
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
-۴. کفش، کتانی، بوت، نیم‌بوت (کفش):
+۴. کفش، کتانی، بوت، اسنیکرز (کفش):
    - "slot": "slot_shoes"
-   - لایه فیزیکی: زیر پای شلوار قرار می‌گیرد (Z-Index: 10)
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
+   - لایه فیزیکی: دقیقاً زیر دمپای شلوار چفت می‌شود بدون هیچ فاصله خالی معلق (Z-Index: 10)
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.82, "z_index": 10 }
    - "replacement_rules.replaces_slot": "slot_shoes"
 
 ساختار خروجی JSON که باید بازگردانید:
@@ -118,28 +118,28 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 
 export const AI_COMPANION_SPEC_PROMPT_EN = `
 You are a Fashion AI and 3D Virtual Try-On Calibration Engine.
-Analyze the attached symmetrical front-facing 3D clothing photograph and output a strict JSON calibration file according to the VTON Auto-Snap Layering Architecture.
+Analyze the attached symmetrical front-facing 3D clothing photograph and output a strict JSON calibration file adhering to the Human Fashion Golden Anatomy Ratio (40% Torso to 60% Leg vertical ratio).
 Return ONLY valid JSON with no markdown wrapping.
 
-CANONICAL ANCHOR POSITIONS (ZERO-ADJUSTMENT SNAP):
-1. Tops / Hoodies / Shirts:
+CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
+1. Tops / Hoodies / Shirts / Sweatshirts (Torso Layer):
    - "slot": "slot_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
    - "replaces_slot": "slot_top"
 
-2. Bottoms / Pants / Jeans:
+2. Bottoms / Pants / Jeans (Long Leg Layer - Waist meets top hem):
    - "slot": "slot_bottom"
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replaces_slot": "slot_bottom"
 
-3. Outerwear / Jackets / Coats:
+3. Outerwear / Open Jackets / Overcoats (Outer Layer):
    - "slot": "slot_outer"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
    - "replaces_slot": "slot_outer"
 
-4. Footwear / Shoes:
+4. Footwear / Shoes / Sneakers (Tucked flush under pant cuffs):
    - "slot": "slot_shoes"
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.82, "z_index": 10 }
    - "replaces_slot": "slot_shoes"
 `.trim();
 
@@ -160,36 +160,40 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = '�
   const rawCat = (json.category || '').toLowerCase();
   const rawName = (json.name_fa || json.name_en || fallbackName).toLowerCase();
 
-  if (rawSlot.includes('bottom') || rawCat.includes('pant') || rawCat.includes('jean') || rawCat.includes('skirt') || rawCat.includes('short') || rawName.includes('شلوار') || rawName.includes('جین') || rawName.includes('دامن') || rawName.includes('اسلش')) {
+  // Smart Slot Classification: Hoodies & Sweatshirts are strictly Tops (NOT Outerwear!)
+  if (rawSlot.includes('bottom') || rawCat.includes('pant') || rawCat.includes('jean') || rawCat.includes('skirt') || rawCat.includes('short') || rawName.includes('شلوار') || rawName.includes('جین') || rawName.includes('دامن') || rawName.includes('اسلش') || rawName.includes('بگ') || rawName.includes('کارگو')) {
     slot = 'slot_bottom';
-  } else if (rawSlot.includes('outer') || rawCat.includes('jacket') || rawCat.includes('coat') || rawCat.includes('hoodie') || rawName.includes('کت') || rawName.includes('کاپشن') || rawName.includes('پالتو') || rawName.includes('هودی') || rawName.includes('بارانی') || rawName.includes('سویشرت')) {
+  } else if (rawSlot.includes('outer') || rawCat.includes('jacket') || rawCat.includes('coat') || rawCat.includes('blazer') || rawName.includes('کت') || rawName.includes('کاپشن') || rawName.includes('پالتو') || rawName.includes('بارانی') || rawName.includes('پفر') || rawName.includes('بادگیر')) {
     slot = 'slot_outer';
-  } else if (rawSlot.includes('shoe') || rawCat.includes('shoe') || rawName.includes('کفش') || rawName.includes('کتانی') || rawName.includes('کتونی') || rawName.includes('بوت') || rawName.includes('لوفر')) {
+  } else if (rawSlot.includes('shoe') || rawCat.includes('shoe') || rawCat.includes('sneaker') || rawName.includes('کفش') || rawName.includes('کتانی') || rawName.includes('کتونی') || rawName.includes('بوت') || rawName.includes('لوفر') || rawName.includes('صندل')) {
     slot = 'slot_shoes';
   } else {
+    // Hoodies, T-shirts, Shirts, Sweatshirts, Knitwear are TOPS
     slot = 'slot_top';
   }
 
-  // Exact Canonical Auto-Snap Anchors: Tops end right at waist, pants tuck directly under top hem!
+  // Exact Canonical Golden Ratio Anchors: Sleek 40% Torso + 60% Leg Silhouette
   const defaultPlacement = {
-    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
-    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
-    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
-    slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
+    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
+    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 27, scale: 0.92, z_index: 40 },
+    slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: 'head' as const, offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 },
   }[slot];
 
-  // Auto-Snap intelligence: if an offset is absurdly out of range (like pants at 74% or top at 15%), auto-correct to canonical range
+  // Auto-Snap intelligence: auto-correct to canonical anatomical range
   let targetOffsetY = typeof json.placement?.offset_y_percent === 'number' ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === 'slot_bottom' && (targetOffsetY > 68 || targetOffsetY < 55)) {
-    targetOffsetY = 64;
-  } else if ((slot === 'slot_top' || slot === 'slot_outer') && (targetOffsetY < 24 || targetOffsetY > 38)) {
-    targetOffsetY = 30;
-  } else if (slot === 'slot_shoes' && (targetOffsetY < 80 || targetOffsetY > 95)) {
-    targetOffsetY = 88;
+  if (slot === 'slot_bottom' && (targetOffsetY > 68 || targetOffsetY < 52)) {
+    targetOffsetY = 60;
+  } else if ((slot === 'slot_top' || slot === 'slot_outer') && (targetOffsetY < 20 || targetOffsetY > 35)) {
+    targetOffsetY = 27;
+  } else if (slot === 'slot_shoes' && (targetOffsetY < 78 || targetOffsetY > 92)) {
+    targetOffsetY = 84;
   }
 
-  const customScale = typeof json.placement?.scale === 'number' ? json.placement.scale : defaultPlacement.scale;
+  const customScale = typeof json.placement?.scale === 'number' && json.placement.scale >= 0.7 && json.placement.scale <= 1.4
+    ? json.placement.scale
+    : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === 'number' ? json.placement.z_index : defaultPlacement.z_index;
 
   return {

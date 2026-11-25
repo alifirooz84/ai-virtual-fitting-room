@@ -146,17 +146,17 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const applySlotSelection = (slot: GarmentSlot) => {
     setSelectedSlotManual(slot);
     if (slot === 'slot_bottom') {
-      setOffsetY(64);
-      setScale(1.0);
+      setOffsetY(60);
+      setScale(1.20);
     } else if (slot === 'slot_outer') {
-      setOffsetY(30);
-      setScale(1.05);
+      setOffsetY(27);
+      setScale(0.92);
     } else if (slot === 'slot_shoes') {
-      setOffsetY(88);
-      setScale(0.85);
+      setOffsetY(84);
+      setScale(0.82);
     } else {
-      setOffsetY(30);
-      setScale(1.0);
+      setOffsetY(27);
+      setScale(0.85);
     }
   };
 
@@ -184,16 +184,17 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         if (!customTitle) {
           setCustomTitle(inferredName);
         }
-        // Auto-detect slot from file name if no JSON loaded yet
+        // Auto-detect slot from file name if no JSON loaded yet (Hoodies are strictly TOPwear!)
         if (!parsedSpec) {
           const lower = (file.name + ' ' + inferredName).toLowerCase();
-          if (lower.includes('شلوار') || lower.includes('جین') || lower.includes('pant') || lower.includes('jean') || lower.includes('دامن')) {
+          if (lower.includes('شلوار') || lower.includes('جین') || lower.includes('pant') || lower.includes('jean') || lower.includes('دامن') || lower.includes('اسلش') || lower.includes('بگ')) {
             applySlotSelection('slot_bottom');
-          } else if (lower.includes('کت') || lower.includes('کاپشن') || lower.includes('هودی') || lower.includes('پالتو') || lower.includes('jacket') || lower.includes('hoodie')) {
+          } else if (lower.includes('کت') || lower.includes('کاپشن') || lower.includes('پالتو') || lower.includes('بارانی') || lower.includes('jacket') || lower.includes('coat')) {
             applySlotSelection('slot_outer');
           } else if (lower.includes('کفش') || lower.includes('کتانی') || lower.includes('کتونی') || lower.includes('shoe') || lower.includes('sneaker')) {
             applySlotSelection('slot_shoes');
           } else {
+            // Hoodies, sweatshirts, t-shirts, shirts
             applySlotSelection('slot_top');
           }
         }
@@ -230,19 +231,19 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
       if (normalized.name_fa) setCustomTitle(normalized.name_fa);
       if (normalized.style_details?.estimated_price_toman) setCustomPrice(normalized.style_details.estimated_price_toman);
 
-      // Canonical Auto-Snap Anchors
+      // Canonical Auto-Snap Anchors adhering to 40/60 Golden Anatomy Ratio
       if (normalized.slot === 'slot_bottom') {
-        setOffsetY(64);
-        setScale(1.0);
+        setOffsetY(60);
+        setScale(1.20);
       } else if (normalized.slot === 'slot_outer') {
-        setOffsetY(30);
-        setScale(1.05);
+        setOffsetY(27);
+        setScale(0.92);
       } else if (normalized.slot === 'slot_shoes') {
-        setOffsetY(88);
-        setScale(0.85);
+        setOffsetY(84);
+        setScale(0.82);
       } else {
-        setOffsetY(30);
-        setScale(1.0);
+        setOffsetY(27);
+        setScale(0.85);
       }
     } catch (e: any) {
       setJsonError('فرمت فایل JSON نامعتبر است. لطفاً ساختار استاندارد را کپی کنید.');
@@ -684,19 +685,46 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
 
             {/* Mannequin Preview Box */}
             <div className="relative aspect-[3/4] rounded-2xl bg-gradient-to-b from-slate-50 via-white to-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shadow-inner">
-              {/* Wireframe Silhouette */}
+              {/* Anatomical Mannequin Silhouette */}
               <svg
-                className="absolute inset-0 w-full h-full pointer-events-none text-slate-300 stroke-current opacity-70"
+                className="absolute inset-0 w-full h-full pointer-events-none opacity-80"
                 viewBox="0 0 480 740"
                 fill="none"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <ellipse cx="240" cy="95" rx="36" ry="46" strokeWidth="1.2" strokeDasharray="4 4" />
-                <path d="M 140,185 Q 240,165 340,185 L 320,380 Q 240,390 160,380 Z" strokeWidth="1.2" strokeDasharray="3 3" />
-                <line x1="160" y1="380" x2="320" y2="380" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
-                <path d="M 160,385 L 175,630 L 220,630 L 235,460 L 245,460 L 260,630 L 305,630 L 320,385" strokeWidth="1.2" strokeDasharray="4 4" />
+                <ellipse cx="240" cy="78" rx="28" ry="38" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1.2" />
+                <path d="M 226,112 L 226,145 M 254,112 L 254,145" stroke="#cbd5e1" strokeWidth="1.2" />
+                <path
+                  d="M 220,154 
+                     C 195,156 160,165 142,176
+                     C 134,182 136,192 144,198
+                     C 162,212 178,245 174,282
+                     C 172,305 160,326 156,345
+                     C 152,364 162,430 172,490
+                     C 178,525 186,590 190,635
+                     L 214,635
+                     C 216,585 220,520 226,460
+                     C 230,420 236,365 240,355
+                     C 244,365 250,420 254,460
+                     C 260,520 264,585 266,635
+                     L 290,635
+                     C 294,590 302,525 308,490
+                     C 318,430 328,364 324,345
+                     C 320,326 308,305 306,282
+                     C 302,245 318,212 336,198
+                     C 344,192 346,182 338,176
+                     C 320,165 285,156 260,154
+                     Z"
+                  fill="#f1f5f9"
+                  stroke="#cbd5e1"
+                  strokeWidth="1.2"
+                />
+                <line x1="174" y1="282" x2="306" y2="282" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6" />
+                <ellipse cx="202" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                <ellipse cx="278" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
               </svg>
 
-              {/* Rendered Uploaded Clothing with Dynamic Aspect Ratio */}
+              {/* Rendered Uploaded Clothing with Dynamic Aspect Ratio & Multi-Layer Depth Drop-Shadow */}
               {imagePreview ? (
                 <div
                   style={{
@@ -705,18 +733,18 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
                   }}
                   className={`absolute left-1/2 transition-all duration-200 pointer-events-none ${
                     (selectedSlotManual === 'slot_bottom' || (!selectedSlotManual && parsedSpec?.slot === 'slot_bottom'))
-                      ? 'w-[68%] aspect-[3/4]'
+                      ? 'w-[74%] aspect-[3/4] filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.18)]'
                       : (selectedSlotManual === 'slot_outer' || (!selectedSlotManual && parsedSpec?.slot === 'slot_outer'))
-                      ? 'w-[82%] aspect-square'
+                      ? 'w-[68%] aspect-square filter drop-shadow-[0_18px_24px_rgba(0,0,0,0.25)]'
                       : (selectedSlotManual === 'slot_shoes' || (!selectedSlotManual && parsedSpec?.slot === 'slot_shoes'))
-                      ? 'w-[72%] aspect-[2/1]'
-                      : 'w-[76%] aspect-square'
+                      ? 'w-[60%] aspect-[2.2/1] filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.22)]'
+                      : 'w-[64%] aspect-square filter drop-shadow-[0_14px_22px_rgba(0,0,0,0.22)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]'
                   }`}
                 >
                   <img
                     src={imagePreview}
                     alt="پیش‌نمایش"
-                    className="w-full h-full object-contain filter drop-shadow-lg"
+                    className="w-full h-full object-contain"
                   />
                 </div>
               ) : (

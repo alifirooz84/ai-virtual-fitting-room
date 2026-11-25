@@ -24522,31 +24522,31 @@ var GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
 `.trim();
 var AI_COMPANION_SPEC_PROMPT_FA = `
 \u0634\u0645\u0627 \u06CC\u06A9 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0645\u062A\u062E\u0635\u0635 \u062F\u0631 \u062A\u062D\u0644\u06CC\u0644 \u067E\u0648\u0634\u0627\u06A9 \u0648 \u0633\u06CC\u0633\u062A\u0645\u200C\u0647\u0627\u06CC \u067E\u0631\u0648 \u0645\u062C\u0627\u0632\u06CC \u0633\u0647\u200C\u0628\u0639\u062F\u06CC (3D VTON Auto-Snap Engine) \u0647\u0633\u062A\u06CC\u062F.
-\u0639\u06A9\u0633 \u067E\u06CC\u0648\u0633\u062A\u200C\u0634\u062F\u0647 \u0627\u0632 \u0644\u0628\u0627\u0633 (\u062E\u0631\u0648\u062C\u06CC \u06A9\u0627\u0645\u0644\u0627\u064B \u0645\u0633\u062A\u0642\u06CC\u0645 \u0648 \u0645\u062A\u0642\u0627\u0631\u0646 \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0634\u0641\u0627\u0641) \u0631\u0627 \u0628\u0647 \u062F\u0642\u062A \u0622\u0646\u0627\u0644\u06CC\u0632 \u06A9\u0646\u06CC\u062F \u0648 \u0645\u0634\u062E\u0635\u0627\u062A \u06A9\u0627\u0644\u06CC\u0628\u0631\u0627\u0633\u06CC\u0648\u0646 \u0648 \u0627\u0646\u0637\u0628\u0627\u0642 \u067E\u0631\u0648 \u0631\u0627 \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u0642\u0627\u0644\u0628 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0632\u06CC\u0631 \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F. \u0647\u06CC\u0686 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u0647\u200C\u0627\u06CC \u062E\u0627\u0631\u062C \u0627\u0632 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0646\u0646\u0648\u06CC\u0633\u06CC\u062F.
+\u0639\u06A9\u0633 \u067E\u06CC\u0648\u0633\u062A\u200C\u0634\u062F\u0647 \u0627\u0632 \u0644\u0628\u0627\u0633 (\u062E\u0631\u0648\u062C\u06CC \u06A9\u0627\u0645\u0644\u0627\u064B \u0645\u0633\u062A\u0642\u06CC\u0645 \u0648 \u0645\u062A\u0642\u0627\u0631\u0646 \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0634\u0641\u0627\u0641) \u0631\u0627 \u0628\u0647 \u062F\u0642\u062A \u0622\u0646\u0627\u0644\u06CC\u0632 \u06A9\u0646\u06CC\u062F \u0648 \u0645\u0634\u062E\u0635\u0627\u062A \u06A9\u0627\u0644\u06CC\u0628\u0631\u0627\u0633\u06CC\u0648\u0646 \u0648 \u0627\u0646\u0637\u0628\u0627\u0642 \u067E\u0631\u0648 \u0631\u0627 \u0628\u0627 \u0631\u0639\u0627\u06CC\u062A \u062A\u0646\u0627\u0633\u0628\u0627\u062A \u0637\u0644\u0627\u06CC\u06CC \u0622\u0646\u0627\u062A\u0648\u0645\u06CC \u0628\u062F\u0646 (\u0646\u0633\u0628\u062A \u06F4\u06F0\u066A \u0628\u0627\u0644\u0627\u062A\u0646\u0647 \u0628\u0647 \u06F6\u06F0\u066A \u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647) \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u0642\u0627\u0644\u0628 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0632\u06CC\u0631 \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F. \u0647\u06CC\u0686 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u0647\u200C\u0627\u06CC \u062E\u0627\u0631\u062C \u0627\u0632 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0646\u0646\u0648\u06CC\u0633\u06CC\u062F.
 
-\u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u0646\u0637\u0628\u0627\u0642 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062E\u0637 \u06A9\u0645\u0631 \u0648 \u0644\u0627\u06CC\u0647\u200C\u0628\u0646\u062F\u06CC \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062F\u0633\u062A\u06CC (Auto-Snap Layer Hierarchy):
-\u06F1. \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u0647\u0648\u062F\u06CC\u060C \u067E\u0648\u0644\u0648\u0634\u0631\u062A (\u0628\u0627\u0644\u0627\u062A\u0646\u0647):
+\u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u0646\u0637\u0628\u0627\u0642 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062E\u0637 \u06A9\u0645\u0631\u060C \u062A\u0646\u0627\u0633\u0628 \u0639\u0631\u0636\u06CC \u0648 \u0644\u0627\u06CC\u0647\u200C\u0628\u0646\u062F\u06CC \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062F\u0633\u062A\u06CC (Auto-Snap Layer Hierarchy):
+\u06F1. \u0647\u0648\u062F\u06CC\u060C \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u062F\u0648\u0631\u0633\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u0633\u0648\u06CC\u0634\u0631\u062A\u060C \u067E\u0648\u0644\u0648\u0634\u0631\u062A (\u0628\u0627\u0644\u0627\u062A\u0646\u0647):
    - "slot": "slot_top"
    - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 30)
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
    - "replacement_rules.replaces_slot": "slot_top"
 
-\u06F2. \u0634\u0644\u0648\u0627\u0631\u060C \u062C\u06CC\u0646\u060C \u0627\u0633\u0644\u0634\u060C \u062F\u0627\u0645\u0646\u060C \u0634\u0644\u0648\u0627\u0631\u06A9 (\u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647):
+\u06F2. \u0634\u0644\u0648\u0627\u0631\u060C \u062C\u06CC\u0646\u060C \u0627\u0633\u0644\u0634\u060C \u0628\u06AF\u060C \u06A9\u0627\u0631\u06AF\u0648\u060C \u062F\u0627\u0645\u0646 (\u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647):
    - "slot": "slot_bottom"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u062F\u0642\u06CC\u0642\u0627\u064B \u0632\u06CC\u0631 \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0641\u06CC\u06A9\u0633 \u0645\u06CC\u200C\u0634\u0648\u062F \u0628\u062F\u0648\u0646 \u0647\u06CC\u0686 \u0641\u0627\u0635\u0644\u0647\u200C\u0627\u06CC (Z-Index: 20)
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u062F\u0642\u06CC\u0642\u0627\u064B \u0632\u06CC\u0631 \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u0647\u0648\u062F\u06CC/\u062A\u06CC\u200C\u0634\u0631\u062A \u0641\u06CC\u06A9\u0633 \u0645\u06CC\u200C\u0634\u0648\u062F \u0648 \u067E\u0627\u0647\u0627\u06CC \u0628\u0644\u0646\u062F \u0648 \u06A9\u0634\u06CC\u062F\u0647 \u0645\u06CC\u200C\u0633\u0627\u0632\u062F (Z-Index: 20)
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replacement_rules.replaces_slot": "slot_bottom"
 
-\u06F3. \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646\u060C \u067E\u0627\u0644\u062A\u0648\u060C \u0628\u0627\u0631\u0627\u0646\u06CC\u060C \u0633\u0648\u06CC\u0634\u0631\u062A (\u0644\u0628\u0627\u0633\u200C\u0631\u0648):
+\u06F3. \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646\u060C \u067E\u0627\u0644\u062A\u0648\u060C \u0628\u0627\u0631\u0627\u0646\u06CC\u060C \u067E\u064E\u0641\u0631 (\u0644\u0628\u0627\u0633\u200C\u0631\u0648):
    - "slot": "slot_outer"
    - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0648 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 40)
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
-\u06F4. \u06A9\u0641\u0634\u060C \u06A9\u062A\u0627\u0646\u06CC\u060C \u0628\u0648\u062A\u060C \u0646\u06CC\u0645\u200C\u0628\u0648\u062A (\u06A9\u0641\u0634):
+\u06F4. \u06A9\u0641\u0634\u060C \u06A9\u062A\u0627\u0646\u06CC\u060C \u0628\u0648\u062A\u060C \u0627\u0633\u0646\u06CC\u06A9\u0631\u0632 (\u06A9\u0641\u0634):
    - "slot": "slot_shoes"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0632\u06CC\u0631 \u067E\u0627\u06CC \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 10)
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u062F\u0642\u06CC\u0642\u0627\u064B \u0632\u06CC\u0631 \u062F\u0645\u067E\u0627\u06CC \u0634\u0644\u0648\u0627\u0631 \u0686\u0641\u062A \u0645\u06CC\u200C\u0634\u0648\u062F \u0628\u062F\u0648\u0646 \u0647\u06CC\u0686 \u0641\u0627\u0635\u0644\u0647 \u062E\u0627\u0644\u06CC \u0645\u0639\u0644\u0642 (Z-Index: 10)
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.82, "z_index": 10 }
    - "replacement_rules.replaces_slot": "slot_shoes"
 
 \u0633\u0627\u062E\u062A\u0627\u0631 \u062E\u0631\u0648\u062C\u06CC JSON \u06A9\u0647 \u0628\u0627\u06CC\u062F \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F:
@@ -24583,28 +24583,28 @@ var AI_COMPANION_SPEC_PROMPT_FA = `
 `.trim();
 var AI_COMPANION_SPEC_PROMPT_EN = `
 You are a Fashion AI and 3D Virtual Try-On Calibration Engine.
-Analyze the attached symmetrical front-facing 3D clothing photograph and output a strict JSON calibration file according to the VTON Auto-Snap Layering Architecture.
+Analyze the attached symmetrical front-facing 3D clothing photograph and output a strict JSON calibration file adhering to the Human Fashion Golden Anatomy Ratio (40% Torso to 60% Leg vertical ratio).
 Return ONLY valid JSON with no markdown wrapping.
 
-CANONICAL ANCHOR POSITIONS (ZERO-ADJUSTMENT SNAP):
-1. Tops / Hoodies / Shirts:
+CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
+1. Tops / Hoodies / Shirts / Sweatshirts (Torso Layer):
    - "slot": "slot_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
    - "replaces_slot": "slot_top"
 
-2. Bottoms / Pants / Jeans:
+2. Bottoms / Pants / Jeans (Long Leg Layer - Waist meets top hem):
    - "slot": "slot_bottom"
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replaces_slot": "slot_bottom"
 
-3. Outerwear / Jackets / Coats:
+3. Outerwear / Open Jackets / Overcoats (Outer Layer):
    - "slot": "slot_outer"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
    - "replaces_slot": "slot_outer"
 
-4. Footwear / Shoes:
+4. Footwear / Shoes / Sneakers (Tucked flush under pant cuffs):
    - "slot": "slot_shoes"
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.82, "z_index": 10 }
    - "replaces_slot": "slot_shoes"
 `.trim();
 function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0633 \u062C\u062F\u06CC\u062F") {
@@ -24618,31 +24618,31 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
   const rawSlot = (json.slot || "").toLowerCase();
   const rawCat = (json.category || "").toLowerCase();
   const rawName = (json.name_fa || json.name_en || fallbackName).toLowerCase();
-  if (rawSlot.includes("bottom") || rawCat.includes("pant") || rawCat.includes("jean") || rawCat.includes("skirt") || rawCat.includes("short") || rawName.includes("\u0634\u0644\u0648\u0627\u0631") || rawName.includes("\u062C\u06CC\u0646") || rawName.includes("\u062F\u0627\u0645\u0646") || rawName.includes("\u0627\u0633\u0644\u0634")) {
+  if (rawSlot.includes("bottom") || rawCat.includes("pant") || rawCat.includes("jean") || rawCat.includes("skirt") || rawCat.includes("short") || rawName.includes("\u0634\u0644\u0648\u0627\u0631") || rawName.includes("\u062C\u06CC\u0646") || rawName.includes("\u062F\u0627\u0645\u0646") || rawName.includes("\u0627\u0633\u0644\u0634") || rawName.includes("\u0628\u06AF") || rawName.includes("\u06A9\u0627\u0631\u06AF\u0648")) {
     slot = "slot_bottom";
-  } else if (rawSlot.includes("outer") || rawCat.includes("jacket") || rawCat.includes("coat") || rawCat.includes("hoodie") || rawName.includes("\u06A9\u062A") || rawName.includes("\u06A9\u0627\u067E\u0634\u0646") || rawName.includes("\u067E\u0627\u0644\u062A\u0648") || rawName.includes("\u0647\u0648\u062F\u06CC") || rawName.includes("\u0628\u0627\u0631\u0627\u0646\u06CC") || rawName.includes("\u0633\u0648\u06CC\u0634\u0631\u062A")) {
+  } else if (rawSlot.includes("outer") || rawCat.includes("jacket") || rawCat.includes("coat") || rawCat.includes("blazer") || rawName.includes("\u06A9\u062A") || rawName.includes("\u06A9\u0627\u067E\u0634\u0646") || rawName.includes("\u067E\u0627\u0644\u062A\u0648") || rawName.includes("\u0628\u0627\u0631\u0627\u0646\u06CC") || rawName.includes("\u067E\u0641\u0631") || rawName.includes("\u0628\u0627\u062F\u06AF\u06CC\u0631")) {
     slot = "slot_outer";
-  } else if (rawSlot.includes("shoe") || rawCat.includes("shoe") || rawName.includes("\u06A9\u0641\u0634") || rawName.includes("\u06A9\u062A\u0627\u0646\u06CC") || rawName.includes("\u06A9\u062A\u0648\u0646\u06CC") || rawName.includes("\u0628\u0648\u062A") || rawName.includes("\u0644\u0648\u0641\u0631")) {
+  } else if (rawSlot.includes("shoe") || rawCat.includes("shoe") || rawCat.includes("sneaker") || rawName.includes("\u06A9\u0641\u0634") || rawName.includes("\u06A9\u062A\u0627\u0646\u06CC") || rawName.includes("\u06A9\u062A\u0648\u0646\u06CC") || rawName.includes("\u0628\u0648\u062A") || rawName.includes("\u0644\u0648\u0641\u0631") || rawName.includes("\u0635\u0646\u062F\u0644")) {
     slot = "slot_shoes";
   } else {
     slot = "slot_top";
   }
   const defaultPlacement = {
-    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
-    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
-    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
+    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 27, scale: 0.92, z_index: 40 },
+    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
   let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === "slot_bottom" && (targetOffsetY > 68 || targetOffsetY < 55)) {
-    targetOffsetY = 64;
-  } else if ((slot === "slot_top" || slot === "slot_outer") && (targetOffsetY < 24 || targetOffsetY > 38)) {
-    targetOffsetY = 30;
-  } else if (slot === "slot_shoes" && (targetOffsetY < 80 || targetOffsetY > 95)) {
-    targetOffsetY = 88;
+  if (slot === "slot_bottom" && (targetOffsetY > 68 || targetOffsetY < 52)) {
+    targetOffsetY = 60;
+  } else if ((slot === "slot_top" || slot === "slot_outer") && (targetOffsetY < 20 || targetOffsetY > 35)) {
+    targetOffsetY = 27;
+  } else if (slot === "slot_shoes" && (targetOffsetY < 78 || targetOffsetY > 92)) {
+    targetOffsetY = 84;
   }
-  const customScale = typeof json.placement?.scale === "number" ? json.placement.scale : defaultPlacement.scale;
+  const customScale = typeof json.placement?.scale === "number" && json.placement.scale >= 0.7 && json.placement.scale <= 1.4 ? json.placement.scale : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === "number" ? json.placement.z_index : defaultPlacement.z_index;
   return {
     garment_id: json.garment_id || `GARMENT-${Date.now().toString().slice(-6)}`,
