@@ -1,0 +1,38 @@
+[
+  {
+    "id": "store-zara",
+    "slug": "zara-modern",
+    "nameFa": "زارا استودیو مدرن",
+    "nameEn": "ZARA Modern Studio",
+    "city": "تهران - سعادت‌آباد",
+    "description": "کالکشن جدید مینیمال و ترند روز، کت و پالتوهای ساختاریافته، تی‌شرت و جین استاندارد",
+    "badge": "برند بین‌المللی",
+    "logoEmoji": "🏛️",
+    "themeColor": "#1e293b",
+    "createdAt": "2026-01-10T10:00:00Z"
+  },
+  {
+    "id": "store-harajuku",
+    "slug": "harajuku-streetwear",
+    "nameFa": "استودیو استریت‌ویر دنیم",
+    "nameEn": "Harajuku Denim Co.",
+    "city": "تهران - شهرک غرب",
+    "description": "شلوارهای جین ژاپنی بگ و مام‌استایل، تی‌شرت‌های لش اورسایز و کاپشن‌های خلبانی",
+    "badge": "استایل خیابانی",
+    "logoEmoji": "⛩️",
+    "themeColor": "#0f172a",
+    "createdAt": "2026-02-15T10:00:00Z"
+  },
+  {
+    "id": "store-niloufar",
+    "slug": "maison-niloufar",
+    "nameFa": "مزون لوکس و کلاسیک نیلوفر",
+    "nameEn": "Maison Niloufar Couture",
+    "city": "تهران - نیاوران",
+    "description": "پیراهن‌های آکسفورد الیاف طبیعی، شلوارهای کتان و پارچه‌ای راسته و پالتوهای پشمی کشمیر",
+    "badge": "مزون دست‌دوز",
+    "logoEmoji": "✨",
+    "themeColor": "#312e81",
+    "createdAt": "2026-03-01T10:00:00Z"
+  }
+]

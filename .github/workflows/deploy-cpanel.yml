@@ -1,0 +1,136 @@
+name: Deploy to cPanel (Automated CI/CD)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔨 Build Frontend & Backend
+        run: npm run build
+
+      - name: 📂 Prepare Frontend Release Directory
+        run: |
+          mkdir -p release_frontend
+          cp dist/index.html release_frontend/
+          cp -r dist/assets release_frontend/
+          cat << 'EOF' > release_frontend/.htaccess
+          # Multi-Store AI Virtual Fitting Room - Apache SPA Routing & Optimization
+          <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteBase /
+            RewriteRule ^index\.html$ - [L]
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteCond %{REQUEST_FILENAME} !-l
+            RewriteRule . /index.html [L]
+          </IfModule>
+
+          # Caching for static assets
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresByType image/svg+xml "access plus 1 month"
+            ExpiresByType image/png "access plus 1 month"
+            ExpiresByType image/jpeg "access plus 1 month"
+            ExpiresByType text/css "access plus 1 week"
+            ExpiresByType application/javascript "access plus 1 week"
+          </IfModule>
+
+          # Enable GZIP compression
+          <IfModule mod_deflate.c>
+            AddOutputFilterByType DEFLATE text/plain text/html text/xml text/css application/xml application/xhtml+xml application/rss+xml application/javascript application/x-javascript application/json image/svg+xml
+          </IfModule>
+          EOF
+
+      - name: 📂 Prepare Backend Release Directory
+        run: |
+          mkdir -p release_backend/dist
+          mkdir -p release_backend/server
+          mkdir -p release_backend/tmp
+          cp dist/server.cjs release_backend/dist/
+          if [ -f dist/server.cjs.map ]; then cp dist/server.cjs.map release_backend/dist/; fi
+          cp server/db.ts release_backend/server/
+          
+          # cPanel entry point app.js
+          cat << 'EOF' > release_backend/app.js
+          // cPanel Node.js Application Startup File
+          // Multi-Store AI Virtual Fitting Room Backend v2.0
+          process.chdir(__dirname);
+          process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+          process.env.PORT = process.env.PORT || 3000;
+          console.log('[cPanel Startup] App Directory:', __dirname);
+          console.log('[cPanel Startup] Server Port:', process.env.PORT);
+          require('./dist/server.cjs');
+          EOF
+
+          # Clean production package.json
+          cat << 'EOF' > release_backend/package.json
+          {
+            "name": "ai-virtual-fitting-backend",
+            "version": "2.0.0",
+            "private": true,
+            "main": "app.js",
+            "scripts": {
+              "start": "node app.js",
+              "prod": "NODE_ENV=production node app.js"
+            },
+            "dependencies": {
+              "cors": "^2.8.5",
+              "dotenv": "^17.2.3",
+              "express": "^4.21.2"
+            },
+            "engines": {
+              "node": ">=18.0.0"
+            }
+          }
+          EOF
+
+          cat << 'EOF' > release_backend/.env
+          NODE_ENV=production
+          PORT=3000
+          EOF
+
+          # Passenger auto-reload trigger
+          touch release_backend/tmp/restart.txt
+
+      - name: 🚀 Deploy Frontend to cPanel (public_html)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          server-dir: ${{ secrets.CPANEL_FRONTEND_DIR || 'public_html/' }}
+          local-dir: release_frontend/
+          dangerous-clean-slate: false
+
+      - name: 🚀 Deploy Backend to cPanel (api-server)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          username: ${{ secrets.CPANEL_FTP_USERNAME }}
+          password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          server-dir: ${{ secrets.CPANEL_BACKEND_DIR || 'api-server/' }}
+          local-dir: release_backend/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/server/data/products.json
+            **/server/data/stores.json

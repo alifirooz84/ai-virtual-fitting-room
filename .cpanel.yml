@@ -1,0 +1,16 @@
+# cPanel Git Version Control Automated Deployment Config
+# این فایل در صورت استفاده از بخش Git™ Version Control در سی‌پنل استفاده می‌شود.
+---
+deployment:
+  tasks:
+    # 1. مسیر پوشه روت هاست خود را جایگزین کنید (مثلاً بجای YOUR_CPANEL_USER یوزرتان را بگذارید)
+    - export FRONTEND_PATH=/home/$USER/public_html/
+    - export BACKEND_PATH=/home/$USER/api-server/
+    
+    # 2. کپی فایل‌های فرانت‌اند
+    - /bin/cp -R dist/index.html $FRONTEND_PATH
+    - /bin/cp -R dist/assets $FRONTEND_PATH
+    
+    # 3. ایجاد تریگر راه‌اندازی مجدد Node.js در سرور Phusion Passenger
+    - /bin/mkdir -p $BACKEND_PATH/tmp
+    - /bin/touch $BACKEND_PATH/tmp/restart.txt
