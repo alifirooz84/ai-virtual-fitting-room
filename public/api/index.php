@@ -1,6 +1,6 @@
 <?php
 // Multi-Store AI Virtual Fitting Room - cPanel Native Storage API
-// Automatically handles persistent storage of products and uploaded garments on Apache/cPanel without Node.js dependencies.
+// Automatically handles persistent storage of products and uploaded garments in MySQL and disk.
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
@@ -12,34 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-$dataDir = __DIR__ . '/data';
-$uploadsDir = __DIR__ . '/uploads';
+require_once __DIR__ . '/db.php';
+$db = DatabaseManager::getInstance();
 
-if (!file_exists($dataDir)) {
-    @mkdir($dataDir, 0777, true);
-}
+$uploadsDir = __DIR__ . '/uploads';
 if (!file_exists($uploadsDir)) {
     @mkdir($uploadsDir, 0777, true);
-}
-
-$productsFile = $dataDir . '/products.json';
-$storesFile = $dataDir . '/stores.json';
-
-function getProducts() {
-    global $productsFile;
-    if (file_exists($productsFile)) {
-        $raw = file_get_contents($productsFile);
-        $decoded = json_decode($raw, true);
-        if (is_array($decoded)) {
-            return $decoded;
-        }
-    }
-    return [];
-}
-
-function saveProducts($list) {
-    global $productsFile;
-    file_put_contents($productsFile, json_encode(array_values($list), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 }
 
 // Parse request URI
@@ -50,9 +28,10 @@ $method = $_SERVER['REQUEST_METHOD'];
 if (strpos($uri, '/api/health') !== false) {
     echo json_encode([
         'status' => 'ok',
-        'service' => 'cPanel Native PHP Fitting Room Storage API',
-        'version' => '2.0.0',
-        'totalProducts' => count(getProducts()),
+        'service' => 'cPanel MySQL & JSON Fitting Room Storage Engine',
+        'version' => '2.1.0',
+        'mysql_connected' => $db->isMysqlConnected(),
+        'totalProducts' => count($db->getProducts()),
         'timestamp' => date('c'),
     ]);
     exit;
@@ -60,21 +39,14 @@ if (strpos($uri, '/api/health') !== false) {
 
 // 1. GET Products
 if ($method === 'GET') {
-    // Matches /api/stores/{slug}/products or /api/products
-    $products = getProducts();
-    
-    // Check if store slug is in URL
+    $storeSlug = null;
+    $slot = $_GET['slot'] ?? null;
+
     if (preg_match('#/api/stores/([^/]+)/products#', $uri, $matches)) {
         $storeSlug = $matches[1];
-        if ($storeSlug !== 'all') {
-            $filtered = array_filter($products, function($p) use ($storeSlug) {
-                return isset($p['storeSlug']) && $p['storeSlug'] === $storeSlug;
-            });
-            echo json_encode(array_values($filtered), JSON_UNESCAPED_UNICODE);
-            exit;
-        }
     }
-    
+
+    $products = $db->getProducts($storeSlug, $slot);
     echo json_encode(array_values($products), JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -100,7 +72,7 @@ if ($method === 'POST') {
     $newId = 'prod-' . $storeSlug . '-' . time() . '-' . rand(100, 999);
     $imageUrl = $body['image'];
 
-    // If image is a base64 string, write it to physical file in /uploads/
+    // If image is a base64 string, write it to a physical file in /uploads/
     if (preg_match('#^data:image/(\w+);base64,(.+)$#', $body['image'], $imgMatches)) {
         $ext = strtolower($imgMatches[1]);
         if ($ext === 'jpeg') $ext = 'jpg';
@@ -108,8 +80,7 @@ if ($method === 'POST') {
         if ($decodedImg) {
             $fileName = $newId . '.' . $ext;
             $filePath = $uploadsDir . '/' . $fileName;
-            if (file_put_contents($filePath, $decodedImg)) {
-                // Return relative URL for client
+            if (@file_put_contents($filePath, $decodedImg)) {
                 $imageUrl = '/api/uploads/' . $fileName;
             }
         }
@@ -117,7 +88,7 @@ if ($method === 'POST') {
 
     $jsonSpec = isset($body['jsonSpec']) && is_array($body['jsonSpec']) ? $body['jsonSpec'] : [];
     $title = !empty($body['customTitle']) ? $body['customTitle'] : (isset($jsonSpec['name_fa']) ? $jsonSpec['name_fa'] : 'لباس جدید');
-    $price = !empty($body['customPrice']) ? (int)$body['customPrice'] : 850000;
+    $price = !empty($body['customPrice']) ? (int)$body['customPrice'] : (isset($jsonSpec['style_details']['estimated_price_toman']) ? (int)$jsonSpec['style_details']['estimated_price_toman'] : 850000);
     $slot = isset($jsonSpec['slot']) ? $jsonSpec['slot'] : 'slot_top';
     $category = isset($jsonSpec['category']) ? $jsonSpec['category'] : 'tshirt';
 
@@ -132,7 +103,7 @@ if ($method === 'POST') {
     $productObj = [
         'id' => $newId,
         'storeSlug' => $storeSlug,
-        'storeName' => !empty($body['storeName']) ? $body['storeName'] : 'فروشگاه آنلاین',
+        'storeName' => !empty($body['storeName']) ? $body['storeName'] : 'فروشگاه اختصاصی',
         'title' => $title,
         'price' => $price,
         'category' => $category,
@@ -143,16 +114,14 @@ if ($method === 'POST') {
         'createdAt' => date('c'),
     ];
 
-    $existing = getProducts();
-    // Prepend new product
-    array_unshift($existing, $productObj);
-    saveProducts($existing);
+    $saved = $db->createProduct($productObj);
 
     http_response_code(201);
     echo json_encode([
         'success' => true,
-        'product' => $productObj,
-        'message' => 'محصول با موفقیت در دیتابیس سرور ذخیره شد.',
+        'product' => $saved,
+        'storage_type' => $db->isMysqlConnected() ? 'mysql' : 'json_disk',
+        'message' => 'محصول با موفقیت در دیتابیس هاست ذخیره شد.',
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -161,15 +130,15 @@ if ($method === 'POST') {
 if ($method === 'DELETE') {
     if (preg_match('#/api/products/([^/]+)#', $uri, $matches) || preg_match('#/api/stores/[^/]+/products/([^/]+)#', $uri, $matches)) {
         $targetId = $matches[1];
-        $existing = getProducts();
-        $filtered = array_filter($existing, function($p) use ($targetId) {
-            return isset($p['id']) && $p['id'] !== $targetId;
-        });
-        saveProducts($filtered);
+        $db->deleteProduct($targetId);
         echo json_encode(['success' => true, 'deletedId' => $targetId]);
         exit;
     }
 }
 
 // Default fallback
-echo json_encode(['status' => 'api_running', 'uri' => $uri]);
+echo json_encode([
+    'status' => 'api_running',
+    'mysql_connected' => $db->isMysqlConnected(),
+    'uri' => $uri
+]);

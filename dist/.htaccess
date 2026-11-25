@@ -1,19 +1,17 @@
-﻿# Multi-Store AI Virtual Fitting Room - Apache SPA & Native API Routing
+﻿# Multi-Store AI Virtual Fitting Room - Apache SPA & Native MySQL API Routing
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 1. Allow direct access to uploaded garment images
-  RewriteCond %{REQUEST_URI} ^/api/uploads/ [NC]
+  # 1. Allow direct access to existing files (uploaded images, setup.php, assets)
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # 2. Route all /api/* calls to the native PHP API Handler
+  # 2. Route /api/* endpoints to the native PHP API Handler
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 
   # 3. SPA client routing for frontend React
   RewriteRule ^index\.html$ - [L]
-  RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-l
   RewriteRule . /index.html [L]

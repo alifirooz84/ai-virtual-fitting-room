@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Layers,
   Shirt,
+  Database,
 } from 'lucide-react';
 import { StoreProfile, ClothingProduct, GarmentSlot, GarmentAiSpec } from '../types/clothing';
 import { normalizeGarmentAiSpec } from '../data/aiPromptGuide';
@@ -358,14 +359,27 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={onOpenPromptGuide}
-          className="px-4 py-2 rounded-xl text-xs font-black bg-slate-900 hover:bg-black text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
-        >
-          <Sparkles className="w-4 h-4 text-amber-400" />
-          <span>کپی پرامپت هوش مصنوعی (جمنای / ChatGPT)</span>
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href="/api/setup.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            title="تنظیم خودکار اتصال به دیتابیس MySQL هاست و ساخت جداول"
+          >
+            <Database className="w-4 h-4 text-blue-600" />
+            <span>اتصال دیتابیس MySQL هاست</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={onOpenPromptGuide}
+            className="px-4 py-2 rounded-xl text-xs font-black bg-slate-900 hover:bg-black text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>کپی پرامپت هوش مصنوعی (جمنای / ChatGPT)</span>
+          </button>
+        </div>
       </div>
 
       {errorMessage && (

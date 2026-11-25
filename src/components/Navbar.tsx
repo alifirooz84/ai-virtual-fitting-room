@@ -4,6 +4,7 @@ import {
   Camera,
   Shirt,
   ShoppingBag,
+  Database,
 } from 'lucide-react';
 import { ActiveOutfit, ClothingProduct } from '../types/clothing';
 
@@ -74,16 +75,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </nav>
 
-        {/* Left side: AI Prompt Button & Outfit Status */}
-        <div className="flex items-center gap-3">
+        {/* Left side: AI Prompt Button, Host DB Setup & Outfit Status */}
+        <div className="flex items-center gap-2.5">
+          <a
+            href="/api/setup.php"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-blue-50 border border-slate-200 hover:border-blue-300 transition-all cursor-pointer"
+            title="تنظیم خودکار اتصال به دیتابیس MySQL هاست و ساخت جداول"
+          >
+            <Database className="w-3.5 h-3.5 text-blue-500" />
+            <span>اتصال دیتابیس هاست</span>
+          </a>
+
           <button
             type="button"
             onClick={onOpenPromptGuide}
-            className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 transition-all cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-amber-50 border border-slate-200 hover:border-amber-300 transition-all cursor-pointer"
             title="مشاهده پرامپت استخراج فایل JSON لباس از هوش مصنوعی"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>پرامپت JSON هوش مصنوعی</span>
+            <span>پرامپت JSON</span>
           </button>
 
           <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700">
