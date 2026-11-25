@@ -1,6 +1,6 @@
 /**
  * Unified API Client for Virtual Fitting Room
- * Supports relative path (same domain / reverse proxy) and custom API host (subdomain / separate port).
+ * Supports relative path, custom API host, and timeout with AbortController.
  */
 
 export const getApiBaseUrl = (): string => {
@@ -13,8 +13,24 @@ export const getApiBaseUrl = (): string => {
   return '';
 };
 
-export const apiFetch = (endpoint: string, init?: RequestInit): Promise<Response> => {
+export const apiFetch = async (
+  endpoint: string,
+  init?: RequestInit,
+  timeoutMs: number = 8000
+): Promise<Response> => {
   const base = getApiBaseUrl();
   const fullUrl = endpoint.startsWith('http') ? endpoint : `${base}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
-  return fetch(fullUrl, init);
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(fullUrl, {
+      ...init,
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
 };

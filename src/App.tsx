@@ -56,22 +56,62 @@ export default function App() {
     }
   }, []);
 
-  // Fetch products for current store
-  const fetchProducts = useCallback(async () => {
+  // Helper to get locally stored products
+  const getStoredProducts = useCallback((): ClothingProduct[] => {
     try {
-      const res = await apiFetch(`/api/stores/${currentStoreSlug}/products`);
+      const raw = localStorage.getItem('vton_user_custom_products');
+      if (raw) {
+        const list = JSON.parse(raw);
+        if (Array.isArray(list)) return list;
+      }
+    } catch {}
+    return [];
+  }, []);
+
+  // Fetch products for current store with instant local merging
+  const fetchProducts = useCallback(async () => {
+    const localCustom = getStoredProducts();
+    try {
+      const res = await apiFetch(`/api/stores/${currentStoreSlug}/products`, undefined, 4000);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
-          setProducts(data);
+          const seen = new Set<string>();
+          const merged: ClothingProduct[] = [];
+          [...localCustom, ...data].forEach((p) => {
+            if (!seen.has(p.id)) {
+              seen.add(p.id);
+              merged.push(p);
+            }
+          });
+          setProducts(merged);
+          return;
         }
       }
+      // If server response is not array, merge local with initial
+      const seen = new Set<string>();
+      const fallbackMerged: ClothingProduct[] = [];
+      [...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
+        if (!seen.has(p.id)) {
+          seen.add(p.id);
+          fallbackMerged.push(p);
+        }
+      });
+      setProducts(fallbackMerged);
     } catch {
-      // Use fallback
+      const seen = new Set<string>();
+      const fallbackMerged: ClothingProduct[] = [];
+      [...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
+        if (!seen.has(p.id)) {
+          seen.add(p.id);
+          fallbackMerged.push(p);
+        }
+      });
+      setProducts(fallbackMerged);
     } finally {
       setIsLoading(false);
     }
-  }, [currentStoreSlug]);
+  }, [currentStoreSlug, getStoredProducts]);
 
   useEffect(() => {
     fetchStores();
