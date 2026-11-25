@@ -109,12 +109,24 @@ jobs:
           # Passenger auto-reload trigger
           touch release_backend/tmp/restart.txt
 
+      - name: 🧹 Sanitize Server Hostname
+        run: |
+          RAW_SERVER="${{ secrets.CPANEL_FTP_SERVER }}"
+          # Remove protocol (http://, https://, ftp://), trailing slashes, spaces, and ports
+          CLEAN=$(echo "$RAW_SERVER" | sed -e 's|^[^/]*://||' -e 's|/.*$||' -e 's|:[0-9]*$||' | tr -d '[:space:]')
+          echo "Cleaned FTP Server: $CLEAN"
+          echo "FTP_SERVER_CLEAN=$CLEAN" >> $GITHUB_ENV
+
       - name: 🚀 Deploy Frontend to cPanel (public_html)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: ftp
+          security: loose
+          timeout: 60000
+          log-level: verbose
           server-dir: ${{ secrets.CPANEL_FRONTEND_DIR || 'public_html/' }}
           local-dir: release_frontend/
           dangerous-clean-slate: false
@@ -122,9 +134,13 @@ jobs:
       - name: 🚀 Deploy Backend to cPanel (api-server)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.CPANEL_FTP_SERVER }}
+          server: ${{ env.FTP_SERVER_CLEAN }}
           username: ${{ secrets.CPANEL_FTP_USERNAME }}
           password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+          protocol: ftp
+          security: loose
+          timeout: 60000
+          log-level: verbose
           server-dir: ${{ secrets.CPANEL_BACKEND_DIR || 'api-server/' }}
           local-dir: release_backend/
           dangerous-clean-slate: false
