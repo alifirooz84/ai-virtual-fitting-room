@@ -9,7 +9,6 @@ import {
   Layers,
   ZoomIn,
   ZoomOut,
-  Maximize2
 } from 'lucide-react';
 import { ActiveOutfit, GarmentSlot, ClothingProduct } from '../types/clothing';
 
@@ -39,7 +38,6 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const handleDownloadSnapshot = () => {
     setIsExporting(true);
     setTimeout(() => {
-      // Create snapshot from canvas
       const node = canvasRef.current;
       if (!node) return;
 
@@ -49,14 +47,20 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Studio dark gradient background
+      // Studio crisp white radial background
       const grad = ctx.createRadialGradient(512, 600, 100, 512, 600, 800);
-      grad.addColorStop(0, '#1e293b');
-      grad.addColorStop(1, '#090d16');
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(1, '#f1f5f9');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, 1024, 1380);
 
-      // Draw active slots in z-index order
+      // Floor pedestal shadow
+      ctx.beginPath();
+      ctx.ellipse(512, 1310, 320, 35, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(148, 163, 184, 0.25)';
+      ctx.fill();
+
+      // Draw active slots strictly in z-index order (shoes -> bottom -> top -> outer)
       const slotsToDraw = [shoesItem, bottomItem, topItem, outerItem].filter(Boolean) as ClothingProduct[];
 
       let loadedCount = 0;
@@ -79,7 +83,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           loadedCount++;
           if (loadedCount === slotsToDraw.length) {
             const link = document.createElement('a');
-            link.download = `vton-outfit-set-${Date.now()}.png`;
+            link.download = `vton-studio-outfit-${Date.now()}.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
             setIsExporting(false);
@@ -91,22 +95,22 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-slate-900/50 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 sm:p-6 overflow-hidden shadow-2xl relative min-h-[640px] lg:min-h-[760px]">
-      {/* Top Toolbar */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-800/80 shrink-0 z-10">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center text-sm font-bold">
+    <div className="flex-1 flex flex-col bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 overflow-hidden shadow-xs relative min-h-[640px] lg:min-h-[760px]">
+      {/* Top Studio Toolbar */}
+      <div className="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0 z-10">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center text-sm font-black">
             ✦
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
-              <span>بوم مانکن پرو سه‌بعدی</span>
-              <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full border border-slate-700">
+            <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+              <span>استیج استودیویی پرو مانکن ۳بعدی</span>
+              <span className="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full border border-slate-200">
                 {totalPieces} لباس فعال
               </span>
             </h2>
-            <p className="text-[11px] text-slate-400">
-              تراز مختصات از فایل‌های JSON هوش مصنوعی و جایگزینی اختصاصی در هر اسلات
+            <p className="text-[11px] text-slate-500">
+              لایه‌بندی خودکار: شلوار زیر تی‌شرت، تی‌شرت روی کمر، و کت روی همه
             </p>
           </div>
         </div>
@@ -118,8 +122,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             onClick={() => setShowSilhouette(!showSilhouette)}
             className={`p-2 rounded-xl text-xs font-bold transition-all border ${
               showSilhouette
-                ? 'bg-slate-800 text-amber-300 border-amber-500/40'
-                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+                ? 'bg-amber-50 text-amber-600 border-amber-300'
+                : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-900'
             }`}
             title="نمایش / پنهان‌سازی سیلوئت مانکن"
           >
@@ -129,8 +133,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           <button
             type="button"
             onClick={() => setZoom((prev) => (prev === 1 ? 1.15 : 1))}
-            className="p-2 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-colors"
-            title="بزرگنمایی"
+            className="p-2 rounded-xl text-xs font-bold bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+            title="بزرگنمایی مانکن"
           >
             {zoom === 1 ? <ZoomIn className="w-4 h-4" /> : <ZoomOut className="w-4 h-4" />}
           </button>
@@ -141,8 +145,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             disabled={totalPieces === 0}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
               totalPieces > 0
-                ? 'bg-slate-800 text-rose-300 border-rose-500/30 hover:bg-rose-500/10 cursor-pointer'
-                : 'bg-slate-900 text-slate-600 border-slate-800 cursor-not-allowed'
+                ? 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100 cursor-pointer'
+                : 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed'
             }`}
             title="پاک کردن کل ست مانکن"
           >
@@ -154,65 +158,64 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             type="button"
             onClick={handleDownloadSnapshot}
             disabled={totalPieces === 0 || isExporting}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-md cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ${
               totalPieces > 0
-                ? 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 hover:scale-105 active:scale-95'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                ? 'bg-slate-900 hover:bg-black text-white hover:scale-105 active:scale-95'
+                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
             }`}
-            title="دانلود عکس کامل ست پرو شده"
+            title="دانلود تصویر باکیفیت ست نهایی"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>{isExporting ? 'در حال ثبت...' : 'دانلود ست'}</span>
+            <Download className="w-3.5 h-3.5 text-amber-400" />
+            <span>{isExporting ? 'در حال خروجی...' : 'دانلود تصویر ست'}</span>
           </button>
         </div>
       </div>
 
-      {/* Center Mannequin Stage Canvas */}
+      {/* Center White Studio Stage Canvas */}
       <div className="flex-1 flex items-center justify-center relative overflow-hidden py-4 select-none">
-        {/* Background Studio Light Glow */}
+        {/* Soft Warm Studio Ambient Lights */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[420px] h-[580px] bg-amber-500/5 rounded-full blur-3xl"></div>
-          <div className="w-[300px] h-[300px] bg-indigo-500/5 rounded-full blur-2xl"></div>
+          <div className="w-[480px] h-[640px] bg-gradient-to-b from-amber-100/40 via-slate-100/30 to-slate-200/40 rounded-full blur-3xl"></div>
         </div>
 
         {/* Scalable Container */}
         <div
           ref={canvasRef}
           style={{ transform: `scale(${zoom})`, transition: 'transform 0.3s ease-out' }}
-          className="relative w-[340px] sm:w-[400px] md:w-[460px] h-[640px] sm:h-[700px] rounded-3xl bg-slate-950/60 border border-slate-800/80 shadow-2xl flex items-center justify-center overflow-hidden"
+          className="relative w-[340px] sm:w-[400px] md:w-[460px] h-[640px] sm:h-[700px] rounded-3xl bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border border-slate-200/90 shadow-xl flex items-center justify-center overflow-hidden"
         >
-          {/* Subtle Grid / Floor Line */}
-          <div className="absolute bottom-10 left-8 right-8 h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div>
-          <div className="absolute bottom-6 text-[10px] text-slate-600 font-mono tracking-wider">
-            VIRTUAL MANNEQUIN FRAME 480 × 740
+          {/* Studio Pedestal / Floor Shadow */}
+          <div className="absolute bottom-8 left-14 right-14 h-5 bg-slate-400/20 rounded-[100%] blur-sm pointer-events-none"></div>
+          <div className="absolute bottom-5 text-[10px] text-slate-400 font-mono tracking-wider">
+            3D GHOST MANNEQUIN STUDIO
           </div>
 
           {/* 1. Underlying 3D Invisible Mannequin Body Wireframe Silhouette */}
           {showSilhouette && (
             <svg
-              className="absolute inset-0 w-full h-full pointer-events-none text-slate-800/60 stroke-current"
+              className="absolute inset-0 w-full h-full pointer-events-none text-slate-300 stroke-current"
               viewBox="0 0 480 740"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               {/* Head / Neck */}
-              <ellipse cx="240" cy="95" rx="36" ry="46" strokeWidth="1.5" strokeDasharray="4 4"/>
-              <path d="M 226,140 L 226,170 M 254,140 L 254,170" strokeWidth="1.5"/>
+              <ellipse cx="240" cy="95" rx="36" ry="46" strokeWidth="1.2" strokeDasharray="4 4"/>
+              <path d="M 226,140 L 226,170 M 254,140 L 254,170" strokeWidth="1.2"/>
 
               {/* Shoulders & Torso */}
               <path
                 d="M 140,185 Q 240,165 340,185 L 320,380 Q 240,390 160,380 Z"
-                strokeWidth="1.5"
+                strokeWidth="1.2"
                 strokeDasharray="3 3"
               />
 
-              {/* Waist line */}
-              <line x1="160" y1="380" x2="320" y2="380" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.6"/>
+              {/* Waist line (Waistband Snap Indicator) */}
+              <line x1="160" y1="380" x2="320" y2="380" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.6"/>
 
               {/* Legs */}
               <path
                 d="M 160,385 L 175,630 L 220,630 L 235,460 L 245,460 L 260,630 L 305,630 L 320,385"
-                strokeWidth="1.5"
+                strokeWidth="1.2"
                 strokeDasharray="4 4"
               />
 
@@ -237,12 +240,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <img
                 src={shoesItem.imageUrl}
                 alt={shoesItem.title}
-                className="w-full h-full object-contain drop-shadow-xl"
+                className="w-full h-full object-contain filter drop-shadow-md"
               />
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_shoes')}
-                className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-slate-900 border border-rose-500 text-rose-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-lg cursor-pointer"
+                className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
                 title="حذف کفش از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -251,7 +254,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 3. LAYER 20: BOTTOMWEAR / PANTS / JEANS (Z-Index: 20)     */}
+          {/* 3. LAYER 20: BOTTOMWEAR / PANTS (Z-Index: 20 - زیر تی‌شرت) */}
           {/* ======================================================== */}
           {bottomItem && (
             <div
@@ -265,12 +268,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <img
                 src={bottomItem.imageUrl}
                 alt={bottomItem.title}
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain filter drop-shadow-lg"
               />
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_bottom')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-slate-900 border border-rose-500 text-rose-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-lg cursor-pointer"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
                 title="حذف شلوار از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -279,7 +282,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 4. LAYER 30: TOPWEAR / T-SHIRT / SHIRT (Z-Index: 30)      */}
+          {/* 4. LAYER 30: TOPWEAR / T-SHIRT (Z-Index: 30 - روی شلوار)  */}
           {/* ======================================================== */}
           {topItem && (
             <div
@@ -293,12 +296,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <img
                 src={topItem.imageUrl}
                 alt={topItem.title}
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain filter drop-shadow-lg"
               />
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_top')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-slate-900 border border-rose-500 text-rose-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-lg cursor-pointer"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
                 title="حذف تی‌شرت از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -307,7 +310,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 5. LAYER 40: OUTERWEAR / JACKET / COAT (Z-Index: 40)      */}
+          {/* 5. LAYER 40: OUTERWEAR / JACKET (Z-Index: 40 - روی همه)  */}
           {/* ======================================================== */}
           {outerItem && (
             <div
@@ -321,12 +324,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <img
                 src={outerItem.imageUrl}
                 alt={outerItem.title}
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain filter drop-shadow-xl"
               />
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_outer')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-slate-900 border border-rose-500 text-rose-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-lg cursor-pointer"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
                 title="حذف کت از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -337,60 +340,40 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       </div>
 
       {/* Bottom Slot Status Pills */}
-      <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800/80 z-10">
-        {/* Top slot pill */}
-        <div
-          className={`p-2 rounded-2xl border text-center transition-all ${
-            topItem
-              ? 'bg-amber-500/10 border-amber-500/40 text-amber-300'
-              : 'bg-slate-900/60 border-slate-800 text-slate-500'
-          }`}
-        >
-          <span className="text-[10px] block font-medium">بالاتنه (Top)</span>
-          <span className="text-xs font-bold truncate block mt-0.5">
-            {topItem ? topItem.title : 'انتخاب تی‌شرت'}
+      <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-100 z-10">
+        <div className={`p-2 rounded-xl text-center border transition-all ${
+          topItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+        }`}>
+          <span className="text-[10px] block font-bold">بالاتنه (روی شلوار)</span>
+          <span className="text-xs font-black truncate block mt-0.5">
+            {topItem ? topItem.title : 'خالی'}
           </span>
         </div>
 
-        {/* Bottom slot pill */}
-        <div
-          className={`p-2 rounded-2xl border text-center transition-all ${
-            bottomItem
-              ? 'bg-blue-500/10 border-blue-500/40 text-blue-300'
-              : 'bg-slate-900/60 border-slate-800 text-slate-500'
-          }`}
-        >
-          <span className="text-[10px] block font-medium">پایین‌تنه (Bottom)</span>
-          <span className="text-xs font-bold truncate block mt-0.5">
-            {bottomItem ? bottomItem.title : 'انتخاب شلوار'}
+        <div className={`p-2 rounded-xl text-center border transition-all ${
+          bottomItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+        }`}>
+          <span className="text-[10px] block font-bold">پایین‌تنه (زیر تی‌شرت)</span>
+          <span className="text-xs font-black truncate block mt-0.5">
+            {bottomItem ? bottomItem.title : 'خالی'}
           </span>
         </div>
 
-        {/* Outer slot pill */}
-        <div
-          className={`p-2 rounded-2xl border text-center transition-all ${
-            outerItem
-              ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
-              : 'bg-slate-900/60 border-slate-800 text-slate-500'
-          }`}
-        >
-          <span className="text-[10px] block font-medium">لباس‌رو (Outer)</span>
-          <span className="text-xs font-bold truncate block mt-0.5">
-            {outerItem ? outerItem.title : 'کت یا کاپشن'}
+        <div className={`p-2 rounded-xl text-center border transition-all ${
+          outerItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+        }`}>
+          <span className="text-[10px] block font-bold">لباس‌رو (کت/کاپشن)</span>
+          <span className="text-xs font-black truncate block mt-0.5">
+            {outerItem ? outerItem.title : 'خالی'}
           </span>
         </div>
 
-        {/* Shoes slot pill */}
-        <div
-          className={`p-2 rounded-2xl border text-center transition-all ${
-            shoesItem
-              ? 'bg-purple-500/10 border-purple-500/40 text-purple-300'
-              : 'bg-slate-900/60 border-slate-800 text-slate-500'
-          }`}
-        >
-          <span className="text-[10px] block font-medium">کفش (Shoes)</span>
-          <span className="text-xs font-bold truncate block mt-0.5">
-            {shoesItem ? shoesItem.title : 'انتخاب کفش'}
+        <div className={`p-2 rounded-xl text-center border transition-all ${
+          shoesItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+        }`}>
+          <span className="text-[10px] block font-bold">کفش و کتانی</span>
+          <span className="text-xs font-black truncate block mt-0.5">
+            {shoesItem ? shoesItem.title : 'خالی'}
           </span>
         </div>
       </div>

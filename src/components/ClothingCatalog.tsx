@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, Check, Filter, Sparkles, Shirt } from 'lucide-react';
+import { Search, Check } from 'lucide-react';
 import { ClothingProduct, GarmentSlot, ActiveOutfit } from '../types/clothing';
 
 interface ClothingCatalogProps {
@@ -21,7 +21,6 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
   products,
   activeOutfit,
   onToggleGarment,
-  storeName,
 }) => {
   const [selectedSlot, setSelectedSlot] = useState<GarmentSlot | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -52,19 +51,19 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
   }, [products, selectedSlot, searchQuery]);
 
   return (
-    <aside className="w-full lg:w-[380px] xl:w-[420px] shrink-0 flex flex-col bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl h-full max-h-[820px]">
+    <aside className="w-full lg:w-[380px] xl:w-[420px] shrink-0 flex flex-col bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 shadow-xs h-full max-h-[820px]">
       {/* Header */}
-      <div className="pb-3 border-b border-slate-800/80">
+      <div className="pb-3 border-b border-slate-100">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+          <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
             <span>کالکشن لباس‌ها</span>
           </h2>
-          <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+          <span className="text-[11px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
             {filteredProducts.length} مدل
           </span>
         </div>
-        <p className="text-[11px] text-slate-400 mt-1">
-          برای پرو هر لباس روی آن کلیک کنید (تی‌شرت با تی‌شرت، و شلوار با شلوار جایگزین می‌شود).
+        <p className="text-[11px] text-slate-500 mt-1">
+          روی هر لباس کلیک کنید تا تن مانکن ست شود (تی‌شرت با تی‌شرت، و شلوار با شلوار جایگزین می‌شود).
         </p>
 
         {/* Search Input */}
@@ -75,13 +74,13 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
             placeholder="جستجو در بین لباس‌ها..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pr-9 pl-3.5 py-2 text-xs rounded-xl bg-slate-950/80 border border-slate-800 focus:border-amber-500/70 focus:outline-none text-white placeholder-slate-500 transition-colors"
+            className="w-full pr-9 pl-4 py-2 rounded-xl text-xs bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-amber-400 focus:bg-white transition-colors"
           />
         </div>
       </div>
 
-      {/* Category Slot Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-3 border-b border-slate-800/80">
+      {/* Slot Category Tabs */}
+      <div className="py-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 border-b border-slate-100">
         {SLOT_TABS.map((tab) => {
           const isActive = selectedSlot === tab.id;
           return (
@@ -91,8 +90,8 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
               onClick={() => setSelectedSlot(tab.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
                 isActive
-                  ? 'bg-amber-500 text-slate-950 shadow-md font-black scale-102'
-                  : 'bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800/70'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
               }`}
             >
               <span>{tab.icon}</span>
@@ -102,81 +101,78 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
         })}
       </div>
 
-      {/* Garment Cards Grid */}
-      <div className="flex-1 overflow-y-auto py-3 space-y-2.5 pr-0.5">
+      {/* Clothing Grid */}
+      <div className="flex-1 overflow-y-auto py-3 space-y-2.5 pr-1">
         {filteredProducts.length === 0 ? (
-          <div className="py-12 text-center text-slate-500 text-xs">
-            لباسی در این دسته‌بندی یافت نشد.
+          <div className="text-center py-16 text-slate-400">
+            <span className="text-3xl block mb-2">🛍️</span>
+            <p className="text-xs">هیچ لباسی در این دسته‌بندی یافت نشد.</p>
           </div>
         ) : (
-          filteredProducts.map((garment) => {
-            const isEquipped = wornProductIds.has(garment.id);
+          filteredProducts.map((product) => {
+            const isEquipped = wornProductIds.has(product.id);
+            const slotTitle =
+              product.slot === 'slot_top'
+                ? 'بالاتنه (روی شلوار)'
+                : product.slot === 'slot_bottom'
+                ? 'پایین‌تنه (زیر تی‌شرت)'
+                : product.slot === 'slot_outer'
+                ? 'لباس‌رو (کت)'
+                : 'کفش';
 
             return (
               <div
-                key={garment.id}
-                onClick={() => onToggleGarment(garment)}
-                className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 cursor-pointer group ${
+                key={product.id}
+                onClick={() => onToggleGarment(product)}
+                className={`group relative p-3 rounded-2xl border transition-all cursor-pointer flex items-center gap-3.5 ${
                   isEquipped
-                    ? 'bg-amber-500/10 border-amber-500/70 ring-1 ring-amber-500/40 shadow-lg shadow-amber-500/5'
-                    : 'bg-slate-950/50 border-slate-800/90 hover:border-slate-700 hover:bg-slate-800/40'
+                    ? 'bg-amber-50/70 border-amber-400 shadow-sm ring-2 ring-amber-400/20'
+                    : 'bg-slate-50 hover:bg-slate-100/70 border-slate-200 hover:border-slate-300'
                 }`}
               >
-                {/* Thumbnail Preview */}
-                <div className="w-16 h-16 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center p-1.5 shrink-0 overflow-hidden relative group-hover:scale-105 transition-transform">
+                {/* Garment Preview Thumbnail */}
+                <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden relative shadow-xs">
                   <img
-                    src={garment.imageUrl}
-                    alt={garment.title}
-                    className="max-w-full max-h-full object-contain drop-shadow-md"
+                    src={product.imageUrl}
+                    alt={product.title}
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                   />
                   {isEquipped && (
-                    <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-amber-500 text-black flex items-center justify-center text-[10px] font-black">
-                      ✓
+                    <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] shadow-xs">
+                      <Check className="w-3 h-3 stroke-[3]" />
                     </div>
                   )}
                 </div>
 
-                {/* Garment Details */}
+                {/* Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                      {garment.slot === 'slot_top'
-                        ? 'بالاتنه'
-                        : garment.slot === 'slot_bottom'
-                        ? 'پایین‌تنه'
-                        : garment.slot === 'slot_outer'
-                        ? 'لباس‌رو'
-                        : 'کفش'}
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
+                      {slotTitle}
                     </span>
-                    <span className="text-[10px] text-slate-400">
-                      {garment.spec.style_details?.primary_color_fa}
-                    </span>
+                    {product.spec.style_details?.fabric_type && (
+                      <span className="text-[10px] text-slate-500 truncate">
+                        • {product.spec.style_details.fabric_type}
+                      </span>
+                    )}
                   </div>
 
-                  <h3 className="text-xs font-bold text-white truncate group-hover:text-amber-300 transition-colors">
-                    {garment.title}
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-amber-600 transition-colors">
+                    {product.title}
                   </h3>
 
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-black text-amber-400">
-                      {garment.price.toLocaleString()} تومان
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs font-black text-amber-600">
+                      {product.price.toLocaleString()} تومان
+                    </span>
+                    <span
+                      className={`text-[11px] font-bold transition-colors ${
+                        isEquipped ? 'text-amber-700' : 'text-slate-400 group-hover:text-slate-700'
+                      }`}
+                    >
+                      {isEquipped ? '✓ تن مانکن' : '+ انتخاب برای پرو'}
                     </span>
                   </div>
-                </div>
-
-                {/* Button / Check Icon */}
-                <div className="shrink-0">
-                  {isEquipped ? (
-                    <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-slate-950 flex items-center gap-1 shadow-sm">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      <span>پرو شده</span>
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 group-hover:text-white transition-colors flex items-center gap-1">
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>پرو</span>
-                    </span>
-                  )}
                 </div>
               </div>
             );
