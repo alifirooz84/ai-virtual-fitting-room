@@ -133,9 +133,15 @@ $frontendTemp = Join-Path $projectDir "temp_cpanel_frontend"
 if (Test-Path $frontendTemp) { Remove-Item $frontendTemp -Recurse -Force }
 New-Item -ItemType Directory -Path $frontendTemp | Out-Null
 
-# 1. Copy index.html and assets/
+# 1. Copy index.html, assets/, api/ and .htaccess
 Copy-Item (Join-Path $projectDir "dist\index.html") $frontendTemp -Force
 Copy-Item (Join-Path $projectDir "dist\assets") (Join-Path $frontendTemp "assets") -Recurse -Force
+if (Test-Path (Join-Path $projectDir "dist\api")) {
+    Copy-Item (Join-Path $projectDir "dist\api") (Join-Path $frontendTemp "api") -Recurse -Force
+}
+if (Test-Path (Join-Path $projectDir "public\.htaccess")) {
+    Copy-Item (Join-Path $projectDir "public\.htaccess") (Join-Path $frontendTemp ".htaccess") -Force
+}
 
 # 2. Create .htaccess for Apache SPA Routing & Performance
 $htaccessContent = @"

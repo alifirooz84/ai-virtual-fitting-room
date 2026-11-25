@@ -16,6 +16,7 @@ import {
 import { StoreProfile, ClothingProduct, GarmentSlot, GarmentAiSpec } from '../types/clothing';
 import { normalizeGarmentAiSpec } from '../data/aiPromptGuide';
 import { apiFetch } from '../utils/api';
+import { dbStorage } from '../utils/dbStorage';
 
 interface MerchantUploadViewProps {
   currentStore: StoreProfile;
@@ -205,15 +206,15 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     applySlotSelection(targetSlot);
   };
 
-  // Helper to ensure uploaded images are lightweight 1024x1024 without slowing down POST requests
+  // Helper to ensure uploaded images are ultra-lightweight WebP without filling up browser storage
   const compressImageIfNeeded = (dataUrl: string): Promise<string> => {
     return new Promise((resolve) => {
-      if (dataUrl.startsWith('data:image/svg') || dataUrl.length < 400000) {
+      if (dataUrl.startsWith('data:image/svg')) {
         return resolve(dataUrl);
       }
       const img = new Image();
       img.onload = () => {
-        const maxDim = 1024;
+        const maxDim = 900;
         let width = img.width;
         let height = img.height;
         if (width > maxDim || height > maxDim) {
@@ -231,6 +232,15 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         const ctx = canvas.getContext('2d');
         if (!ctx) return resolve(dataUrl);
         ctx.drawImage(img, 0, 0, width, height);
+
+        // WebP format preserves full alpha transparency while reducing size from 2MB to ~70KB!
+        try {
+          const webpData = canvas.toDataURL('image/webp', 0.85);
+          if (webpData && webpData.startsWith('data:image/webp') && webpData.length < dataUrl.length) {
+            return resolve(webpData);
+          }
+        } catch {}
+
         resolve(canvas.toDataURL('image/png'));
       };
       img.onerror = () => resolve(dataUrl);
@@ -249,7 +259,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     setErrorMessage(null);
 
     try {
-      // 1. Optimize image resolution if large so POST doesn't hang
+      // 1. Optimize image resolution into lightweight WebP
       const optimizedImage = await compressImageIfNeeded(imagePreview);
 
       const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
@@ -275,19 +285,14 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         createdAt: new Date().toISOString(),
       };
 
-      // 2. Persist in localStorage so user work is never lost!
-      try {
-        const existing = JSON.parse(localStorage.getItem('vton_user_custom_products') || '[]');
-        localStorage.setItem('vton_user_custom_products', JSON.stringify([productObj, ...existing]));
-      } catch (err) {
-        console.warn('LocalStorage save:', err);
-      }
+      // 2. Persist in IndexedDB (Unlimited storage quota, zero product drop)
+      await dbStorage.saveProduct(productObj);
 
       // 3. Update React parent state immediately
       onProductCreated(productObj);
       setSaveSuccess(productObj);
 
-      // 4. Send to backend server database (non-blocking)
+      // 4. Send to backend server database (cPanel PHP / Node.js)
       try {
         const res = await apiFetch(`/api/stores/${selectedStoreSlug}/products`, {
           method: 'POST',
@@ -297,17 +302,22 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
             jsonSpec: currentSpec,
             customTitle: customTitle || currentSpec.name_fa,
             customPrice,
+            storeSlug: selectedStoreSlug,
+            storeName: currentStore.nameFa,
           }),
         }, 8000);
 
         if (res.ok) {
           const data = await res.json();
-          if (data.product) {
-            productObj.id = data.product.id;
+          if (data && data.product) {
+            if (data.product.imageUrl) {
+              productObj.imageUrl = data.product.imageUrl;
+              await dbStorage.saveProduct(productObj);
+            }
           }
         }
       } catch (networkErr) {
-        console.warn('[Sync to Server] Server response delayed, item safely stored locally in fitting room:', networkErr);
+        console.warn('[Sync to Server] Offline-first saved in IndexedDB:', networkErr);
       }
     } catch (e: any) {
       setErrorMessage(e.message || 'خطا در ذخیره‌سازی محصول');

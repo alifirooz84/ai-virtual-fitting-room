@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Check } from 'lucide-react';
+import { Search, Check, Trash2 } from 'lucide-react';
 import { ClothingProduct, GarmentSlot, ActiveOutfit } from '../types/clothing';
 
 interface ClothingCatalogProps {
   products: ClothingProduct[];
   activeOutfit: ActiveOutfit;
   onToggleGarment: (garment: ClothingProduct) => void;
+  onDeleteProduct?: (id: string) => void;
   storeName: string;
 }
 
@@ -21,6 +22,7 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
   products,
   activeOutfit,
   onToggleGarment,
+  onDeleteProduct,
 }) => {
   const [selectedSlot, setSelectedSlot] = useState<GarmentSlot | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -165,13 +167,30 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
                     <span className="text-xs font-black text-amber-600">
                       {product.price.toLocaleString()} تومان
                     </span>
-                    <span
-                      className={`text-[11px] font-bold transition-colors ${
-                        isEquipped ? 'text-amber-700' : 'text-slate-400 group-hover:text-slate-700'
-                      }`}
-                    >
-                      {isEquipped ? '✓ تن مانکن' : '+ انتخاب برای پرو'}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-[11px] font-bold transition-colors ${
+                          isEquipped ? 'text-amber-700' : 'text-slate-400 group-hover:text-slate-700'
+                        }`}
+                      >
+                        {isEquipped ? '✓ تن مانکن' : '+ انتخاب برای پرو'}
+                      </span>
+                      {onDeleteProduct && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(`آیا از حذف لباس "${product.title}" از دیتابیس مطمئن هستید؟`)) {
+                              onDeleteProduct(product.id);
+                            }
+                          }}
+                          className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
+                          title="حذف این لباس از دیتابیس"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

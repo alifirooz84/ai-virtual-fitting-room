@@ -8,6 +8,7 @@ import { AiPromptGuideModal } from './components/AiPromptGuideModal';
 import { INITIAL_STORES, INITIAL_PRODUCTS } from './data/mockStoresAndProducts';
 import { StoreProfile, ClothingProduct, GarmentSlot, ActiveOutfit } from './types/clothing';
 import { apiFetch } from './utils/api';
+import { dbStorage } from './utils/dbStorage';
 import { Sparkles } from 'lucide-react';
 
 export default function App() {
@@ -56,62 +57,36 @@ export default function App() {
     }
   }, []);
 
-  // Helper to get locally stored products
-  const getStoredProducts = useCallback((): ClothingProduct[] => {
-    try {
-      const raw = localStorage.getItem('vton_user_custom_products');
-      if (raw) {
-        const list = JSON.parse(raw);
-        if (Array.isArray(list)) return list;
-      }
-    } catch {}
-    return [];
-  }, []);
-
-  // Fetch products for current store with instant local merging
+  // Fetch products with IndexedDB local persistence + Server API sync
   const fetchProducts = useCallback(async () => {
-    const localCustom = getStoredProducts();
+    // 1. First migrate any legacy items from localStorage into IndexedDB
+    const localCustom = await dbStorage.migrateFromLocalStorage();
+
+    let serverProducts: ClothingProduct[] = [];
     try {
-      const res = await apiFetch(`/api/stores/${currentStoreSlug}/products`, undefined, 4000);
+      const res = await apiFetch(`/api/stores/${currentStoreSlug}/products`, undefined, 3500);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
-          const seen = new Set<string>();
-          const merged: ClothingProduct[] = [];
-          [...localCustom, ...data].forEach((p) => {
-            if (!seen.has(p.id)) {
-              seen.add(p.id);
-              merged.push(p);
-            }
-          });
-          setProducts(merged);
-          return;
+          serverProducts = data;
         }
       }
-      // If server response is not array, merge local with initial
-      const seen = new Set<string>();
-      const fallbackMerged: ClothingProduct[] = [];
-      [...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
-        if (!seen.has(p.id)) {
-          seen.add(p.id);
-          fallbackMerged.push(p);
-        }
-      });
-      setProducts(fallbackMerged);
     } catch {
-      const seen = new Set<string>();
-      const fallbackMerged: ClothingProduct[] = [];
-      [...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
-        if (!seen.has(p.id)) {
-          seen.add(p.id);
-          fallbackMerged.push(p);
-        }
-      });
-      setProducts(fallbackMerged);
-    } finally {
-      setIsLoading(false);
+      // Server unreachable or offline
     }
-  }, [currentStoreSlug, getStoredProducts]);
+
+    // Merge: custom user uploads have highest priority, then server, then initial store products
+    const seen = new Set<string>();
+    const merged: ClothingProduct[] = [];
+    [...localCustom, ...serverProducts, ...INITIAL_PRODUCTS].forEach((p) => {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        merged.push(p);
+      }
+    });
+    setProducts(merged);
+    setIsLoading(false);
+  }, [currentStoreSlug]);
 
   useEffect(() => {
     fetchStores();
@@ -230,11 +205,18 @@ export default function App() {
   const handleProductCreated = useCallback(
     (newProduct: ClothingProduct) => {
       setProducts((prev) => [newProduct, ...prev.filter((p) => p.id !== newProduct.id)]);
-      fetchProducts();
-      showNotification(`لباس "${newProduct.title}" در دیتابیس فروشگاه ${newProduct.storeName} ذخیره شد!`);
+      showNotification(`لباس "${newProduct.title}" در دیتابیس با موفقیت ثبت شد!`);
     },
-    [fetchProducts]
+    []
   );
+
+  // Handle Product Deletion from Database
+  const handleDeleteProduct = useCallback(async (id: string) => {
+    await dbStorage.deleteProduct(id);
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+    apiFetch(`/api/products/${id}`, { method: 'DELETE' }).catch(() => {});
+    showNotification('لباس از دیتابیس حذف شد.');
+  }, []);
 
   // Immediate Try-On of newly uploaded product
   const handleTryOnNow = useCallback(
@@ -289,6 +271,7 @@ export default function App() {
                 products={products}
                 activeOutfit={activeOutfit}
                 onToggleGarment={handleToggleGarment}
+                onDeleteProduct={handleDeleteProduct}
                 storeName={currentStore.nameFa}
               />
 

@@ -16,6 +16,10 @@ deployment:
     - /bin/cp -f dist/index.html $FRONTEND_PATH
     - /bin/cp -Rf dist/assets $FRONTEND_PATH
     - /bin/cp -f dist/.htaccess $FRONTEND_PATH
+    - /bin/mkdir -p $FRONTEND_PATH/api/data
+    - /bin/mkdir -p $FRONTEND_PATH/api/uploads
+    - /bin/cp -Rf dist/api/* $FRONTEND_PATH/api/ 2>/dev/null || true
+    - /bin/chmod -R 777 $FRONTEND_PATH/api/data $FRONTEND_PATH/api/uploads 2>/dev/null || true
     
     # 3. انتقال فایل‌های سرور بک‌اند به api-server
     - /bin/cp -f app.js $BACKEND_PATH/app.js
