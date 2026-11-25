@@ -6,7 +6,7 @@ import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
  * 1. Crooked/Tilted 3/4 poses (locks camera to strict 0° frontal orthographic view, bilateral symmetry).
  * 2. Asymmetrical shoulders or tilted hem (locks left and right shoulders to the exact same horizontal height).
  * 3. Ghost mannequin hollow interior (reveals inner collar/lining in 3D volume without any human body).
- * 4. Transparent alpha or pure white background with standard canvas framing.
+ * 4. 100% Transparent alpha background with zero white box, zero frame, zero borders.
  */
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
 Professional commercial fashion catalog photography of a [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and hollow interior collar revealing inside neck lining and tag.
@@ -18,29 +18,33 @@ CAMERA & PERSPECTIVE (MANDATORY ZERO-TILT RULES):
 - Both sleeves drape downward symmetrically at identical 15-degree angles from the torso.
 - Bottom hem and waistband are strictly 100% horizontal and level with the ground plane (0° slope).
 
-FRAMING & CANVASS RATIO:
+FRAMING & CANVASS RATIO (MANDATORY ZERO WHITE BOX TRANSPARENCY):
 - Square 1:1 aspect ratio (1024x1024 pixels).
 - Centered perfectly on canvas with clean margins.
 - Tops: Collar neckline starts at 10% from the top canvas border; bottom hem terminates at 70% from the top border.
 - Bottoms: Waistband starts at 10% from the top border; ankle cuffs terminate at 92% from the top border.
-- Isolated on a pure transparent PNG background (alpha = 0) OR seamless solid pure white studio backdrop (#FFFFFF) with ZERO cast shadows and ZERO floor shadows.
+- MANDATORY ALPHA TRANSPARENCY: The garment MUST be completely isolated on a 100% transparent alpha PNG background (RGBA, alpha = 0 for every pixel outside the garment).
+- STRICT PROHIBITION: Absolutely NO white background box, NO rectangular white card, NO white frame, NO opaque borders, NO background square, NO studio backdrop behind the garment. The clothing silhouette must float cleanly on pure transparency with no square bounding container.
 
 FABRIC & LIGHTING:
 - Ultra-high-resolution realistic fabric texture, natural micro-creases, authentic seams and stitching.
 - Soft diffuse studio high-key lighting, balanced from left and right, completely eliminate one-sided harsh shadows.
 
 NEGATIVE PROMPTS (MUST AVOID):
-3/4 view, three-quarter angle, turned body, tilted shoulders, angled torso, dynamic pose, asymmetrical, slanted hem, skewed perspective, side angle, diagonal horizon, one arm raised, bent pose, human body, skin, face, hands, visible mannequin, dummy stand, hanger, floor shadow, cast shadow, dark background, checkerboard pattern.
+white background, white box, white frame, rectangular border, photo card, opaque backdrop, solid white square, white edges, framing, backdrop, cardboard border, photo outline, solid white canvas, white card overlay, 3/4 view, three-quarter angle, turned body, tilted shoulders, angled torso, dynamic pose, asymmetrical, slanted hem, skewed perspective, side angle, diagonal horizon, one arm raised, bent pose, human body, skin, face, hands, visible mannequin, dummy stand, hanger, floor shadow, cast shadow, dark background, checkerboard pattern.
 `.trim();
 
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-دستورالعمل تولید عکس سه‌بعدی مانکن نامرئی (کاملاً صاف و مستقیم، بدون کجی و بدون چرخش بدنه):
+دستورالعمل تولید عکس سه‌بعدی مانکن نامرئی (کاملاً صاف و مستقیم، بدون کجی و بدون کادر سفید دور لباس):
 
 این پرامپت خطاهای رایج هوش مصنوعی را کاملاً مسدود می‌کند:
-۱. به هیچ وجه عکس در زاویه ۳/۴ رخ یا کج تولید نمی‌شود (0° Frontal Orthographic).
-۲. شانه‌های چپ و راست و لبه پایینی لباس دقیقاً در یک خط تراز افقی قرار می‌گیرند.
-۳. لبه کمر شلوار و پایینی تی‌شرت کاملاً افقی و موازی خط افق هستند تا بدون نیاز به هیچ جابجایی دستی روی هم بنشینند.
-۴. داخل یقه لباس خالی و سه‌بعدی است (Ghost Mannequin 3D Interior).
+۱. بدون کادر سفید دور لباس (Zero White Box): پرامپت هوش مصنوعی را ملزم می‌کند خروجی را به صورت PNG کاملاً شفاف (Alpha = 0) بدهد تا کادر سفید روی کمر شلوار نیفتد.
+۲. به هیچ وجه عکس در زاویه ۳/۴ رخ یا کج تولید نمی‌شود (0° Frontal Orthographic).
+۳. شانه‌های چپ و راست و لبه پایینی لباس دقیقاً در یک خط تراز افقی قرار می‌گیرند.
+۴. لبه کمر شلوار و پایینی تی‌شرت کاملاً افقی و موازی خط افق هستند تا بدون نیاز به هیچ جابجایی دستی روی هم بنشینند.
+۵. داخل یقه لباس خالی و سه‌بعدی است (Ghost Mannequin 3D Interior).
+
+نکته مهم: سیستم استودیو پرو ما به پاک‌کن خودکار هوشمند مجهز شده است؛ یعنی حتی اگر هوش مصنوعی عکسی با پس‌زمینه یا کادر سفید به شما داد، سیستم به محض آپلود، کادر سفید را به طور خودکار پاک و شفاف می‌کند!
 
 نحوه استفاده:
 عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] در متن انگلیسی را با نام و رنگ لباستان عوض کنید (مثلاً: beige oversized fleece hoodie) و کل پرامپت انگلیسی را به Gemini، ChatGPT، Midjourney یا Flux بدهید.

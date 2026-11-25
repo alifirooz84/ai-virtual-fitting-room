@@ -18,6 +18,7 @@ import { StoreProfile, ClothingProduct, GarmentSlot, GarmentAiSpec } from '../ty
 import { normalizeGarmentAiSpec } from '../data/aiPromptGuide';
 import { apiFetch } from '../utils/api';
 import { dbStorage } from '../utils/dbStorage';
+import { removeWhiteBackground } from '../utils/imageProcessing';
 
 interface MerchantUploadViewProps {
   currentStore: StoreProfile;
@@ -44,6 +45,8 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [isCameraActive, setIsCameraActive] = useState<boolean>(false);
+  const [autoRemoveBg, setAutoRemoveBg] = useState<boolean>(true);
+  const [isProcessingBg, setIsProcessingBg] = useState<boolean>(false);
 
   // 2. Companion JSON State
   const [jsonInput, setJsonInput] = useState<string>('');
@@ -94,7 +97,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     }
   };
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     if (!videoRef.current) return;
     const canvas = document.createElement('canvas');
     canvas.width = videoRef.current.videoWidth || 1024;
@@ -103,9 +106,34 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     if (ctx) {
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL('image/png');
-      setImagePreview(dataUrl);
       stopCamera();
       setInputMode('upload');
+      if (autoRemoveBg) {
+        setIsProcessingBg(true);
+        try {
+          const cleaned = await removeWhiteBackground(dataUrl);
+          setImagePreview(cleaned);
+        } catch {
+          setImagePreview(dataUrl);
+        } finally {
+          setIsProcessingBg(false);
+        }
+      } else {
+        setImagePreview(dataUrl);
+      }
+    }
+  };
+
+  const handleManualCleanBg = async () => {
+    if (!imagePreview) return;
+    setIsProcessingBg(true);
+    try {
+      const cleaned = await removeWhiteBackground(imagePreview, { colorTolerance: 35, luminanceThreshold: 205 });
+      setImagePreview(cleaned);
+    } catch (e: any) {
+      console.warn('Manual clean error:', e);
+    } finally {
+      setIsProcessingBg(false);
     }
   };
 
@@ -130,8 +158,22 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (evt) => {
-        setImagePreview(evt.target?.result as string);
+      reader.onload = async (evt) => {
+        const rawData = evt.target?.result as string;
+        if (autoRemoveBg) {
+          setIsProcessingBg(true);
+          try {
+            const cleaned = await removeWhiteBackground(rawData);
+            setImagePreview(cleaned);
+          } catch {
+            setImagePreview(rawData);
+          } finally {
+            setIsProcessingBg(false);
+          }
+        } else {
+          setImagePreview(rawData);
+        }
+
         const inferredName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
         if (!customTitle) {
           setCustomTitle(inferredName);
@@ -208,10 +250,16 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   };
 
   // Helper to ensure uploaded images are ultra-lightweight WebP without filling up browser storage
-  const compressImageIfNeeded = (dataUrl: string): Promise<string> => {
+  const compressImageIfNeeded = async (dataUrl: string): Promise<string> => {
+    let sourceToCompress = dataUrl;
+    if (autoRemoveBg) {
+      try {
+        sourceToCompress = await removeWhiteBackground(dataUrl);
+      } catch {}
+    }
     return new Promise((resolve) => {
-      if (dataUrl.startsWith('data:image/svg')) {
-        return resolve(dataUrl);
+      if (sourceToCompress.startsWith('data:image/svg')) {
+        return resolve(sourceToCompress);
       }
       const img = new Image();
       img.onload = () => {
@@ -231,21 +279,21 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        if (!ctx) return resolve(dataUrl);
+        if (!ctx) return resolve(sourceToCompress);
         ctx.drawImage(img, 0, 0, width, height);
 
         // WebP format preserves full alpha transparency while reducing size from 2MB to ~70KB!
         try {
           const webpData = canvas.toDataURL('image/webp', 0.85);
-          if (webpData && webpData.startsWith('data:image/webp') && webpData.length < dataUrl.length) {
+          if (webpData && webpData.startsWith('data:image/webp') && webpData.length < sourceToCompress.length) {
             return resolve(webpData);
           }
         } catch {}
 
         resolve(canvas.toDataURL('image/png'));
       };
-      img.onerror = () => resolve(dataUrl);
-      img.src = dataUrl;
+      img.onerror = () => resolve(sourceToCompress);
+      img.src = sourceToCompress;
     });
   };
 
@@ -478,11 +526,46 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
             </label>
           )}
 
+          {/* Smart Auto-Cutout / White Background Eraser Control */}
+          <div className="p-3 bg-amber-50/70 rounded-2xl border border-amber-200/90 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-amber-900 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-600" />
+                <span>حذف هوشمند کادر سفید (Zero-Box):</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setAutoRemoveBg(!autoRemoveBg)}
+                className={`px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all cursor-pointer border ${
+                  autoRemoveBg
+                    ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-xs'
+                    : 'bg-white text-slate-500 border-slate-200'
+                }`}
+              >
+                {autoRemoveBg ? '✓ فعال (توصیه‌شده)' : 'غیرفعال'}
+              </button>
+            </div>
+            <p className="text-[11px] text-slate-600 leading-relaxed">
+              اگر خروجی هوش مصنوعی کادر مستطیلی سفید داشته باشد، سیستم به طور خودکار کادر سفید را شفاف می‌کند تا روی کمر شلوار نیفتد.
+            </p>
+            {imagePreview && (
+              <button
+                type="button"
+                onClick={handleManualCleanBg}
+                disabled={isProcessingBg}
+                className="w-full py-1.5 px-3 rounded-xl text-[11px] font-bold bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-amber-500 ${isProcessingBg ? 'animate-spin' : ''}`} />
+                <span>{isProcessingBg ? 'در حال شفاف‌سازی کادر...' : 'شفاف‌سازی و حذف کادر سفید همین عکس'}</span>
+              </button>
+            )}
+          </div>
+
           {/* Quick info */}
           <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 text-[11px] text-slate-500 space-y-1">
             <p className="font-bold text-slate-700 flex items-center gap-1">
               <Check className="w-3.5 h-3.5 text-emerald-500" />
-              <span>پشتیبانی از تصویر بدون پس‌زمینه شفاف (Alpha)</span>
+              <span>پشتیبانی از فرمت PNG شفاف (Alpha) و تبدیل خودکار</span>
             </p>
             <p className="text-[10px] leading-relaxed">
               تصویر می‌تواند خروجی مستقیم پرامپت جمنای یا عکاسی از مانکن نامرئی بوتیک شما باشد.

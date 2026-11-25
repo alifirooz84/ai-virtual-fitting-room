@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   RotateCcw,
   Download,
@@ -11,6 +11,37 @@ import {
   ZoomOut,
 } from 'lucide-react';
 import { ActiveOutfit, GarmentSlot, ClothingProduct } from '../types/clothing';
+import { removeWhiteBackground, transparencyCache } from '../utils/imageProcessing';
+
+interface MannequinGarmentImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+}
+
+const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt, className }) => {
+  const [cleanSrc, setCleanSrc] = useState<string>(() => transparencyCache.get(src) || src);
+
+  useEffect(() => {
+    let active = true;
+    if (src && !src.startsWith('data:image/svg')) {
+      if (transparencyCache.has(src)) {
+        setCleanSrc(transparencyCache.get(src)!);
+      } else {
+        removeWhiteBackground(src).then((cleaned) => {
+          if (active) setCleanSrc(cleaned);
+        });
+      }
+    } else {
+      setCleanSrc(src);
+    }
+    return () => {
+      active = false;
+    };
+  }, [src]);
+
+  return <img src={cleanSrc} alt={alt} className={className} crossOrigin="anonymous" />;
+};
 
 interface MannequinStageProps {
   activeOutfit: ActiveOutfit;
@@ -90,33 +121,48 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       // Draw active slots strictly in z-index order (shoes -> bottom -> top -> outer)
       const slotsToDraw = [shoesItem, bottomItem, topItem, outerItem].filter(Boolean) as ClothingProduct[];
 
-      let loadedCount = 0;
       if (slotsToDraw.length === 0) {
         setIsExporting(false);
         return;
       }
 
-      slotsToDraw.forEach((garment) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          const yPos = (garment.placement.offset_y_percent / 100) * 1380;
-          const scale = garment.placement.scale || 1.0;
-          const w = 580 * scale;
-          const h = 580 * scale;
-          const xPos = 512 - w / 2;
+      Promise.all(
+        slotsToDraw.map((garment) =>
+          removeWhiteBackground(garment.imageUrl).then((cleanUrl) => ({
+            garment,
+            cleanUrl,
+          }))
+        )
+      ).then((items) => {
+        let loadedCount = 0;
+        items.forEach(({ garment, cleanUrl }) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const yPos = (garment.placement.offset_y_percent / 100) * 1380;
+            const scale = garment.placement.scale || 1.0;
+            const w = 580 * scale;
+            const h = 580 * scale;
+            const xPos = 512 - w / 2;
 
-          ctx.drawImage(img, xPos, yPos - 50, w, h);
-          loadedCount++;
-          if (loadedCount === slotsToDraw.length) {
-            const link = document.createElement('a');
-            link.download = `vton-studio-outfit-${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            setIsExporting(false);
-          }
-        };
-        img.src = garment.imageUrl;
+            ctx.drawImage(img, xPos, yPos - 50, w, h);
+            loadedCount++;
+            if (loadedCount === items.length) {
+              const link = document.createElement('a');
+              link.download = `vton-studio-outfit-${Date.now()}.png`;
+              link.href = canvas.toDataURL('image/png');
+              link.click();
+              setIsExporting(false);
+            }
+          };
+          img.onerror = () => {
+            loadedCount++;
+            if (loadedCount === items.length) {
+              setIsExporting(false);
+            }
+          };
+          img.src = cleanUrl;
+        });
       });
     }, 200);
   };
@@ -264,7 +310,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               }}
               className="absolute left-1/2 w-[72%] aspect-[2/1] transition-all duration-300 pointer-events-auto group"
             >
-              <img
+              <MannequinGarmentImage
                 src={shoesItem.imageUrl}
                 alt={shoesItem.title}
                 className="w-full h-full object-contain filter drop-shadow-md"
@@ -292,7 +338,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               }}
               className="absolute left-1/2 w-[68%] aspect-[3/4] transition-all duration-300 pointer-events-auto group"
             >
-              <img
+              <MannequinGarmentImage
                 src={bottomItem.imageUrl}
                 alt={bottomItem.title}
                 className="w-full h-full object-contain filter drop-shadow-lg"
@@ -320,7 +366,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               }}
               className="absolute left-1/2 w-[76%] aspect-square transition-all duration-300 pointer-events-auto group"
             >
-              <img
+              <MannequinGarmentImage
                 src={topItem.imageUrl}
                 alt={topItem.title}
                 className="w-full h-full object-contain filter drop-shadow-lg"
@@ -348,7 +394,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               }}
               className="absolute left-1/2 w-[82%] aspect-square transition-all duration-300 pointer-events-auto group"
             >
-              <img
+              <MannequinGarmentImage
                 src={outerItem.imageUrl}
                 alt={outerItem.title}
                 className="w-full h-full object-contain filter drop-shadow-xl"

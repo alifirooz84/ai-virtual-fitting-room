@@ -93,7 +93,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             }`}
           >
             <Camera className="w-4 h-4" />
-            <span>۱. پرامپت ساخت عکس ۳بعدی (حل مشکل کج بودن لباس)</span>
+            <span>۱. پرامپت عکس ۳بعدی شفاف (حذف کادر سفید دور لباس و کجی)</span>
           </button>
 
           <button
@@ -125,7 +125,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
               <p className="text-xs text-slate-700 leading-relaxed">
                 هوش‌های مصنوعی تصویری معمولاً لباس را در ژست‌های مایل یا زاویه‌دار تولید می‌کنند که باعث می‌شود هودی یا تی‌شرت روی شلوار کج بایستد. این پرامپت قوانین زیر را قفل می‌کند:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1 text-xs">
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
                   <span className="font-bold text-amber-800">📐 زاویه ۰ درجه ارتوگرافیک:</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
@@ -139,9 +139,15 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
                   </p>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                  <span className="font-bold text-emerald-800">👕 مانکن نامرئی حجم‌دار:</span>
+                  <span className="font-bold text-emerald-800">👕 مانکن نامرئی سه‌بعدی:</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
                     یقه خالی و مارک پشت لباس مشخص با عمق سه‌بعدی و بدون شخص یا مانکن فیزیکی.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-purple-800">✨ حذف کادر سفید دور لباس:</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    خروجی PNG شفاف با آلفا = 0؛ به علاوه پاک‌کن هوشمند تعبیه‌شده در سیستم.
                   </p>
                 </div>
               </div>
