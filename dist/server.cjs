@@ -24480,48 +24480,84 @@ var import_fs = __toESM(require("fs"), 1);
 var import_path = __toESM(require("path"), 1);
 
 // src/data/aiPromptGuide.ts
-var AI_COMPANION_SPEC_PROMPT_FA = `
-\u0634\u0645\u0627 \u06CC\u06A9 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0645\u062A\u062E\u0635\u0635 \u062F\u0631 \u062A\u062D\u0644\u06CC\u0644 \u067E\u0648\u0634\u0627\u06A9 \u0648 \u0633\u06CC\u0633\u062A\u0645\u200C\u0647\u0627\u06CC \u067E\u0631\u0648 \u0645\u062C\u0627\u0632\u06CC \u0633\u0647\u200C\u0628\u0639\u062F\u06CC (3D VTON Layering Engine) \u0647\u0633\u062A\u06CC\u062F.
-\u0639\u06A9\u0633 \u067E\u06CC\u0648\u0633\u062A\u200C\u0634\u062F\u0647 \u0627\u0632 \u0644\u0628\u0627\u0633 (\u062E\u0631\u0648\u062C\u06CC \u0633\u0647\u200C\u0628\u0639\u062F\u06CC \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0634\u0641\u0627\u0641) \u0631\u0627 \u0628\u0647 \u062F\u0642\u062A \u0622\u0646\u0627\u0644\u06CC\u0632 \u06A9\u0646\u06CC\u062F \u0648 \u0645\u0634\u062E\u0635\u0627\u062A \u06A9\u0627\u0644\u06CC\u0628\u0631\u0627\u0633\u06CC\u0648\u0646 \u0648 \u0627\u0646\u0637\u0628\u0627\u0642 \u067E\u0631\u0648 \u0631\u0627 \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u0642\u0627\u0644\u0628 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0632\u06CC\u0631 \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F. \u0647\u06CC\u0686 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u0647\u200C\u0627\u06CC \u062E\u0627\u0631\u062C \u0627\u0632 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0646\u0646\u0648\u06CC\u0633\u06CC\u062F.
+var GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
+Professional commercial fashion catalog photography of a [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and hollow interior collar revealing inside neck lining and tag.
 
-\u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u062E\u062A\u0635\u0627\u0635\u06CC \u0627\u0633\u0644\u0627\u062A (Slot) \u0648 \u0644\u0627\u06CC\u0647\u200C\u0628\u0646\u062F\u06CC \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0644\u0628\u0627\u0633\u200C\u0647\u0627 (Z-Index Layer Hierarchy):
-\u06F1. \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u062A\u0627\u067E\u060C \u067E\u0648\u0644\u0648\u0634\u0631\u062A (\u0628\u0627\u0644\u0627\u062A\u0646\u0647):
+CAMERA & PERSPECTIVE (MANDATORY ZERO-TILT RULES):
+- Strict 0-degree frontal orthographic eye-level camera view (0\xB0 yaw, 0\xB0 pitch, 0\xB0 roll).
+- Absolutely NO 3/4 angle, NO three-quarter perspective, NO tilted mannequin, NO turned torso.
+- Perfect bilateral mirror symmetry: left and right shoulder seams must be on the EXACT same horizontal pixel line.
+- Both sleeves drape downward symmetrically at identical 15-degree angles from the torso.
+- Bottom hem and waistband are strictly 100% horizontal and level with the ground plane (0\xB0 slope).
+
+FRAMING & CANVASS RATIO:
+- Square 1:1 aspect ratio (1024x1024 pixels).
+- Centered perfectly on canvas with clean margins.
+- Tops: Collar neckline starts at 10% from the top canvas border; bottom hem terminates at 70% from the top border.
+- Bottoms: Waistband starts at 10% from the top border; ankle cuffs terminate at 92% from the top border.
+- Isolated on a pure transparent PNG background (alpha = 0) OR seamless solid pure white studio backdrop (#FFFFFF) with ZERO cast shadows and ZERO floor shadows.
+
+FABRIC & LIGHTING:
+- Ultra-high-resolution realistic fabric texture, natural micro-creases, authentic seams and stitching.
+- Soft diffuse studio high-key lighting, balanced from left and right, completely eliminate one-sided harsh shadows.
+
+NEGATIVE PROMPTS (MUST AVOID):
+3/4 view, three-quarter angle, turned body, tilted shoulders, angled torso, dynamic pose, asymmetrical, slanted hem, skewed perspective, side angle, diagonal horizon, one arm raised, bent pose, human body, skin, face, hands, visible mannequin, dummy stand, hanger, floor shadow, cast shadow, dark background, checkerboard pattern.
+`.trim();
+var GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
+\u062F\u0633\u062A\u0648\u0631\u0627\u0644\u0639\u0645\u0644 \u062A\u0648\u0644\u06CC\u062F \u0639\u06A9\u0633 \u0633\u0647\u200C\u0628\u0639\u062F\u06CC \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC (\u06A9\u0627\u0645\u0644\u0627\u064B \u0635\u0627\u0641 \u0648 \u0645\u0633\u062A\u0642\u06CC\u0645\u060C \u0628\u062F\u0648\u0646 \u06A9\u062C\u06CC \u0648 \u0628\u062F\u0648\u0646 \u0686\u0631\u062E\u0634 \u0628\u062F\u0646\u0647):
+
+\u0627\u06CC\u0646 \u067E\u0631\u0627\u0645\u067E\u062A \u062E\u0637\u0627\u0647\u0627\u06CC \u0631\u0627\u06CC\u062C \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0631\u0627 \u06A9\u0627\u0645\u0644\u0627\u064B \u0645\u0633\u062F\u0648\u062F \u0645\u06CC\u200C\u06A9\u0646\u062F:
+\u06F1. \u0628\u0647 \u0647\u06CC\u0686 \u0648\u062C\u0647 \u0639\u06A9\u0633 \u062F\u0631 \u0632\u0627\u0648\u06CC\u0647 \u06F3/\u06F4 \u0631\u062E \u06CC\u0627 \u06A9\u062C \u062A\u0648\u0644\u06CC\u062F \u0646\u0645\u06CC\u200C\u0634\u0648\u062F (0\xB0 Frontal Orthographic).
+\u06F2. \u0634\u0627\u0646\u0647\u200C\u0647\u0627\u06CC \u0686\u067E \u0648 \u0631\u0627\u0633\u062A \u0648 \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u0644\u0628\u0627\u0633 \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u06CC\u06A9 \u062E\u0637 \u062A\u0631\u0627\u0632 \u0627\u0641\u0642\u06CC \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u0646\u062F.
+\u06F3. \u0644\u0628\u0647 \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0648 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u06A9\u0627\u0645\u0644\u0627\u064B \u0627\u0641\u0642\u06CC \u0648 \u0645\u0648\u0627\u0632\u06CC \u062E\u0637 \u0627\u0641\u0642 \u0647\u0633\u062A\u0646\u062F \u062A\u0627 \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0647\u06CC\u0686 \u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062F\u0633\u062A\u06CC \u0631\u0648\u06CC \u0647\u0645 \u0628\u0646\u0634\u06CC\u0646\u0646\u062F.
+\u06F4. \u062F\u0627\u062E\u0644 \u06CC\u0642\u0647 \u0644\u0628\u0627\u0633 \u062E\u0627\u0644\u06CC \u0648 \u0633\u0647\u200C\u0628\u0639\u062F\u06CC \u0627\u0633\u062A (Ghost Mannequin 3D Interior).
+
+\u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647:
+\u0639\u0628\u0627\u0631\u062A [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] \u062F\u0631 \u0645\u062A\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u0631\u0627 \u0628\u0627 \u0646\u0627\u0645 \u0648 \u0631\u0646\u06AF \u0644\u0628\u0627\u0633\u062A\u0627\u0646 \u0639\u0648\u0636 \u06A9\u0646\u06CC\u062F (\u0645\u062B\u0644\u0627\u064B: beige oversized fleece hoodie) \u0648 \u06A9\u0644 \u067E\u0631\u0627\u0645\u067E\u062A \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u0631\u0627 \u0628\u0647 Gemini\u060C ChatGPT\u060C Midjourney \u06CC\u0627 Flux \u0628\u062F\u0647\u06CC\u062F.
+`.trim();
+var AI_COMPANION_SPEC_PROMPT_FA = `
+\u0634\u0645\u0627 \u06CC\u06A9 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0645\u062A\u062E\u0635\u0635 \u062F\u0631 \u062A\u062D\u0644\u06CC\u0644 \u067E\u0648\u0634\u0627\u06A9 \u0648 \u0633\u06CC\u0633\u062A\u0645\u200C\u0647\u0627\u06CC \u067E\u0631\u0648 \u0645\u062C\u0627\u0632\u06CC \u0633\u0647\u200C\u0628\u0639\u062F\u06CC (3D VTON Auto-Snap Engine) \u0647\u0633\u062A\u06CC\u062F.
+\u0639\u06A9\u0633 \u067E\u06CC\u0648\u0633\u062A\u200C\u0634\u062F\u0647 \u0627\u0632 \u0644\u0628\u0627\u0633 (\u062E\u0631\u0648\u062C\u06CC \u06A9\u0627\u0645\u0644\u0627\u064B \u0645\u0633\u062A\u0642\u06CC\u0645 \u0648 \u0645\u062A\u0642\u0627\u0631\u0646 \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0634\u0641\u0627\u0641) \u0631\u0627 \u0628\u0647 \u062F\u0642\u062A \u0622\u0646\u0627\u0644\u06CC\u0632 \u06A9\u0646\u06CC\u062F \u0648 \u0645\u0634\u062E\u0635\u0627\u062A \u06A9\u0627\u0644\u06CC\u0628\u0631\u0627\u0633\u06CC\u0648\u0646 \u0648 \u0627\u0646\u0637\u0628\u0627\u0642 \u067E\u0631\u0648 \u0631\u0627 \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u0642\u0627\u0644\u0628 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0632\u06CC\u0631 \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F. \u0647\u06CC\u0686 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u0647\u200C\u0627\u06CC \u062E\u0627\u0631\u062C \u0627\u0632 \u0633\u0627\u062E\u062A\u0627\u0631 JSON \u0646\u0646\u0648\u06CC\u0633\u06CC\u062F.
+
+\u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u0646\u0637\u0628\u0627\u0642 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062E\u0637 \u06A9\u0645\u0631 \u0648 \u0644\u0627\u06CC\u0647\u200C\u0628\u0646\u062F\u06CC \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062F\u0633\u062A\u06CC (Auto-Snap Layer Hierarchy):
+\u06F1. \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u0647\u0648\u062F\u06CC\u060C \u067E\u0648\u0644\u0648\u0634\u0631\u062A (\u0628\u0627\u0644\u0627\u062A\u0646\u0647):
    - "slot": "slot_top"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Over Pants Waistband)
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 22, "scale": 1.0, "z_index": 30 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 30)
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
    - "replacement_rules.replaces_slot": "slot_top"
 
 \u06F2. \u0634\u0644\u0648\u0627\u0631\u060C \u062C\u06CC\u0646\u060C \u0627\u0633\u0644\u0634\u060C \u062F\u0627\u0645\u0646\u060C \u0634\u0644\u0648\u0627\u0631\u06A9 (\u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647):
    - "slot": "slot_bottom"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0632\u06CC\u0631 \u0644\u0628\u0647 \u062A\u06CC\u200C\u0634\u0631\u062A \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Under Top Hem)
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 53, "scale": 1.0, "z_index": 20 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u062F\u0642\u06CC\u0642\u0627\u064B \u0632\u06CC\u0631 \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0641\u06CC\u06A9\u0633 \u0645\u06CC\u200C\u0634\u0648\u062F \u0628\u062F\u0648\u0646 \u0647\u06CC\u0686 \u0641\u0627\u0635\u0644\u0647\u200C\u0627\u06CC (Z-Index: 20)
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
    - "replacement_rules.replaces_slot": "slot_bottom"
 
-\u06F3. \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646\u060C \u067E\u0627\u0644\u062A\u0648\u060C \u0628\u0627\u0631\u0627\u0646\u06CC\u060C \u0647\u0648\u062F\u06CC (\u0644\u0628\u0627\u0633\u200C\u0631\u0648):
+\u06F3. \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646\u060C \u067E\u0627\u0644\u062A\u0648\u060C \u0628\u0627\u0631\u0627\u0646\u06CC\u060C \u0633\u0648\u06CC\u0634\u0631\u062A (\u0644\u0628\u0627\u0633\u200C\u0631\u0648):
    - "slot": "slot_outer"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0648 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Over Top & Bottom)
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 20, "scale": 1.05, "z_index": 40 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0648 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 40)
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
 \u06F4. \u06A9\u0641\u0634\u060C \u06A9\u062A\u0627\u0646\u06CC\u060C \u0628\u0648\u062A\u060C \u0646\u06CC\u0645\u200C\u0628\u0648\u062A (\u06A9\u0641\u0634):
    - "slot": "slot_shoes"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0632\u06CC\u0631 \u067E\u0627\u06CC \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Ground baseline)
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.85, "z_index": 10 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0632\u06CC\u0631 \u067E\u0627\u06CC \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 10)
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
    - "replacement_rules.replaces_slot": "slot_shoes"
 
 \u0633\u0627\u062E\u062A\u0627\u0631 \u062E\u0631\u0648\u062C\u06CC JSON \u06A9\u0647 \u0628\u0627\u06CC\u062F \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F:
 \`\`\`json
 {
-  "garment_id": "\u0634\u0646\u0627\u0633\u0647 \u0645\u0646\u062D\u0635\u0631\u0628\u0641\u0631\u062F\u060C \u0645\u062B\u0644\u0627: TOP-TSHIRT-01 \u06CC\u0627 PNT-JEAN-02",
-  "name_fa": "\u0646\u0627\u0645 \u062F\u0642\u06CC\u0642 \u0641\u0627\u0631\u0633\u06CC \u0628\u0631 \u0627\u0633\u0627\u0633 \u0631\u0646\u06AF \u0648 \u062C\u0646\u0633 \u0648 \u0637\u0631\u062D \u062F\u0631 \u0639\u06A9\u0633",
+  "garment_id": "\u0634\u0646\u0627\u0633\u0647\u060C \u0645\u062B\u0644\u0627: TOP-TSH-01 \u06CC\u0627 PNT-JEAN-02",
+  "name_fa": "\u0646\u0627\u0645 \u062F\u0642\u06CC\u0642 \u0641\u0627\u0631\u0633\u06CC \u0644\u0628\u0627\u0633 \u0628\u0631 \u0627\u0633\u0627\u0633 \u0639\u06A9\u0633 (\u0645\u062B\u0644\u0627: \u0647\u0648\u062F\u06CC \u06A9\u0644\u0627\u0647\u200C\u062F\u0627\u0631 \u062F\u0648\u0631\u0633 \u0628\u0698)",
   "name_en": "English Product Name",
-  "category": "tshirt" | "shirt" | "hoodie" | "sweater" | "pants" | "jeans" | "shorts" | "skirt" | "jacket" | "coat" | "shoes" | "accessory",
+  "category": "tshirt" | "shirt" | "hoodie" | "sweater" | "pants" | "jeans" | "shorts" | "skirt" | "jacket" | "coat" | "shoes",
   "slot": "slot_top" | "slot_bottom" | "slot_outer" | "slot_shoes",
   "layer_level": "mid_top" | "bottom" | "outerwear" | "shoes",
   "placement": {
     "anchor": "torso" | "waist" | "shoulders" | "feet",
     "offset_x_percent": 0,
-    "offset_y_percent": 22,
+    "offset_y_percent": 30,
     "scale": 1.0,
     "z_index": 30
   },
@@ -24531,48 +24567,40 @@ var AI_COMPANION_SPEC_PROMPT_FA = `
   },
   "style_details": {
     "primary_color_fa": "\u0646\u0627\u0645 \u0631\u0646\u06AF \u0627\u0635\u0644\u06CC \u0641\u0627\u0631\u0633\u06CC",
-    "primary_color_en": "Color Name in English",
+    "primary_color_en": "Color in English",
     "color_hex": "#RRGGBB",
-    "fabric_type": "\u062C\u0646\u0633 \u067E\u0627\u0631\u0686\u0647 (\u0645\u062B\u0644\u0627: \u0646\u062E \u067E\u0646\u0628\u0647 \u06F1\u06F0\u06F0\u066A\u060C \u062F\u0646\u06CC\u0645 \u06A9\u0634\u0633\u0627\u0646\u060C \u0686\u0631\u0645\u060C \u0641\u0648\u062A\u0631)",
+    "fabric_type": "\u062C\u0646\u0633 \u067E\u0627\u0631\u0686\u0647 (\u0645\u062B\u0644\u0627: \u062F\u0648\u0631\u0633 \u067E\u0646\u0628\u0647\u060C \u062F\u0646\u06CC\u0645 \u0633\u0646\u06AF\u0634\u0648\u0631\u060C \u06A9\u062A\u0627\u0646)",
     "fit_style": "regular" | "oversized" | "slim" | "relaxed",
     "season": "spring_summer" | "fall_winter" | "all_season",
-    "estimated_price_toman": 850000
+    "estimated_price_toman": 1450000
   }
 }
 \`\`\`
 `.trim();
 var AI_COMPANION_SPEC_PROMPT_EN = `
 You are a Fashion AI and 3D Virtual Try-On Calibration Engine.
-Analyze the attached 3D ghost mannequin clothing photograph and output a strict JSON calibration file according to the VTON Slot Replacement Architecture.
+Analyze the attached symmetrical front-facing 3D clothing photograph and output a strict JSON calibration file according to the VTON Auto-Snap Layering Architecture.
 Return ONLY valid JSON with no markdown wrapping.
 
-SLOT SPECIFICATIONS & LAYER HIERARCHY:
-1. Tops (T-shirt, shirt, polo, blouse, knit):
+CANONICAL ANCHOR POSITIONS (ZERO-ADJUSTMENT SNAP):
+1. Tops / Hoodies / Shirts:
    - "slot": "slot_top"
-   - "placement.anchor": "torso"
-   - "placement.offset_y_percent": 22
-   - "placement.z_index": 30 (Sits OVER pants waistband)
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.0, "z_index": 30 }
    - "replaces_slot": "slot_top"
 
-2. Bottoms (Pants, jeans, trousers, skirts, shorts):
+2. Bottoms / Pants / Jeans:
    - "slot": "slot_bottom"
-   - "placement.anchor": "waist"
-   - "placement.offset_y_percent": 53
-   - "placement.z_index": 20 (Sits UNDER top hem)
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
    - "replaces_slot": "slot_bottom"
 
-3. Outerwear (Jacket, coat, hoodie, blazer, cardigan):
+3. Outerwear / Jackets / Coats:
    - "slot": "slot_outer"
-   - "placement.anchor": "shoulders"
-   - "placement.offset_y_percent": 20
-   - "placement.z_index": 40 (Sits OVER top and bottom)
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 30, "scale": 1.05, "z_index": 40 }
    - "replaces_slot": "slot_outer"
 
-4. Footwear (Shoes, sneakers, boots):
+4. Footwear / Shoes:
    - "slot": "slot_shoes"
-   - "placement.anchor": "feet"
-   - "placement.offset_y_percent": 84
-   - "placement.z_index": 10
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 88, "scale": 0.85, "z_index": 10 }
    - "replaces_slot": "slot_shoes"
 `.trim();
 function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0633 \u062C\u062F\u06CC\u062F") {
@@ -24596,13 +24624,20 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     slot = "slot_top";
   }
   const defaultPlacement = {
-    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1, z_index: 30 },
-    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 20, scale: 1.05, z_index: 40 },
-    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
+    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
-  const customOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
+  let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
+  if (slot === "slot_bottom" && (targetOffsetY > 68 || targetOffsetY < 55)) {
+    targetOffsetY = 64;
+  } else if ((slot === "slot_top" || slot === "slot_outer") && (targetOffsetY < 24 || targetOffsetY > 38)) {
+    targetOffsetY = 30;
+  } else if (slot === "slot_shoes" && (targetOffsetY < 80 || targetOffsetY > 95)) {
+    targetOffsetY = 88;
+  }
   const customScale = typeof json.placement?.scale === "number" ? json.placement.scale : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === "number" ? json.placement.z_index : defaultPlacement.z_index;
   return {
@@ -24615,7 +24650,7 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     placement: {
       anchor: json.placement?.anchor || defaultPlacement.anchor,
       offset_x_percent: 0,
-      offset_y_percent: customOffsetY,
+      offset_y_percent: targetOffsetY,
       scale: customScale,
       z_index: customZIndex
     },
@@ -24674,9 +24709,10 @@ var INITIAL_STORES = [
     createdAt: "2026-03-01T10:00:00Z"
   }
 ];
+var toSvg = (svg) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
 var SVG_ASSETS = {
   // 1. Tops
-  whiteCrewTee: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  whiteCrewTee: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="teeG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffffff"/>
@@ -24697,8 +24733,8 @@ var SVG_ASSETS = {
       <path d="M 130,165 Q 150,260 145,340" stroke="#d1d5db" stroke-width="1.5" fill="none"/>
       <path d="M 270,165 Q 250,260 255,340" stroke="#d1d5db" stroke-width="1.5" fill="none"/>
     </g>
-  </svg>`,
-  blackOversizedTee: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  </svg>`),
+  blackOversizedTee: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="bTeeG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2a2a2e"/>
@@ -24715,8 +24751,8 @@ var SVG_ASSETS = {
       <path d="M 132,55 Q 200,85 268,55" fill="none" stroke="#52525b" stroke-width="2.5"/>
       <path d="M 195,120 L 195,350" stroke="#27272a" stroke-width="1" stroke-dasharray="3,3"/>
     </g>
-  </svg>`,
-  blueOxfordShirt: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  </svg>`),
+  blueOxfordShirt: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="shG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#93c5fd"/>
@@ -24736,9 +24772,9 @@ var SVG_ASSETS = {
       <circle cx="200" cy="240" r="4" fill="#ffffff" stroke="#1e40af" stroke-width="1"/>
       <circle cx="200" cy="300" r="4" fill="#ffffff" stroke="#1e40af" stroke-width="1"/>
     </g>
-  </svg>`,
+  </svg>`),
   // 2. Bottoms
-  blueJeans: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  blueJeans: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="jeanG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#3b82f6"/>
@@ -24760,8 +24796,8 @@ var SVG_ASSETS = {
       <path d="M 295,75 Q 250,95 225,75" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
       <circle cx="190" cy="50" r="4" fill="#f59e0b"/>
     </g>
-  </svg>`,
-  blackTrousers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  </svg>`),
+  blackTrousers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="trG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#27272a"/>
@@ -24776,8 +24812,8 @@ var SVG_ASSETS = {
       <line x1="120" y1="80" x2="120" y2="480" stroke="#3f3f46" stroke-width="1.5"/>
       <line x1="260" y1="80" x2="260" y2="480" stroke="#3f3f46" stroke-width="1.5"/>
     </g>
-  </svg>`,
-  cargoPants: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  </svg>`),
+  cargoPants: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="cgG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#475569"/>
@@ -24792,9 +24828,9 @@ var SVG_ASSETS = {
       <rect x="60" y="220" width="35" height="60" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
       <rect x="285" y="220" width="35" height="60" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
     </g>
-  </svg>`,
+  </svg>`),
   // 3. Outerwear (Layer 40)
-  blackDenimJacket: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="100%" height="100%">
+  blackDenimJacket: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="100%" height="100%">
     <defs>
       <linearGradient id="jktG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2d3748"/>
@@ -24816,8 +24852,8 @@ var SVG_ASSETS = {
       <rect x="135" y="160" width="45" height="40" rx="3" fill="#1f2937" stroke="#6b7280" stroke-width="1.5"/>
       <rect x="260" y="160" width="45" height="40" rx="3" fill="#1f2937" stroke="#6b7280" stroke-width="1.5"/>
     </g>
-  </svg>`,
-  camelOvercoat: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 520" width="100%" height="100%">
+  </svg>`),
+  camelOvercoat: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 520" width="100%" height="100%">
     <defs>
       <linearGradient id="coatG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#b4834b"/>
@@ -24832,9 +24868,9 @@ var SVG_ASSETS = {
       <polygon points="300,40 220,90 270,180 315,60" fill="#c9955c" stroke="#603813" stroke-width="2"/>
       <line x1="220" y1="180" x2="220" y2="495" stroke="#4a2800" stroke-width="2.5"/>
     </g>
-  </svg>`,
+  </svg>`),
   // 4. Shoes (Layer 10)
-  whiteSneakers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
+  whiteSneakers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
     <defs>
       <linearGradient id="snkG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffffff"/>
@@ -24853,8 +24889,8 @@ var SVG_ASSETS = {
       <path d="M 340,60 Q 300,50 260,70 L 220,90 Q 210,110 215,130 L 350,135 Q 360,90 340,60 Z" fill="url(#snkG)" stroke="#d1d5db" stroke-width="2"/>
       <rect x="210" y="130" width="145" height="18" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
     </g>
-  </svg>`,
-  blackLoafers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
+  </svg>`),
+  blackLoafers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
     <defs>
       <linearGradient id="lfG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#27272a"/>
@@ -24872,7 +24908,7 @@ var SVG_ASSETS = {
       <rect x="205" y="135" width="145" height="14" rx="3" fill="#18181b" stroke="#52525b" stroke-width="1.5"/>
       <rect x="270" y="75" width="25" height="8" rx="2" fill="#d4af37"/>
     </g>
-  </svg>`
+  </svg>`)
 };
 var INITIAL_PRODUCTS = [
   // --- ZARA MODERN STUDIO (store-zara) ---
@@ -24885,14 +24921,14 @@ var INITIAL_PRODUCTS = [
     category: "tshirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.whiteCrewTee,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-TSH-001",
       name_fa: "\u062A\u06CC\u200C\u0634\u0631\u062A \u0646\u062E\u06CC \u0628\u06CC\u0633\u06CC\u06A9 \u0633\u0641\u06CC\u062F",
       name_en: "Basic Cotton Crewneck White Tee",
       slot: "slot_top",
       category: "tshirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
       style_details: { primary_color_fa: "\u0633\u0641\u06CC\u062F \u0635\u062F\u0641\u06CC", primary_color_en: "Optic White", color_hex: "#ffffff", fabric_type: "\u06F1\u06F0\u06F0\u066A \u0646\u062E \u067E\u0646\u0628\u0647 \u0627\u0631\u06AF\u0627\u0646\u06CC\u06A9", estimated_price_toman: 68e4 }
     }),
     createdAt: "2026-01-11T12:00:00Z"
@@ -24906,14 +24942,14 @@ var INITIAL_PRODUCTS = [
     category: "jeans",
     slot: "slot_bottom",
     imageUrl: SVG_ASSETS.blueJeans,
-    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-JNS-002",
       name_fa: "\u0634\u0644\u0648\u0627\u0631 \u062C\u06CC\u0646 \u0631\u0627\u0633\u062A\u0647 \u0646\u06CC\u0644",
       name_en: "Straight Fit Indigo Jeans",
       slot: "slot_bottom",
       category: "jeans",
-      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
       style_details: { primary_color_fa: "\u0622\u0628\u06CC \u0646\u06CC\u0644 \u0645\u062A\u0648\u0633\u0637", primary_color_en: "Mid Indigo Blue", color_hex: "#1d4ed8", fabric_type: "\u062F\u0646\u06CC\u0645 \u06F1\u06F2.\u06F5 \u0627\u0648\u0646\u0633\u06CC", estimated_price_toman: 145e4 }
     }),
     createdAt: "2026-01-11T12:05:00Z"
@@ -24927,14 +24963,14 @@ var INITIAL_PRODUCTS = [
     category: "jacket",
     slot: "slot_outer",
     imageUrl: SVG_ASSETS.blackDenimJacket,
-    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 20, scale: 1.05, z_index: 40 },
+    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-JKT-003",
       name_fa: "\u06A9\u062A \u062F\u0646\u06CC\u0645 \u0633\u0646\u06AF\u0634\u0648\u0631 \u0645\u0634\u06A9\u06CC",
       name_en: "Washed Black Denim Trucker Jacket",
       slot: "slot_outer",
       category: "jacket",
-      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 20, scale: 1.05, z_index: 40 },
+      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0632\u063A\u0627\u0644\u06CC", primary_color_en: "Washed Charcoal", color_hex: "#1f2937", fabric_type: "\u062C\u06CC\u0646 \u0633\u0646\u06AF\u0634\u0648\u0631 \u0636\u062E\u06CC\u0645", estimated_price_toman: 215e4 }
     }),
     createdAt: "2026-01-11T12:10:00Z"
@@ -24948,14 +24984,14 @@ var INITIAL_PRODUCTS = [
     category: "shoes",
     slot: "slot_shoes",
     imageUrl: SVG_ASSETS.whiteSneakers,
-    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-SHS-004",
       name_fa: "\u06A9\u062A\u0627\u0646\u06CC \u0644\u0698\u062F\u0627\u0631 \u0686\u0631\u0645 \u0633\u0641\u06CC\u062F",
       name_en: "White Platform Minimalist Leather Sneakers",
       slot: "slot_shoes",
       category: "shoes",
-      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
       style_details: { primary_color_fa: "\u0633\u0641\u06CC\u062F \u062E\u0627\u0644\u0635", primary_color_en: "Pure White", color_hex: "#f8fafc", fabric_type: "\u0686\u0631\u0645 \u0645\u0635\u0646\u0648\u0639\u06CC \u0648 \u06A9\u0641\u06CC EVA", estimated_price_toman: 185e4 }
     }),
     createdAt: "2026-01-11T12:15:00Z"
@@ -24970,14 +25006,14 @@ var INITIAL_PRODUCTS = [
     category: "tshirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.blackOversizedTee,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1.02, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "HRJ-TSH-010",
       name_fa: "\u062A\u06CC\u200C\u0634\u0631\u062A \u0644\u0634 \u0627\u0648\u0631\u0633\u0627\u06CC\u0632 \u0645\u0634\u06A9\u06CC \u0645\u0627\u062A",
       name_en: "Boxy Heavyweight Matte Black Tee",
       slot: "slot_top",
       category: "tshirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1.02, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0645\u0627\u062A", primary_color_en: "Matte Black", color_hex: "#18181b", fabric_type: "\u0646\u062E \u06F2\u06F8\u06F0 \u06AF\u0631\u0645\u06CC \u067E\u0646\u0628\u0647", estimated_price_toman: 79e4 }
     }),
     createdAt: "2026-02-16T10:00:00Z"
@@ -24991,14 +25027,14 @@ var INITIAL_PRODUCTS = [
     category: "pants",
     slot: "slot_bottom",
     imageUrl: SVG_ASSETS.cargoPants,
-    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: "HRJ-CRG-011",
       name_fa: "\u0634\u0644\u0648\u0627\u0631 \u06A9\u0627\u0631\u06AF\u0648 \u0686\u0646\u062F\u062C\u06CC\u0628 \u0637\u0648\u0633\u06CC \u062A\u06CC\u0631\u0647",
       name_en: "Multi-Pocket Tactical Cargo Trousers",
       slot: "slot_bottom",
       category: "pants",
-      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
       style_details: { primary_color_fa: "\u0637\u0648\u0633\u06CC \u062A\u06CC\u0631\u0647 \u0645\u062A\u0627\u0644\u06CC\u06A9", primary_color_en: "Slate Dark Grey", color_hex: "#334155", fabric_type: "\u06A9\u062A\u0627\u0646 \u0631\u06CC\u067E\u200C\u0627\u0633\u062A\u0627\u067E \u0636\u062F\u0633\u0627\u06CC\u0634", estimated_price_toman: 168e4 }
     }),
     createdAt: "2026-02-16T10:10:00Z"
@@ -25013,14 +25049,14 @@ var INITIAL_PRODUCTS = [
     category: "shirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.blueOxfordShirt,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-SHR-020",
       name_fa: "\u067E\u06CC\u0631\u0627\u0647\u0646 \u0631\u0633\u0645\u06CC \u0622\u06A9\u0633\u0641\u0648\u0631\u062F \u0622\u0628\u06CC \u0622\u0633\u0645\u0627\u0646\u06CC",
       name_en: "Classic Sky Blue Two-Ply Oxford Shirt",
       slot: "slot_top",
       category: "shirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 22, scale: 1, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
       style_details: { primary_color_fa: "\u0622\u0628\u06CC \u0631\u0648\u0634\u0646", primary_color_en: "Sky Blue", color_hex: "#60a5fa", fabric_type: "\u0622\u06A9\u0633\u0641\u0648\u0631\u062F \u062F\u0648\u0644\u0627\u06CC \u067E\u0646\u0628\u0647 \u0645\u0635\u0631\u06CC", estimated_price_toman: 125e4 }
     }),
     createdAt: "2026-03-02T09:00:00Z"
@@ -25034,14 +25070,14 @@ var INITIAL_PRODUCTS = [
     category: "pants",
     slot: "slot_bottom",
     imageUrl: SVG_ASSETS.blackTrousers,
-    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+    placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-TRS-021",
       name_fa: "\u0634\u0644\u0648\u0627\u0631 \u067E\u0627\u0631\u0686\u0647\u200C\u0627\u06CC \u0631\u0627\u0633\u062A\u0647 \u0645\u0634\u06A9\u06CC \u0631\u0633\u0645\u06CC",
       name_en: "Tailored Wool-Blend Straight Trousers",
       slot: "slot_bottom",
       category: "pants",
-      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 53, scale: 1, z_index: 20 },
+      placement: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 64, scale: 1, z_index: 20 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0631\u0633\u0645\u06CC", primary_color_en: "Formal Noir", color_hex: "#18181b", fabric_type: "\u0641\u0627\u0633\u062A\u0648\u0646\u06CC \u0648 \u067E\u0634\u0645 \u0645\u0631\u06CC\u0646\u0648\u0633", estimated_price_toman: 189e4 }
     }),
     createdAt: "2026-03-02T09:10:00Z"
@@ -25055,14 +25091,14 @@ var INITIAL_PRODUCTS = [
     category: "coat",
     slot: "slot_outer",
     imageUrl: SVG_ASSETS.camelOvercoat,
-    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 19, scale: 1.06, z_index: 40 },
+    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-COT-022",
       name_fa: "\u067E\u0627\u0644\u062A\u0648 \u067E\u0634\u0645\u06CC \u0634\u062A\u0631\u06CC \u06A9\u0644\u0627\u0633\u06CC\u06A9",
       name_en: "Classic Camel Wool Hand-Tailored Overcoat",
       slot: "slot_outer",
       category: "coat",
-      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 19, scale: 1.06, z_index: 40 },
+      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
       style_details: { primary_color_fa: "\u0634\u062A\u0631\u06CC \u0627\u0639\u0644\u0627", primary_color_en: "Camel Tan", color_hex: "#9a6933", fabric_type: "\u067E\u0634\u0645 \u0648 \u06A9\u0634\u0645\u06CC\u0631 \u06F9\u06F0/\u06F1\u06F0", estimated_price_toman: 385e4 }
     }),
     createdAt: "2026-03-02T09:15:00Z"
@@ -25076,14 +25112,14 @@ var INITIAL_PRODUCTS = [
     category: "shoes",
     slot: "slot_shoes",
     imageUrl: SVG_ASSETS.blackLoafers,
-    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-LFR-023",
       name_fa: "\u06A9\u0641\u0634 \u0644\u0648\u0641\u0631 \u0686\u0631\u0645 \u0637\u0628\u06CC\u0639\u06CC \u0645\u0634\u06A9\u06CC",
       name_en: "Handmade Black Calfskin Leather Loafers",
       slot: "slot_shoes",
       category: "shoes",
-      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0628\u0631\u0627\u0642", primary_color_en: "Black Polish", color_hex: "#18181b", fabric_type: "\u0686\u0631\u0645 \u0637\u0628\u06CC\u0639\u06CC \u06AF\u0648\u0633\u0627\u0644\u0647 \u0648 \u0633\u06AF\u06A9 \u0627\u0633\u062A\u06CC\u0644", estimated_price_toman: 245e4 }
     }),
     createdAt: "2026-03-02T09:20:00Z"

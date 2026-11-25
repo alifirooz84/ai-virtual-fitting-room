@@ -40,10 +40,13 @@ export const INITIAL_STORES: StoreProfile[] = [
   },
 ];
 
+// Helper to safely encode SVGs into valid data URIs that work in all browsers without fragment hash truncation
+const toSvg = (svg: string) => `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
+
 // High quality transparent SVG clothing assets
 const SVG_ASSETS = {
   // 1. Tops
-  whiteCrewTee: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  whiteCrewTee: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="teeG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffffff"/>
@@ -64,9 +67,9 @@ const SVG_ASSETS = {
       <path d="M 130,165 Q 150,260 145,340" stroke="#d1d5db" stroke-width="1.5" fill="none"/>
       <path d="M 270,165 Q 250,260 255,340" stroke="#d1d5db" stroke-width="1.5" fill="none"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  blackOversizedTee: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  blackOversizedTee: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="bTeeG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2a2a2e"/>
@@ -83,9 +86,9 @@ const SVG_ASSETS = {
       <path d="M 132,55 Q 200,85 268,55" fill="none" stroke="#52525b" stroke-width="2.5"/>
       <path d="M 195,120 L 195,350" stroke="#27272a" stroke-width="1" stroke-dasharray="3,3"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  blueOxfordShirt: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
+  blueOxfordShirt: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 450" width="100%" height="100%">
     <defs>
       <linearGradient id="shG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#93c5fd"/>
@@ -105,10 +108,10 @@ const SVG_ASSETS = {
       <circle cx="200" cy="240" r="4" fill="#ffffff" stroke="#1e40af" stroke-width="1"/>
       <circle cx="200" cy="300" r="4" fill="#ffffff" stroke="#1e40af" stroke-width="1"/>
     </g>
-  </svg>`,
+  </svg>`),
 
   // 2. Bottoms
-  blueJeans: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  blueJeans: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="jeanG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#3b82f6"/>
@@ -130,9 +133,9 @@ const SVG_ASSETS = {
       <path d="M 295,75 Q 250,95 225,75" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
       <circle cx="190" cy="50" r="4" fill="#f59e0b"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  blackTrousers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  blackTrousers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="trG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#27272a"/>
@@ -147,9 +150,9 @@ const SVG_ASSETS = {
       <line x1="120" y1="80" x2="120" y2="480" stroke="#3f3f46" stroke-width="1.5"/>
       <line x1="260" y1="80" x2="260" y2="480" stroke="#3f3f46" stroke-width="1.5"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  cargoPants: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
+  cargoPants: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 520" width="100%" height="100%">
     <defs>
       <linearGradient id="cgG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#475569"/>
@@ -164,10 +167,10 @@ const SVG_ASSETS = {
       <rect x="60" y="220" width="35" height="60" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
       <rect x="285" y="220" width="35" height="60" rx="4" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
     </g>
-  </svg>`,
+  </svg>`),
 
   // 3. Outerwear (Layer 40)
-  blackDenimJacket: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="100%" height="100%">
+  blackDenimJacket: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 460" width="100%" height="100%">
     <defs>
       <linearGradient id="jktG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2d3748"/>
@@ -189,9 +192,9 @@ const SVG_ASSETS = {
       <rect x="135" y="160" width="45" height="40" rx="3" fill="#1f2937" stroke="#6b7280" stroke-width="1.5"/>
       <rect x="260" y="160" width="45" height="40" rx="3" fill="#1f2937" stroke="#6b7280" stroke-width="1.5"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  camelOvercoat: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 520" width="100%" height="100%">
+  camelOvercoat: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 520" width="100%" height="100%">
     <defs>
       <linearGradient id="coatG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#b4834b"/>
@@ -206,10 +209,10 @@ const SVG_ASSETS = {
       <polygon points="300,40 220,90 270,180 315,60" fill="#c9955c" stroke="#603813" stroke-width="2"/>
       <line x1="220" y1="180" x2="220" y2="495" stroke="#4a2800" stroke-width="2.5"/>
     </g>
-  </svg>`,
+  </svg>`),
 
   // 4. Shoes (Layer 10)
-  whiteSneakers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
+  whiteSneakers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
     <defs>
       <linearGradient id="snkG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffffff"/>
@@ -228,9 +231,9 @@ const SVG_ASSETS = {
       <path d="M 340,60 Q 300,50 260,70 L 220,90 Q 210,110 215,130 L 350,135 Q 360,90 340,60 Z" fill="url(#snkG)" stroke="#d1d5db" stroke-width="2"/>
       <rect x="210" y="130" width="145" height="18" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
     </g>
-  </svg>`,
+  </svg>`),
 
-  blackLoafers: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
+  blackLoafers: toSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="100%" height="100%">
     <defs>
       <linearGradient id="lfG" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#27272a"/>
@@ -248,7 +251,7 @@ const SVG_ASSETS = {
       <rect x="205" y="135" width="145" height="14" rx="3" fill="#18181b" stroke="#52525b" stroke-width="1.5"/>
       <rect x="270" y="75" width="25" height="8" rx="2" fill="#d4af37"/>
     </g>
-  </svg>`,
+  </svg>`),
 };
 
 export const INITIAL_PRODUCTS: ClothingProduct[] = [
@@ -262,14 +265,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'tshirt',
     slot: 'slot_top',
     imageUrl: SVG_ASSETS.whiteCrewTee,
-    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.0, z_index: 30 },
+    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'ZAR-TSH-001',
       name_fa: 'تی‌شرت نخی بیسیک سفید',
       name_en: 'Basic Cotton Crewneck White Tee',
       slot: 'slot_top',
       category: 'tshirt',
-      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.0, z_index: 30 },
+      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
       style_details: { primary_color_fa: 'سفید صدفی', primary_color_en: 'Optic White', color_hex: '#ffffff', fabric_type: '۱۰۰٪ نخ پنبه ارگانیک', estimated_price_toman: 680000 },
     }),
     createdAt: '2026-01-11T12:00:00Z',
@@ -283,14 +286,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'jeans',
     slot: 'slot_bottom',
     imageUrl: SVG_ASSETS.blueJeans,
-    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'ZAR-JNS-002',
       name_fa: 'شلوار جین راسته نیل',
       name_en: 'Straight Fit Indigo Jeans',
       slot: 'slot_bottom',
       category: 'jeans',
-      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
       style_details: { primary_color_fa: 'آبی نیل متوسط', primary_color_en: 'Mid Indigo Blue', color_hex: '#1d4ed8', fabric_type: 'دنیم ۱۲.۵ اونسی', estimated_price_toman: 1450000 },
     }),
     createdAt: '2026-01-11T12:05:00Z',
@@ -304,14 +307,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'jacket',
     slot: 'slot_outer',
     imageUrl: SVG_ASSETS.blackDenimJacket,
-    placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 20, scale: 1.05, z_index: 40 },
+    placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'ZAR-JKT-003',
       name_fa: 'کت دنیم سنگشور مشکی',
       name_en: 'Washed Black Denim Trucker Jacket',
       slot: 'slot_outer',
       category: 'jacket',
-      placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 20, scale: 1.05, z_index: 40 },
+      placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
       style_details: { primary_color_fa: 'مشکی زغالی', primary_color_en: 'Washed Charcoal', color_hex: '#1f2937', fabric_type: 'جین سنگشور ضخیم', estimated_price_toman: 2150000 },
     }),
     createdAt: '2026-01-11T12:10:00Z',
@@ -325,14 +328,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'shoes',
     slot: 'slot_shoes',
     imageUrl: SVG_ASSETS.whiteSneakers,
-    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'ZAR-SHS-004',
       name_fa: 'کتانی لژدار چرم سفید',
       name_en: 'White Platform Minimalist Leather Sneakers',
       slot: 'slot_shoes',
       category: 'shoes',
-      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
       style_details: { primary_color_fa: 'سفید خالص', primary_color_en: 'Pure White', color_hex: '#f8fafc', fabric_type: 'چرم مصنوعی و کفی EVA', estimated_price_toman: 1850000 },
     }),
     createdAt: '2026-01-11T12:15:00Z',
@@ -348,14 +351,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'tshirt',
     slot: 'slot_top',
     imageUrl: SVG_ASSETS.blackOversizedTee,
-    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.02, z_index: 30 },
+    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'HRJ-TSH-010',
       name_fa: 'تی‌شرت لش اورسایز مشکی مات',
       name_en: 'Boxy Heavyweight Matte Black Tee',
       slot: 'slot_top',
       category: 'tshirt',
-      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.02, z_index: 30 },
+      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
       style_details: { primary_color_fa: 'مشکی مات', primary_color_en: 'Matte Black', color_hex: '#18181b', fabric_type: 'نخ ۲۸۰ گرمی پنبه', estimated_price_toman: 790000 },
     }),
     createdAt: '2026-02-16T10:00:00Z',
@@ -369,14 +372,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'pants',
     slot: 'slot_bottom',
     imageUrl: SVG_ASSETS.cargoPants,
-    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'HRJ-CRG-011',
       name_fa: 'شلوار کارگو چندجیب طوسی تیره',
       name_en: 'Multi-Pocket Tactical Cargo Trousers',
       slot: 'slot_bottom',
       category: 'pants',
-      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
       style_details: { primary_color_fa: 'طوسی تیره متالیک', primary_color_en: 'Slate Dark Grey', color_hex: '#334155', fabric_type: 'کتان ریپ‌استاپ ضدسایش', estimated_price_toman: 1680000 },
     }),
     createdAt: '2026-02-16T10:10:00Z',
@@ -392,14 +395,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'shirt',
     slot: 'slot_top',
     imageUrl: SVG_ASSETS.blueOxfordShirt,
-    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.0, z_index: 30 },
+    placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'NLF-SHR-020',
       name_fa: 'پیراهن رسمی آکسفورد آبی آسمانی',
       name_en: 'Classic Sky Blue Two-Ply Oxford Shirt',
       slot: 'slot_top',
       category: 'shirt',
-      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 22, scale: 1.0, z_index: 30 },
+      placement: { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 30, scale: 1.0, z_index: 30 },
       style_details: { primary_color_fa: 'آبی روشن', primary_color_en: 'Sky Blue', color_hex: '#60a5fa', fabric_type: 'آکسفورد دولای پنبه مصری', estimated_price_toman: 1250000 },
     }),
     createdAt: '2026-03-02T09:00:00Z',
@@ -413,14 +416,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'pants',
     slot: 'slot_bottom',
     imageUrl: SVG_ASSETS.blackTrousers,
-    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+    placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'NLF-TRS-021',
       name_fa: 'شلوار پارچه‌ای راسته مشکی رسمی',
       name_en: 'Tailored Wool-Blend Straight Trousers',
       slot: 'slot_bottom',
       category: 'pants',
-      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 53, scale: 1.0, z_index: 20 },
+      placement: { anchor: 'waist', offset_x_percent: 0, offset_y_percent: 64, scale: 1.0, z_index: 20 },
       style_details: { primary_color_fa: 'مشکی رسمی', primary_color_en: 'Formal Noir', color_hex: '#18181b', fabric_type: 'فاستونی و پشم مرینوس', estimated_price_toman: 1890000 },
     }),
     createdAt: '2026-03-02T09:10:00Z',
@@ -434,14 +437,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'coat',
     slot: 'slot_outer',
     imageUrl: SVG_ASSETS.camelOvercoat,
-    placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 19, scale: 1.06, z_index: 40 },
+    placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'NLF-COT-022',
       name_fa: 'پالتو پشمی شتری کلاسیک',
       name_en: 'Classic Camel Wool Hand-Tailored Overcoat',
       slot: 'slot_outer',
       category: 'coat',
-      placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 19, scale: 1.06, z_index: 40 },
+      placement: { anchor: 'shoulders', offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
       style_details: { primary_color_fa: 'شتری اعلا', primary_color_en: 'Camel Tan', color_hex: '#9a6933', fabric_type: 'پشم و کشمیر ۹۰/۱۰', estimated_price_toman: 3850000 },
     }),
     createdAt: '2026-03-02T09:15:00Z',
@@ -455,14 +458,14 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     category: 'shoes',
     slot: 'slot_shoes',
     imageUrl: SVG_ASSETS.blackLoafers,
-    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'NLF-LFR-023',
       name_fa: 'کفش لوفر چرم طبیعی مشکی',
       name_en: 'Handmade Black Calfskin Leather Loafers',
       slot: 'slot_shoes',
       category: 'shoes',
-      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 84, scale: 0.85, z_index: 10 },
+      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
       style_details: { primary_color_fa: 'مشکی براق', primary_color_en: 'Black Polish', color_hex: '#18181b', fabric_type: 'چرم طبیعی گوساله و سگک استیل', estimated_price_toman: 2450000 },
     }),
     createdAt: '2026-03-02T09:20:00Z',

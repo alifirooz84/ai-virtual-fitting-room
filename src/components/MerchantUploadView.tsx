@@ -48,11 +48,13 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const [parsedSpec, setParsedSpec] = useState<GarmentAiSpec | null>(null);
   const [jsonError, setJsonError] = useState<string | null>(null);
 
-  // 3. Real-time Calibration Adjustments
-  const [offsetY, setOffsetY] = useState<number>(22);
+  // 3. Real-time Calibration Adjustments (Auto-Snap Standard Coordinates)
+  const [offsetY, setOffsetY] = useState<number>(30);
   const [scale, setScale] = useState<number>(1.0);
   const [customTitle, setCustomTitle] = useState<string>('');
   const [customPrice, setCustomPrice] = useState<number>(850000);
+  const [selectedSlotManual, setSelectedSlotManual] = useState<GarmentSlot | null>(null);
+  const [showManualSliders, setShowManualSliders] = useState<boolean>(false);
 
   // 4. Save Status
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -105,14 +107,45 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     }
   };
 
+  const applySlotSelection = (slot: GarmentSlot) => {
+    setSelectedSlotManual(slot);
+    if (slot === 'slot_bottom') {
+      setOffsetY(64);
+      setScale(1.0);
+    } else if (slot === 'slot_outer') {
+      setOffsetY(30);
+      setScale(1.05);
+    } else if (slot === 'slot_shoes') {
+      setOffsetY(88);
+      setScale(0.85);
+    } else {
+      setOffsetY(30);
+      setScale(1.0);
+    }
+  };
+
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (evt) => {
         setImagePreview(evt.target?.result as string);
+        const inferredName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
         if (!customTitle) {
-          setCustomTitle(file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '));
+          setCustomTitle(inferredName);
+        }
+        // Auto-detect slot from file name if no JSON loaded yet
+        if (!parsedSpec) {
+          const lower = (file.name + ' ' + inferredName).toLowerCase();
+          if (lower.includes('شلوار') || lower.includes('جین') || lower.includes('pant') || lower.includes('jean') || lower.includes('دامن')) {
+            applySlotSelection('slot_bottom');
+          } else if (lower.includes('کت') || lower.includes('کاپشن') || lower.includes('هودی') || lower.includes('پالتو') || lower.includes('jacket') || lower.includes('hoodie')) {
+            applySlotSelection('slot_outer');
+          } else if (lower.includes('کفش') || lower.includes('کتانی') || lower.includes('کتونی') || lower.includes('shoe') || lower.includes('sneaker')) {
+            applySlotSelection('slot_shoes');
+          } else {
+            applySlotSelection('slot_top');
+          }
         }
       };
       reader.readAsDataURL(file);
@@ -141,12 +174,26 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
       const parsed = JSON.parse(rawText);
       const normalized = normalizeGarmentAiSpec(parsed, customTitle || 'لباس جدید');
       setParsedSpec(normalized);
+      setSelectedSlotManual(normalized.slot);
 
-      // Populate form and calibration controls
+      // Populate form and canonical auto-snap coordinates
       if (normalized.name_fa) setCustomTitle(normalized.name_fa);
       if (normalized.style_details?.estimated_price_toman) setCustomPrice(normalized.style_details.estimated_price_toman);
-      if (typeof normalized.placement?.offset_y_percent === 'number') setOffsetY(normalized.placement.offset_y_percent);
-      if (typeof normalized.placement?.scale === 'number') setScale(normalized.placement.scale);
+
+      // Canonical Auto-Snap Anchors
+      if (normalized.slot === 'slot_bottom') {
+        setOffsetY(64);
+        setScale(1.0);
+      } else if (normalized.slot === 'slot_outer') {
+        setOffsetY(30);
+        setScale(1.05);
+      } else if (normalized.slot === 'slot_shoes') {
+        setOffsetY(88);
+        setScale(0.85);
+      } else {
+        setOffsetY(30);
+        setScale(1.0);
+      }
     } catch (e: any) {
       setJsonError('فرمت فایل JSON نامعتبر است. لطفاً ساختار استاندارد را کپی کنید.');
     }
@@ -154,10 +201,8 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
 
   // Reset to auto alignment
   const handleAutoAlign = () => {
-    if (parsedSpec) {
-      setOffsetY(parsedSpec.placement.offset_y_percent);
-      setScale(parsedSpec.placement.scale);
-    }
+    const targetSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
+    applySlotSelection(targetSlot);
   };
 
   // Helper to ensure uploaded images are lightweight 1024x1024 without slowing down POST requests
@@ -207,9 +252,12 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
       // 1. Optimize image resolution if large so POST doesn't hang
       const optimizedImage = await compressImageIfNeeded(imagePreview);
 
-      const currentSpec = parsedSpec || normalizeGarmentAiSpec({}, customTitle || 'لباس جدید');
+      const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
+      const currentSpec = parsedSpec || normalizeGarmentAiSpec({ slot: activeSlot }, customTitle || 'لباس جدید');
+      currentSpec.slot = activeSlot;
       currentSpec.placement.offset_y_percent = offsetY;
       currentSpec.placement.scale = scale;
+      currentSpec.placement.z_index = activeSlot === 'slot_outer' ? 40 : activeSlot === 'slot_top' ? 30 : activeSlot === 'slot_bottom' ? 20 : 10;
       currentSpec.name_fa = customTitle || currentSpec.name_fa;
 
       const newProductId = `prod-${Date.now()}`;
@@ -535,14 +583,22 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
                 <path d="M 160,385 L 175,630 L 220,630 L 235,460 L 245,460 L 260,630 L 305,630 L 320,385" strokeWidth="1.2" strokeDasharray="4 4" />
               </svg>
 
-              {/* Rendered Uploaded Clothing */}
+              {/* Rendered Uploaded Clothing with Dynamic Aspect Ratio */}
               {imagePreview ? (
                 <div
                   style={{
                     top: `${offsetY}%`,
                     transform: `translate(-50%, -50%) scale(${scale})`,
                   }}
-                  className="absolute left-1/2 w-[72%] aspect-square transition-all duration-200 pointer-events-none"
+                  className={`absolute left-1/2 transition-all duration-200 pointer-events-none ${
+                    (selectedSlotManual === 'slot_bottom' || (!selectedSlotManual && parsedSpec?.slot === 'slot_bottom'))
+                      ? 'w-[68%] aspect-[3/4]'
+                      : (selectedSlotManual === 'slot_outer' || (!selectedSlotManual && parsedSpec?.slot === 'slot_outer'))
+                      ? 'w-[82%] aspect-square'
+                      : (selectedSlotManual === 'slot_shoes' || (!selectedSlotManual && parsedSpec?.slot === 'slot_shoes'))
+                      ? 'w-[72%] aspect-[2/1]'
+                      : 'w-[76%] aspect-square'
+                  }`}
                 >
                   <img
                     src={imagePreview}
@@ -558,34 +614,113 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
               )}
             </div>
 
-            {/* Fine Calibration Sliders (Optional) */}
-            <div className="mt-4 p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-              <div className="flex items-center justify-between text-[11px] text-slate-700">
-                <span className="font-bold">موقعیت ارتفاعی (Offset Y):</span>
-                <span className="font-mono font-bold text-amber-600">{offsetY}%</span>
+            {/* Auto-Snap Standard Status Banner (Zero Manual Adjustments Needed!) */}
+            <div className="mt-3.5 p-3.5 bg-emerald-50/80 border border-emerald-200 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between text-xs font-black text-emerald-900">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>تراز هوشمند خودکار (Auto-Snap) فعال است</span>
+                </span>
+                <span className="text-[10px] bg-white px-2 py-0.5 rounded-full border border-emerald-300 text-emerald-700 font-bold">
+                  بدون نیاز به جابجایی
+                </span>
               </div>
-              <input
-                type="range"
-                min="5"
-                max="90"
-                value={offsetY}
-                onChange={(e) => setOffsetY(Number(e.target.value))}
-                className="w-full accent-amber-500 cursor-pointer"
-              />
+              <p className="text-[11px] text-emerald-700 leading-relaxed">
+                مختصات فیزیکی لباس (ارتفاع {offsetY}% و مقیاس {scale.toFixed(2)}x) به طور خودکار منطبق با خط کمر و لایه‌بندی تن مانکن قفل شده است.
+              </p>
 
-              <div className="flex items-center justify-between text-[11px] text-slate-700 pt-1">
-                <span className="font-bold">مقیاس ابعاد (Scale):</span>
-                <span className="font-mono font-bold text-amber-600">{scale.toFixed(2)}x</span>
+              {/* Quick Slot Category Selector */}
+              <div className="pt-2 border-t border-emerald-200/60">
+                <span className="text-[10px] font-bold text-slate-600 block mb-1.5">نوع لباس جهت کالیبراسیون فوری:</span>
+                <div className="grid grid-cols-2 gap-1.5 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => applySlotSelection('slot_top')}
+                    className={`py-1.5 px-2 rounded-xl font-bold border transition-all cursor-pointer ${
+                      (selectedSlotManual === 'slot_top' || (!selectedSlotManual && parsedSpec?.slot === 'slot_top'))
+                        ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    👕 بالاتنه (روی شلوار)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applySlotSelection('slot_bottom')}
+                    className={`py-1.5 px-2 rounded-xl font-bold border transition-all cursor-pointer ${
+                      (selectedSlotManual === 'slot_bottom' || (!selectedSlotManual && parsedSpec?.slot === 'slot_bottom'))
+                        ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    👖 پایین‌تنه (زیر تی‌شرت)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applySlotSelection('slot_outer')}
+                    className={`py-1.5 px-2 rounded-xl font-bold border transition-all cursor-pointer ${
+                      (selectedSlotManual === 'slot_outer' || (!selectedSlotManual && parsedSpec?.slot === 'slot_outer'))
+                        ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    🧥 لباس‌رو (روی همه)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applySlotSelection('slot_shoes')}
+                    className={`py-1.5 px-2 rounded-xl font-bold border transition-all cursor-pointer ${
+                      (selectedSlotManual === 'slot_shoes' || (!selectedSlotManual && parsedSpec?.slot === 'slot_shoes'))
+                        ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-xs'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    👟 کفش و کتانی
+                  </button>
+                </div>
               </div>
-              <input
-                type="range"
-                min="0.7"
-                max="1.4"
-                step="0.05"
-                value={scale}
-                onChange={(e) => setScale(Number(e.target.value))}
-                className="w-full accent-amber-500 cursor-pointer"
-              />
+            </div>
+
+            {/* Optional Collapsible Sliders for edge-cases */}
+            <div className="mt-2.5">
+              <button
+                type="button"
+                onClick={() => setShowManualSliders(!showManualSliders)}
+                className="text-[11px] text-slate-400 hover:text-slate-600 font-medium flex items-center gap-1 cursor-pointer"
+              >
+                <span>{showManualSliders ? '▼ پنهان کردن تنظیم دستی' : '◀ تنظیمات دستی مختصات (پیشرفته - اختیاری)'}</span>
+              </button>
+
+              {showManualSliders && (
+                <div className="mt-2 p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 animate-in fade-in">
+                  <div className="flex items-center justify-between text-[11px] text-slate-700">
+                    <span className="font-bold">موقعیت ارتفاعی دستی (Offset Y):</span>
+                    <span className="font-mono font-bold text-amber-600">{offsetY}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="5"
+                    max="90"
+                    value={offsetY}
+                    onChange={(e) => setOffsetY(Number(e.target.value))}
+                    className="w-full accent-amber-500 cursor-pointer"
+                  />
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-700 pt-1">
+                    <span className="font-bold">مقیاس ابعاد دستی (Scale):</span>
+                    <span className="font-mono font-bold text-amber-600">{scale.toFixed(2)}x</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.7"
+                    max="1.4"
+                    step="0.05"
+                    value={scale}
+                    onChange={(e) => setScale(Number(e.target.value))}
+                    className="w-full accent-amber-500 cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

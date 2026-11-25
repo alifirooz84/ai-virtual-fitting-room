@@ -35,6 +35,33 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
+  // Auto-Snap Waistline Anchors (Zero Gap between Top & Bottom):
+  // Tops hem terminates at waistline ~50%. Pants waistband starts at ~45% and drapes down.
+  const calcTopY = topItem
+    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 24 && topItem.placement.offset_y_percent <= 36
+        ? topItem.placement.offset_y_percent
+        : 30)
+    : 30;
+
+  const calcOuterY = outerItem
+    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 24 && outerItem.placement.offset_y_percent <= 36
+        ? outerItem.placement.offset_y_percent
+        : 30)
+    : 30;
+
+  // Automatically snaps pants between 60%-66% so waistband ALWAYS meets top hem with ZERO gap!
+  const calcBottomY = bottomItem
+    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 58 && bottomItem.placement.offset_y_percent <= 66
+        ? bottomItem.placement.offset_y_percent
+        : 64)
+    : 64;
+
+  const calcShoesY = shoesItem
+    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 84 && shoesItem.placement.offset_y_percent <= 92
+        ? shoesItem.placement.offset_y_percent
+        : 88)
+    : 88;
+
   const handleDownloadSnapshot = () => {
     setIsExporting(true);
     setTimeout(() => {
@@ -231,7 +258,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {shoesItem && (
             <div
               style={{
-                top: `${shoesItem.placement.offset_y_percent}%`,
+                top: `${calcShoesY}%`,
                 zIndex: shoesItem.placement.z_index || 10,
                 transform: `translate(-50%, -50%) scale(${shoesItem.placement.scale || 1.0})`,
               }}
@@ -259,7 +286,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {bottomItem && (
             <div
               style={{
-                top: `${bottomItem.placement.offset_y_percent}%`,
+                top: `${calcBottomY}%`,
                 zIndex: bottomItem.placement.z_index || 20,
                 transform: `translate(-50%, -50%) scale(${bottomItem.placement.scale || 1.0})`,
               }}
@@ -287,7 +314,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {topItem && (
             <div
               style={{
-                top: `${topItem.placement.offset_y_percent}%`,
+                top: `${calcTopY}%`,
                 zIndex: topItem.placement.z_index || 30,
                 transform: `translate(-50%, -50%) scale(${topItem.placement.scale || 1.0})`,
               }}
@@ -315,7 +342,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {outerItem && (
             <div
               style={{
-                top: `${outerItem.placement.offset_y_percent}%`,
+                top: `${calcOuterY}%`,
                 zIndex: outerItem.placement.z_index || 40,
                 transform: `translate(-50%, -50%) scale(${outerItem.placement.scale || 1.05})`,
               }}

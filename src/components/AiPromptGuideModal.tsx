@@ -5,8 +5,16 @@ import {
   Check,
   X,
   ShieldCheck,
+  Camera,
+  Layers,
+  FileCode,
 } from 'lucide-react';
-import { AI_COMPANION_SPEC_PROMPT_FA, AI_COMPANION_SPEC_PROMPT_EN } from '../data/aiPromptGuide';
+import {
+  GHOST_MANNEQUIN_IMAGE_PROMPT_EN,
+  GHOST_MANNEQUIN_IMAGE_PROMPT_FA,
+  AI_COMPANION_SPEC_PROMPT_FA,
+  AI_COMPANION_SPEC_PROMPT_EN,
+} from '../data/aiPromptGuide';
 
 interface AiPromptGuideModalProps {
   isOpen: boolean;
@@ -17,29 +25,33 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [copiedFa, setCopiedFa] = useState(false);
-  const [copiedEn, setCopiedEn] = useState(false);
-  const [langTab, setLangTab] = useState<'fa' | 'en'>('fa');
+  // Main Tab: 'image' (Zero-Tilt Photo Gen) vs 'json' (Auto-Snap Companion Spec)
+  const [mainTab, setMainTab] = useState<'image' | 'json'>('image');
+  const [langTab, setLangTab] = useState<'fa' | 'en'>('en');
+  const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleCopyFa = () => {
-    navigator.clipboard.writeText(AI_COMPANION_SPEC_PROMPT_FA);
-    setCopiedFa(true);
-    setTimeout(() => setCopiedFa(false), 2200);
-  };
+  const currentContent =
+    mainTab === 'image'
+      ? langTab === 'en'
+        ? GHOST_MANNEQUIN_IMAGE_PROMPT_EN
+        : GHOST_MANNEQUIN_IMAGE_PROMPT_FA
+      : langTab === 'en'
+      ? AI_COMPANION_SPEC_PROMPT_EN
+      : AI_COMPANION_SPEC_PROMPT_FA;
 
-  const handleCopyEn = () => {
-    navigator.clipboard.writeText(AI_COMPANION_SPEC_PROMPT_EN);
-    setCopiedEn(true);
-    setTimeout(() => setCopiedEn(false), 2200);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(currentContent);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-in fade-in">
       <div
         dir="rtl"
-        className="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl text-slate-900"
+        className="bg-white border border-slate-200 rounded-3xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl text-slate-900"
       >
         {/* Header */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80 shrink-0">
@@ -49,13 +61,10 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
-                <span>پرامپت هوش مصنوعی جهت استخراج فایل JSON لباس</span>
-                <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-0.5 rounded-full font-bold">
-                  Slot Layer Engine
-                </span>
+                <span>مرجع پرامپت‌های استودیو پرو مجازی هوش مصنوعی</span>
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                این پرامپت را همراه با عکس لباس به جمنای (Gemini) یا ChatGPT بدهید تا فایل JSON دقیق مختصات و لایه‌ها را به شما بدهد.
+                تولید لباس ۳بعدی بدون کجی و چرخش + استخراج فایل JSON تراز خودکار (Auto-Snap)
               </p>
             </div>
           </div>
@@ -69,44 +78,100 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
           </button>
         </div>
 
+        {/* Top Feature Selector: Image Prompt vs JSON Spec Prompt */}
+        <div className="px-6 pt-4 pb-2 bg-slate-50/50 border-b border-slate-100 flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setMainTab('image');
+              setLangTab('en');
+            }}
+            className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+              mainTab === 'image'
+                ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Camera className="w-4 h-4" />
+            <span>۱. پرامپت ساخت عکس ۳بعدی (حل مشکل کج بودن لباس)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setMainTab('json');
+              setLangTab('fa');
+            }}
+            className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+              mainTab === 'json'
+                ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <FileCode className="w-4 h-4" />
+            <span>۲. پرامپت استخراج فایل JSON (تراز خودکار خط کمر)</span>
+          </button>
+        </div>
+
         {/* Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
-          {/* Why Slot Architecture Solves the Replacement Problem */}
-          <div className="bg-amber-50/60 border border-amber-200 rounded-2xl p-4 space-y-2">
-            <h4 className="text-xs font-black text-amber-900 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-amber-600" />
-              <span>چرا این پرامپت مشکل جایگزینی اشتباه شلوار با تی‌شرت را حل می‌کند؟</span>
-            </h4>
-            <p className="text-xs text-slate-700 leading-relaxed">
-              هوش مصنوعی برای هر لباس یک <strong>اسلات فیزیکی (Slot)</strong> و ترتیب لایه‌بندی ارتفاعی (Z-Index) تعریف می‌کند:
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                <span className="font-bold text-amber-700">👕 اسلات بالاتنه (slot_top):</span>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  تی‌شرت روی کمر شلوار می‌نشیند و فقط با تی‌شرت دیگر جایگزین می‌شود.
-                </p>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                <span className="font-bold text-blue-700">👖 اسلات پایین‌تنه (slot_bottom):</span>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  شلوار دقیقاً زیر لبه تی‌شرت فیکس می‌شود و فقط با شلوار دیگر تعویض می‌گردد.
-                </p>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                <span className="font-bold text-emerald-700">🧥 اسلات لباس‌رو (slot_outer):</span>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  کت و کاپشن روی تی‌شرت قرار می‌گیرد و بدون حذف تی‌شرت روی آن لایه‌بندی می‌شود.
-                </p>
-              </div>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                <span className="font-bold text-purple-700">👟 اسلات کفش (slot_shoes):</span>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  کفش در پایین‌ترین سطح قرار می‌گیرد و شلوار در بالای آن است.
-                </p>
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+          {mainTab === 'image' ? (
+            /* Explanation for Zero-Tilt Image Prompt */
+            <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-2">
+              <h4 className="text-xs font-black text-amber-900 flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-amber-600" />
+                <span>چگونه این پرامپت چرخش بدنه و زاویه سه‌چهارم (3/4 Angle) را حذف می‌کند؟</span>
+              </h4>
+              <p className="text-xs text-slate-700 leading-relaxed">
+                هوش‌های مصنوعی تصویری معمولاً لباس را در ژست‌های مایل یا زاویه‌دار تولید می‌کنند که باعث می‌شود هودی یا تی‌شرت روی شلوار کج بایستد. این پرامپت قوانین زیر را قفل می‌کند:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-amber-800">📐 زاویه ۰ درجه ارتوگرافیک:</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    دوربین کاملاً مستقیم و هم‌سطح سینه، بدون پرسپکتیو اریب یا چرخش زاویه‌ای.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-blue-800">⚖️ تقارن افقی دقیق شانه و لبه:</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    هر دو شانه در یک ارتفاع و لبه پایینی کاملاً افقی و صاف.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-emerald-800">👕 مانکن نامرئی حجم‌دار:</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    یقه خالی و مارک پشت لباس مشخص با عمق سه‌بعدی و بدون شخص یا مانکن فیزیکی.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* Explanation for JSON Auto-Snap */
+            <div className="bg-blue-50/70 border border-blue-200 rounded-2xl p-4 space-y-2">
+              <h4 className="text-xs font-black text-blue-900 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-blue-600" />
+                <span>چرا دیگر نیازی به جابجایی دستی لباس موقع آپلود نیست؟</span>
+              </h4>
+              <p className="text-xs text-slate-700 leading-relaxed">
+                این پرامپت به جمنای یا چت‌جی‌پی‌تی دستور می‌دهد مختصات کالیبراسیون استاندارد خط کمر را تولید کند:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-amber-700">👕 بالاتنه (Tops / Hoodies):</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    ارتفاع پیش‌فرض 30% — لبه پایینی لباس دقیقاً روی لبه کمر شلوار قرار می‌گیرد.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-blue-700">👖 پایین‌تنه (Pants / Jeans):</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    ارتفاع پیش‌فرض 64% — فاق و کمر شلوار زیر لبه هودی قرار گرفته و هیچ فاصله‌ای خالی نمی‌ماند.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Prompt Selector & Copy Box */}
           <div className="space-y-3">
@@ -114,30 +179,30 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <button
                   type="button"
-                  onClick={() => setLangTab('fa')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
-                    langTab === 'fa' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  متن پرامپت فارسی
-                </button>
-                <button
-                  type="button"
                   onClick={() => setLangTab('en')}
                   className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
                     langTab === 'en' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
-                  English Prompt
+                  English (پیشنهادی برای Midjourney / Flux / Gemini)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLangTab('fa')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                    langTab === 'fa' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  راهنمای فارسی
                 </button>
               </div>
 
               <button
                 type="button"
-                onClick={langTab === 'fa' ? handleCopyFa : handleCopyEn}
+                onClick={handleCopy}
                 className="px-3.5 py-1.5 rounded-xl text-xs font-black bg-slate-900 hover:bg-black text-white transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
-                {(langTab === 'fa' ? copiedFa : copiedEn) ? (
+                {copied ? (
                   <>
                     <Check className="w-3.5 h-3.5 text-amber-400 stroke-[3]" />
                     <span>کپی شد!</span>
@@ -156,7 +221,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
               dir={langTab === 'en' ? 'ltr' : 'rtl'}
               className="p-4 rounded-2xl bg-slate-900 border border-slate-800 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap max-h-72 overflow-y-auto selection:bg-amber-500 selection:text-black"
             >
-              {langTab === 'fa' ? AI_COMPANION_SPEC_PROMPT_FA : AI_COMPANION_SPEC_PROMPT_EN}
+              {currentContent}
             </div>
           </div>
         </div>
