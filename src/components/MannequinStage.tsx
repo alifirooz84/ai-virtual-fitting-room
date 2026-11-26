@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
+import maleModelUrl from '../assets/human_male_model.jpg';
 import {
   RotateCcw,
   Download,
@@ -318,7 +319,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
         modelImg.onerror = () => {
           renderGarmentsOnCanvas();
         };
-        modelImg.src = '/models/human_male_model.jpg';
+        modelImg.src = maleModelUrl;
       } else {
         renderGarmentsOnCanvas();
       }
@@ -771,7 +772,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {showSilhouette && mannequinTheme === 'human' && (
             <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none select-none overflow-hidden rounded-3xl">
               <img
-                src="/models/human_male_model.jpg"
+                src={maleModelUrl}
                 alt="Real Studio Human Model"
                 className="w-full h-full object-cover object-top filter contrast-[1.02] brightness-[0.98] transition-all duration-300"
               />
