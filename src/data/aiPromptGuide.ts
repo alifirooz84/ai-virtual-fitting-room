@@ -2,14 +2,19 @@ import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
 
 /**
  * Master Universal AI Image Generation Prompt (All-in-One Autonomous Decision Engine)
- * Automatically detects whether the item is an Overcoat, T-Shirt, Jeans, or Shoes,
- * and executes the precise golden proportion, hollow chest void, or horizontal waistband rules!
+ * First autonomously classifies the garment category, then executes the exact golden proportion rules!
  */
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
+[PRIMARY DIRECTIVE - STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
+Analyze the input text [EXACT_CLOTHING_NAME_AND_COLOR] and autonomously classify its garment category:
+- Category 1: OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber) -> Execute CASE A.
+- Category 2: TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear) -> Execute CASE B.
+- Category 3: BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt) -> Execute CASE C.
+- Category 4: FOOTWEAR (Sneakers, Shoes, Boots, Loafers) -> Execute CASE D.
+
 Professional commercial fashion studio catalog photography of [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and crisp structural drape.
 
-AUTONOMOUS GARMENT-TYPE DETECTION & ALIGNMENT ARCHITECTURE:
-Identify the garment category from the input name and apply the corresponding execution rules automatically:
+EXECUTION RULES PER CLASSIFIED CATEGORY:
 
 CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber):
 - The garment MUST be completely UNBUTTONED and WIDE OPEN in the front, hanging symmetrically straight down.
@@ -98,35 +103,32 @@ export const LAYERED_APPAREL_IMAGE_PROMPT_FA = `
  * along with the clothing photo. It outputs the exact companion JSON file needed for the fitting room!
  */
 export const AI_COMPANION_SPEC_PROMPT_FA = `
-شما یک هوش مصنوعی متخصص در تحلیل پوشاک و سیستم‌های پرو مجازی سه‌بعدی (3D VTON Auto-Snap Engine) هستید.
-عکس پیوست‌شده از لباس (خروجی کاملاً مستقیم و متقارن مانکن نامرئی شفاف) را به دقت آنالیز کنید و مشخصات کالیبراسیون و انطباق پرو را با رعایت تناسبات طلایی آناتومی بدن (نسبت ۴۰٪ بالاتنه به ۶۰٪ پایین‌تنه) دقیقاً در قالب ساختار JSON زیر بازگردانید. هیچ متن اضافه‌ای خارج از ساختار JSON ننویسید.
+[گام اول و اجباری: تشخیص خودکار و هوشمند نوع لباس از روی عکس]
+ابتدا عکس پیوست‌شده را بررسی کرده و به صورت خودکار تشخیص دهید لباس متعلق به کدام دسته است:
+- دسته ۱: پالتو، کت، بارانی، کاپشن، کاردیگان (لباس‌رو) -> قوانین دسته ۱
+- دسته ۲: تی‌شرت، پیراهن، هودی، دورس، پلیور (بالاتنه) -> قوانین دسته ۲
+- دسته ۳: شلوار، جین، اسلش، بگ، کارگو، دامن (پایین‌تنه) -> قوانین دسته ۳
+- دسته ۴: کتانی، کفش چرم، بوت، اسنیکرز (کفش) -> قوانین دسته ۴
 
-قوانین انطباق خودکار خط کمر، تناسب عرضی و لایه‌بندی فیزیکی بدون نیاز به جابجایی دستی (Auto-Snap Layer Hierarchy):
-۱. هودی، تی‌شرت، دورس، پیراهن، سویشرت، پولوشرت (بالاتنه):
-   - "slot": "slot_top"
-   - لایه فیزیکی: روی کمر شلوار قرار می‌گیرد (Z-Index: 30) به طوری که لبه پایینی تی‌شرت روی کمر شلوار بنشیند و فاصله خالی ایجاد نشود
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 34, "scale": 0.88, "z_index": 30 }
-   - "replacement_rules.replaces_slot": "slot_top"
+سپس بر اساس دسته‌ای که خودتان تشخیص دادید، مقادیر طلایی متناظر زیر را دقیقاً در ساختار JSON پر کنید. هیچ متن اضافه‌ای خارج از ساختار JSON ننویسید.
 
-۲. شلوار، جین، اسلش، بگ، کارگو، دامن (پایین‌تنه):
-   - "slot": "slot_bottom"
-   - لایه فیزیکی: کمر شلوار دقیقاً زیر لبه پایینی هودی/تی‌شرت فیکس می‌شود و پاهای بلند و کشیده می‌سازد (Z-Index: 20)
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
-   - "replacement_rules.replaces_slot": "slot_bottom"
+قوانین کالیبراسیون و تناسبات طلایی برای هر دسته:
+۱. اگر لباس‌رو (پالتو، کت، کاپشن) است:
+   - "slot": "slot_outer" | "layer_level": "outerwear"
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 32, "scale": 1.24, "z_index": 40 }
+   - "layering_behavior": { "is_open_front": true, "reveals_inner_top": true, "inner_top_sleeve_trim_percent": 8 }
 
-۳. کت، کاپشن، پالتو، بارانی، پَفر (لباس‌رو):
-   - "slot": "slot_outer"
-   - لایه فیزیکی: روی تی‌شرت و شلوار قرار می‌گیرد (Z-Index: 40) با سرشانه‌های عریض و فرم کشیده و شیک پالتو
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.14, "z_index": 40 }
-   - اگر لباس جلو باز است (مثل پالتو جلو باز یا کت):
-     "layering_behavior": { "is_open_front": true, "reveals_inner_top": true, "inner_top_sleeve_trim_percent": 16 }
-   - "replacement_rules.replaces_slot": "slot_outer"
+۲. اگر بالاتنه (تی‌شرت، هودی، پیراهن، دورس) است:
+   - "slot": "slot_top" | "layer_level": "mid_top"
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 35, "scale": 0.90, "z_index": 30 }
 
-۴. کفش، کتانی، بوت، اسنیکرز (کفش):
-   - "slot": "slot_shoes"
-   - لایه فیزیکی: دقیقاً زیر دمپای شلوار چفت می‌شود بدون هیچ فاصله خالی معلق (Z-Index: 10)
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 84, "scale": 0.82, "z_index": 10 }
-   - "replacement_rules.replaces_slot": "slot_shoes"
+۳. اگر پایین‌تنه (شلوار جین، کتان، اسلش، بگ، کارگو) است:
+   - "slot": "slot_bottom" | "layer_level": "bottom"
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 58.5, "scale": 1.15, "z_index": 20 }
+
+۴. اگر کفش یا کتانی است:
+   - "slot": "slot_shoes" | "layer_level": "shoes"
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 90.5, "scale": 0.95, "z_index": 22 }
 
 ساختار خروجی JSON که باید بازگردانید:
 \`\`\`json
