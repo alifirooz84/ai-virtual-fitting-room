@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import {
   RotateCcw,
   Download,
@@ -9,6 +9,15 @@ import {
   Layers,
   ZoomIn,
   ZoomOut,
+  Sliders,
+  Maximize2,
+  ChevronUp,
+  ChevronDown,
+  Plus,
+  Minus,
+  Check,
+  Palette,
+  Camera,
 } from 'lucide-react';
 import { ActiveOutfit, GarmentSlot, ClothingProduct } from '../types/clothing';
 import { removeWhiteBackground, transparencyCache } from '../utils/imageProcessing';
@@ -46,22 +55,38 @@ const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt,
   return <img src={cleanSrc} alt={alt} className={className} crossOrigin="anonymous" />;
 };
 
+export type MannequinTheme = 'charcoal' | 'sand' | 'skin' | 'ghost';
+export type CameraPreset = 'full' | 'top' | 'bottom';
+export type TuckMode = 'untucked' | 'tucked';
+
 interface MannequinStageProps {
   activeOutfit: ActiveOutfit;
   onRemoveSlot: (slot: GarmentSlot) => void;
   onClearAll: () => void;
+  availableProducts?: ClothingProduct[];
+  onSelectProduct?: (product: ClothingProduct) => void;
 }
 
 export const MannequinStage: React.FC<MannequinStageProps> = ({
   activeOutfit,
   onRemoveSlot,
   onClearAll,
+  availableProducts = [],
+  onSelectProduct,
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [showSilhouette, setShowSilhouette] = useState(true);
-  const [mannequinMode, setMannequinMode] = useState<'real' | 'ghost'>('real');
-  const [zoom, setZoom] = useState(1);
+  const [mannequinTheme, setMannequinTheme] = useState<MannequinTheme>('charcoal');
+  const [tuckMode, setTuckMode] = useState<TuckMode>('untucked');
+  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('full');
+  const [isFineTuningOpen, setIsFineTuningOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  // Live Fine-Tuning Overrides
+  const [topOffsetY, setTopOffsetY] = useState(34);
+  const [topScale, setTopScale] = useState(0.88);
+  const [bottomOffsetY, setBottomOffsetY] = useState(64);
+  const [bottomScale, setBottomScale] = useState(1.18);
 
   const topItem = activeOutfit.slot_top;
   const bottomItem = activeOutfit.slot_bottom;
@@ -70,34 +95,100 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
-  // Golden Anatomical Proportions (40% Torso to 60% Legs):
-  // Tops: centered around 34%, collar emerges at 20-22% right under the neck, hem at waistline ~46%.
-  const calcTopY = topItem
-    ? (topItem.placement.offset_y_percent && topItem.placement.offset_y_percent >= 28 && topItem.placement.offset_y_percent <= 38
-        ? topItem.placement.offset_y_percent
-        : 34)
-    : 34;
+  // Sync default offsets when active outfit garments change
+  useEffect(() => {
+    if (topItem?.placement?.offset_y_percent) {
+      setTopOffsetY(topItem.placement.offset_y_percent);
+    } else {
+      setTopOffsetY(34);
+    }
+    if (topItem?.placement?.scale) {
+      setTopScale(topItem.placement.scale);
+    } else {
+      setTopScale(0.88);
+    }
+  }, [topItem?.id]);
 
-  const calcOuterY = outerItem
-    ? (outerItem.placement.offset_y_percent && outerItem.placement.offset_y_percent >= 28 && outerItem.placement.offset_y_percent <= 38
-        ? outerItem.placement.offset_y_percent
-        : 34)
-    : 34;
+  useEffect(() => {
+    if (bottomItem?.placement?.offset_y_percent) {
+      setBottomOffsetY(bottomItem.placement.offset_y_percent);
+    } else {
+      setBottomOffsetY(64);
+    }
+    if (bottomItem?.placement?.scale) {
+      setBottomScale(bottomItem.placement.scale);
+    } else {
+      setBottomScale(1.18);
+    }
+  }, [bottomItem?.id]);
 
-  // Bottoms: waistband begins at ~45% under top hem, legs flow down to ~82%
-  const calcBottomY = bottomItem
-    ? (bottomItem.placement.offset_y_percent && bottomItem.placement.offset_y_percent >= 58 && bottomItem.placement.offset_y_percent <= 68
-        ? bottomItem.placement.offset_y_percent
-        : 64)
-    : 64;
+  // Dynamic Camera Transform Style
+  const cameraTransform = useMemo(() => {
+    if (cameraPreset === 'top') {
+      return 'scale(1.36) translateY(12%)';
+    }
+    if (cameraPreset === 'bottom') {
+      return 'scale(1.36) translateY(-18%)';
+    }
+    return 'scale(1) translateY(0)';
+  }, [cameraPreset]);
 
-  // Shoes: tuck directly underneath pant cuffs at 88% with zero floating gap!
-  const calcShoesY = shoesItem
-    ? (shoesItem.placement.offset_y_percent && shoesItem.placement.offset_y_percent >= 84 && shoesItem.placement.offset_y_percent <= 92
-        ? shoesItem.placement.offset_y_percent
-        : 88)
-    : 88;
+  // AI Outfit Matcher & Stylist Intelligence
+  const outfitAiAnalysis = useMemo(() => {
+    if (totalPieces === 0) {
+      return {
+        score: 0,
+        label: 'استیج خالی است',
+        tip: 'یک بالاتنه یا پایین‌تنه از کاتالوگ انتخاب کنید تا آنالیز هوشمند استایل فعال شود.',
+        recommendedPiece: null as ClothingProduct | null,
+      };
+    }
 
+    let score = 70;
+    let label = 'استایل روزمره کژوال';
+    let tip = 'ترکیب لباس‌ها مناسب است.';
+    let recommendedPiece: ClothingProduct | null = null;
+
+    if (topItem && bottomItem) {
+      score = 94;
+      label = 'ست هماهنگ استریت‌ویر (Streetwear Trend)';
+      tip = 'ترکیب رنگ بالاتنه و دنیم پایین‌تنه بسیار شیک و چشم‌نواز است.';
+
+      // Suggest shoes if missing
+      if (!shoesItem && availableProducts.length > 0) {
+        const shoe = availableProducts.find((p) => p.slot === 'slot_shoes');
+        if (shoe) {
+          tip = 'پیشنهاد هوش مصنوعی: اضافه کردن کتانی چرم سفید این ست را ۱۰۰٪ کامل می‌کند.';
+          recommendedPiece = shoe;
+        }
+      } else if (!outerItem && availableProducts.length > 0) {
+        const jacket = availableProducts.find((p) => p.slot === 'slot_outer');
+        if (jacket) {
+          tip = 'پیشنهاد هوش مصنوعی: پوشیدن هودی یا کت سبک روی این ترکیب، استایل شما را پرمیوم می‌کند.';
+          recommendedPiece = jacket;
+        }
+      }
+    } else if (topItem && !bottomItem) {
+      score = 80;
+      label = 'بالاتنه انتخاب شد';
+      tip = 'برای مشاهده تناسب اندام، یک شلوار جین بگ یا کتان به مانکن اضافه کنید.';
+      const pant = availableProducts.find((p) => p.slot === 'slot_bottom');
+      if (pant) recommendedPiece = pant;
+    } else if (bottomItem && !topItem) {
+      score = 80;
+      label = 'پایین‌تنه انتخاب شد';
+      tip = 'یک تیشرت نخی یا دورس اورسایز برای تکمیل بالاتنه انتخاب کنید.';
+      const top = availableProducts.find((p) => p.slot === 'slot_top');
+      if (top) recommendedPiece = top;
+    }
+
+    if (outerItem) score = Math.min(100, score + 5);
+    if (shoesItem) score = Math.min(100, score + 4);
+
+    return { score, label, tip, recommendedPiece };
+  }, [topItem, bottomItem, outerItem, shoesItem, availableProducts, totalPieces]);
+
+  // Export High-Res Composite Snapshot
   const handleDownloadSnapshot = () => {
     setIsExporting(true);
     setTimeout(() => {
@@ -106,25 +197,27 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
       const canvas = document.createElement('canvas');
       canvas.width = 1024;
-      canvas.height = 1380;
+      canvas.height = 1420;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Studio crisp white radial background
-      const grad = ctx.createRadialGradient(512, 600, 100, 512, 600, 800);
+      // Studio crisp radial background
+      const grad = ctx.createRadialGradient(512, 600, 100, 512, 600, 850);
       grad.addColorStop(0, '#ffffff');
       grad.addColorStop(1, '#f1f5f9');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 1024, 1380);
+      ctx.fillRect(0, 0, 1024, 1420);
 
       // Floor pedestal shadow
       ctx.beginPath();
-      ctx.ellipse(512, 1310, 320, 35, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(148, 163, 184, 0.25)';
+      ctx.ellipse(512, 1340, 340, 40, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.18)';
       ctx.fill();
 
-      // Draw active slots strictly in z-index order (shoes -> bottom -> top -> outer)
-      const slotsToDraw = [shoesItem, bottomItem, topItem, outerItem].filter(Boolean) as ClothingProduct[];
+      // Slots in visual order depending on tuck mode
+      const slotsToDraw = tuckMode === 'tucked'
+        ? [shoesItem, topItem, bottomItem, outerItem].filter(Boolean) as ClothingProduct[]
+        : [shoesItem, bottomItem, topItem, outerItem].filter(Boolean) as ClothingProduct[];
 
       if (slotsToDraw.length === 0) {
         setIsExporting(false);
@@ -145,16 +238,23 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           img.crossOrigin = 'anonymous';
           img.onload = () => {
             const slotScale = garment.slot === 'slot_bottom'
-              ? (garment.placement.scale ? Math.max(garment.placement.scale, 1.15) : 1.20)
+              ? bottomScale
               : garment.slot === 'slot_shoes'
               ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.85) : 0.82)
               : garment.slot === 'slot_outer'
               ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.98) : 0.92)
-              : (garment.placement.scale ? Math.min(garment.placement.scale, 0.90) : 0.85);
+              : topScale;
 
-            const effectiveY = garment.slot === 'slot_bottom' ? calcBottomY : garment.slot === 'slot_shoes' ? calcShoesY : garment.slot === 'slot_outer' ? calcOuterY : calcTopY;
-            const yPos = (effectiveY / 100) * 1380;
-            const baseW = garment.slot === 'slot_bottom' ? 580 : garment.slot === 'slot_shoes' ? 440 : 490;
+            const effectiveY = garment.slot === 'slot_bottom'
+              ? bottomOffsetY
+              : garment.slot === 'slot_shoes'
+              ? 88
+              : garment.slot === 'slot_outer'
+              ? 34
+              : topOffsetY;
+
+            const yPos = (effectiveY / 100) * 1420;
+            const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 440 : 500;
             const w = baseW * slotScale;
             const h = baseW * slotScale;
             const xPos = 512 - w / 2;
@@ -171,9 +271,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           };
           img.onerror = () => {
             loadedCount++;
-            if (loadedCount === items.length) {
-              setIsExporting(false);
-            }
+            if (loadedCount === items.length) setIsExporting(false);
           };
           img.src = cleanUrl;
         });
@@ -182,138 +280,343 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-6 overflow-hidden shadow-xs relative min-h-[640px] lg:min-h-[760px]">
-      {/* Top Studio Toolbar */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-100 shrink-0 z-10">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 flex items-center justify-center text-sm font-black">
-            ✦
+    <div className="flex-1 flex flex-col bg-white border border-slate-200/90 rounded-3xl p-4 sm:p-5 overflow-hidden shadow-xs relative min-h-[660px] lg:min-h-[780px]">
+      {/* 1. TOP STUDIO TOOLBAR & AI STYLING HEADER */}
+      <div className="flex flex-col gap-3 pb-3 border-b border-slate-100 shrink-0 z-20">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          {/* Studio Brand & Active Count */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center text-sm font-black shadow-xs">
+              ✦
+            </div>
+            <div>
+              <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
+                <span>استیج استودیویی پرو هوشمند ۳بعدی</span>
+                <span className="text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded-full border border-amber-200">
+                  {totalPieces} لباس تن مانکن
+                </span>
+              </h2>
+            </div>
           </div>
-          <div>
-            <h2 className="text-sm sm:text-base font-black text-slate-900 flex items-center gap-2">
-              <span>استیج استودیویی پرو مانکن ۳بعدی</span>
-              <span className="text-[10px] bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded-full border border-slate-200">
-                {totalPieces} لباس فعال
+
+          {/* Controls Cluster */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {/* Mannequin Theme Selector */}
+            <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => { setMannequinTheme('charcoal'); setShowSilhouette(true); }}
+                className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                  mannequinTheme === 'charcoal' && showSilhouette
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="مانکن زغالی مات استودیویی (کنتراست فوق‌العاده برای دیدن رنگ و فرم لباس)"
+              >
+                <span>🖤</span>
+                <span className="hidden xl:inline">زغالی مات</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setMannequinTheme('sand'); setShowSilhouette(true); }}
+                className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                  mannequinTheme === 'sand' && showSilhouette
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="مانکن استودیویی سنگی / عاجی"
+              >
+                <span>🏛️</span>
+                <span className="hidden xl:inline">استودیویی</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setMannequinTheme('skin'); setShowSilhouette(true); }}
+                className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                  mannequinTheme === 'skin' && showSilhouette
+                    ? 'bg-white text-amber-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="مانکن با رنگ پوست طبیعی"
+              >
+                <span>👤</span>
+                <span className="hidden xl:inline">رئال</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setMannequinTheme('ghost'); setShowSilhouette(true); }}
+                className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                  mannequinTheme === 'ghost' && showSilhouette
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+                title="مانکن نامرئی (Ghost)"
+              >
+                <span>👻</span>
+                <span className="hidden xl:inline">نامرئی</span>
+              </button>
+            </div>
+
+            {/* Tuck-In / Untucked Toggle */}
+            <button
+              type="button"
+              onClick={() => setTuckMode((prev) => (prev === 'untucked' ? 'tucked' : 'untucked'))}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                tuckMode === 'tucked'
+                  ? 'bg-indigo-50 text-indigo-700 border-indigo-300 shadow-xs'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="تغییر نحوه پوشش: پیراهن داخل شلوار (Tuck-in) یا روی شلوار (Untucked)"
+            >
+              <span>🔄</span>
+              <span className="hidden sm:inline">
+                {tuckMode === 'tucked' ? 'استایل: داخل شلوار' : 'استایل: روی شلوار'}
               </span>
-            </h2>
-            <p className="text-[11px] text-slate-500">
-              لایه‌بندی خودکار: شلوار زیر تی‌شرت، تی‌شرت روی کمر، و کت روی همه
-            </p>
+            </button>
+
+            {/* Camera View Switcher */}
+            <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => setCameraPreset('top')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  cameraPreset === 'top' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="بزرگنمایی و زوم روی بالاتنه، یقه و آستین‌ها"
+              >
+                👕 بالاتنه
+              </button>
+              <button
+                type="button"
+                onClick={() => setCameraPreset('full')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  cameraPreset === 'full' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="نمای تمام‌قد استودیو"
+              >
+                🧍 تمام‌قد
+              </button>
+              <button
+                type="button"
+                onClick={() => setCameraPreset('bottom')}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                  cameraPreset === 'bottom' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="بزرگنمایی روی شلوار، فاق و دمپا"
+              >
+                👖 شلوار
+              </button>
+            </div>
+
+            {/* Interactive Live Fine-Tuner Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsFineTuningOpen(!isFineTuningOpen)}
+              className={`p-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                isFineTuningOpen
+                  ? 'bg-amber-500 text-white border-amber-600 shadow-xs'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="تنظیم دقیق زنده ارتفاع و اندازه لباس‌ها روی مانکن"
+            >
+              <Sliders className="w-4 h-4" />
+            </button>
+
+            {/* Clear Outfit */}
+            <button
+              type="button"
+              onClick={onClearAll}
+              disabled={totalPieces === 0}
+              className={`p-2 rounded-xl text-xs font-bold transition-all border ${
+                totalPieces > 0
+                  ? 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100 cursor-pointer'
+                  : 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed'
+              }`}
+              title="پاک کردن کل ست مانکن"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            {/* Download Final Outfit Snapshot */}
+            <button
+              type="button"
+              onClick={handleDownloadSnapshot}
+              disabled={totalPieces === 0 || isExporting}
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ${
+                totalPieces > 0
+                  ? 'bg-slate-900 hover:bg-black text-white hover:scale-105 active:scale-95'
+                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+              }`}
+              title="دانلود عکس باکیفیت ست نهایی"
+            >
+              <Download className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden md:inline">{isExporting ? 'خروجی...' : 'دانلود ست'}</span>
+            </button>
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Mannequin Style Mode Selector: Real 3D Studio vs Ghost */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
-            <button
-              type="button"
-              onClick={() => {
-                setMannequinMode('real');
-                setShowSilhouette(true);
-              }}
-              className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-                mannequinMode === 'real' && showSilhouette
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900'
-              }`}
-              title="تن کردن لباس‌ها روی مانکن رئال ۳بعدی استودیویی"
-            >
-              <span>🧍‍♂️</span>
-              <span className="hidden sm:inline">مانکن رئال</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMannequinMode('ghost');
-                setShowSilhouette(true);
-              }}
-              className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
-                mannequinMode === 'ghost' && showSilhouette
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-900'
-              }`}
-              title="نمایش مانکن نامرئی (Ghost Mannequin)"
-            >
-              <span>👻</span>
-              <span className="hidden sm:inline">مانکن نامرئی</span>
-            </button>
+        {/* AI Outfit Intelligence Banner */}
+        <div className="bg-gradient-to-r from-amber-500/10 via-slate-50 to-indigo-500/10 border border-slate-200/80 rounded-2xl p-2.5 px-3 flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs font-bold shrink-0">
+              ⚡
+            </div>
+            <div className="text-xs">
+              <span className="font-black text-slate-900 ml-1.5">{outfitAiAnalysis.label}</span>
+              <span className="text-slate-500">{outfitAiAnalysis.tip}</span>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setShowSilhouette(!showSilhouette)}
-            className={`p-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
-              showSilhouette
-                ? 'bg-amber-50 text-amber-600 border-amber-300'
-                : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-900'
-            }`}
-            title="نمایش / پنهان‌سازی کالبد مانکن"
-          >
-            {showSilhouette ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {outfitAiAnalysis.recommendedPiece && onSelectProduct && (
+              <button
+                type="button"
+                onClick={() => onSelectProduct(outfitAiAnalysis.recommendedPiece!)}
+                className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
+              >
+                <span>+</span>
+                <span>تست پیشنهاد: {outfitAiAnalysis.recommendedPiece.title.slice(0, 18)}...</span>
+              </button>
+            )}
 
-          <button
-            type="button"
-            onClick={() => setZoom((prev) => (prev === 1 ? 1.15 : 1))}
-            className="p-2 rounded-xl text-xs font-bold bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
-            title="بزرگنمایی مانکن"
-          >
-            {zoom === 1 ? <ZoomIn className="w-4 h-4" /> : <ZoomOut className="w-4 h-4" />}
-          </button>
-
-          <button
-            type="button"
-            onClick={onClearAll}
-            disabled={totalPieces === 0}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
-              totalPieces > 0
-                ? 'bg-rose-50 text-rose-600 border-rose-200 hover:bg-rose-100 cursor-pointer'
-                : 'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed'
-            }`}
-            title="پاک کردن کل ست مانکن"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">پاک کردن ست</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleDownloadSnapshot}
-            disabled={totalPieces === 0 || isExporting}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-sm cursor-pointer ${
-              totalPieces > 0
-                ? 'bg-slate-900 hover:bg-black text-white hover:scale-105 active:scale-95'
-                : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-            }`}
-            title="دانلود تصویر باکیفیت ست نهایی"
-          >
-            <Download className="w-3.5 h-3.5 text-amber-400" />
-            <span>{isExporting ? 'در حال خروجی...' : 'دانلود تصویر ست'}</span>
-          </button>
+            <div className="flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded-lg text-xs font-black text-slate-800">
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>هماهنگی: {outfitAiAnalysis.score}٪</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Center White Studio Stage Canvas */}
-      <div className="flex-1 flex items-center justify-center relative overflow-hidden py-4 select-none">
-        {/* Soft Warm Studio Ambient Lights */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-[480px] h-[640px] bg-gradient-to-b from-amber-100/40 via-slate-100/30 to-slate-200/40 rounded-full blur-3xl"></div>
-        </div>
-
-        {/* Scalable Container */}
-        <div
-          ref={canvasRef}
-          style={{ transform: `scale(${zoom})`, transition: 'transform 0.3s ease-out' }}
-          className="relative w-[340px] sm:w-[400px] md:w-[460px] h-[640px] sm:h-[700px] rounded-3xl bg-gradient-to-b from-white via-slate-50 to-slate-100/80 border border-slate-200/90 shadow-xl flex items-center justify-center overflow-hidden"
-        >
-          {/* Studio Pedestal / Floor Shadow */}
-          <div className="absolute bottom-6 left-12 right-12 h-6 bg-slate-500/25 rounded-[100%] blur-sm pointer-events-none"></div>
-          <div className="absolute bottom-3 text-[10px] text-slate-400 font-mono tracking-wider">
-            {mannequinMode === 'real' ? '✦ 3D REAL STUDIO MANNEQUIN ✦' : '3D GHOST MANNEQUIN STUDIO'}
+      {/* 2. INTERACTIVE FINE-TUNER DRAWER (COLLAPSIBLE) */}
+      {isFineTuningOpen && (
+        <div className="bg-slate-900 text-white rounded-2xl p-3 my-2 shadow-lg border border-slate-800 transition-all z-20">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-xs font-bold text-slate-300">
+            <span className="flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5 text-amber-400" />
+              <span>تنظیم هوشمند ابعاد و ارتفاع روی مانکن (Real-time Calibration)</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                setTopOffsetY(34);
+                setTopScale(0.88);
+                setBottomOffsetY(64);
+                setBottomScale(1.18);
+              }}
+              className="text-[10px] text-amber-400 hover:underline cursor-pointer"
+            >
+              بازنشانی به حالت استاندارد
+            </button>
           </div>
 
-          {/* 1. Underlying Mannequin Layer: Realistic 3D Studio Body OR Ghost Silhouette */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            {/* Topwear Control */}
+            <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
+              <div className="flex items-center justify-between font-bold text-slate-200">
+                <span>بالاتنه (تی‌شرت / هودی):</span>
+                <span className="text-[11px] text-amber-400 font-mono">
+                  ارتفاع: {topOffsetY}% | اسکیل: {topScale.toFixed(2)}x
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
+                  <input
+                    type="range"
+                    min="24"
+                    max="44"
+                    step="1"
+                    value={topOffsetY}
+                    onChange={(e) => setTopOffsetY(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
+                  <input
+                    type="range"
+                    min="0.75"
+                    max="1.05"
+                    step="0.02"
+                    value={topScale}
+                    onChange={(e) => setTopScale(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottomwear Control */}
+            <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
+              <div className="flex items-center justify-between font-bold text-slate-200">
+                <span>پایین‌تنه (شلوار / جین):</span>
+                <span className="text-[11px] text-amber-400 font-mono">
+                  ارتفاع: {bottomOffsetY}% | اسکیل: {bottomScale.toFixed(2)}x
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
+                  <input
+                    type="range"
+                    min="54"
+                    max="74"
+                    step="1"
+                    value={bottomOffsetY}
+                    onChange={(e) => setBottomOffsetY(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
+                  <input
+                    type="range"
+                    min="1.05"
+                    max="1.35"
+                    step="0.02"
+                    value={bottomScale}
+                    onChange={(e) => setBottomScale(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. CENTER STUDIO CANVAS WITH SCULPTED 3D MANNEQUIN BODY */}
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden py-2 select-none">
+        {/* Studio Ambient Rim Glow */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-[500px] h-[660px] bg-gradient-to-b from-amber-100/40 via-slate-100/40 to-slate-200/50 rounded-full blur-3xl"></div>
+        </div>
+
+        {/* Scalable Studio Pod */}
+        <div
+          ref={canvasRef}
+          style={{
+            transform: cameraTransform,
+            transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+          className="relative w-[340px] sm:w-[400px] md:w-[460px] h-[640px] sm:h-[700px] rounded-3xl bg-gradient-to-b from-white via-slate-50 to-slate-100/90 border border-slate-200/90 shadow-xl flex items-center justify-center overflow-hidden"
+        >
+          {/* Studio Pedestal Base & Soft Contact Shadow */}
+          <div className="absolute bottom-6 left-12 right-12 h-6 bg-slate-600/20 rounded-[100%] blur-sm pointer-events-none"></div>
+          <div className="absolute bottom-2.5 text-[9px] text-slate-400 font-mono tracking-widest uppercase">
+            {mannequinTheme === 'charcoal'
+              ? '✦ 3D CHARCOAL STUDIO MANNEQUIN ✦'
+              : mannequinTheme === 'sand'
+              ? '✦ 3D ALABASTER STUDIO SCULPT ✦'
+              : mannequinTheme === 'skin'
+              ? '✦ 3D REALISTIC ATELIER BODY ✦'
+              : '✦ 3D GHOST MANNEQUIN STUDIO ✦'}
+          </div>
+
+          {/* 3.1 UNDERLYING 3D MANNEQUIN BODY SVG */}
           {showSilhouette && (
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
@@ -322,236 +625,299 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               xmlns="http://www.w3.org/2000/svg"
             >
               <defs>
-                {/* Real 3D Studio Mannequin Body Gradients */}
-                <linearGradient id="realBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#cbd5e1" />
-                  <stop offset="18%" stopColor="#e2e8f0" />
-                  <stop offset="50%" stopColor="#ffffff" />
-                  <stop offset="82%" stopColor="#e2e8f0" />
-                  <stop offset="100%" stopColor="#94a3b8" />
+                {/* 1. Theme Charcoal (Deep Velvet Obsidian with Rim Light) */}
+                <linearGradient id="charcoalBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#334155" />
+                  <stop offset="25%" stopColor="#1e293b" />
+                  <stop offset="60%" stopColor="#0f172a" />
+                  <stop offset="100%" stopColor="#334155" />
+                </linearGradient>
+                <linearGradient id="charcoalHead" x1="20%" y1="0%" x2="80%" y2="100%">
+                  <stop offset="0%" stopColor="#475569" />
+                  <stop offset="40%" stopColor="#1e293b" />
+                  <stop offset="100%" stopColor="#0f172a" />
                 </linearGradient>
 
-                <linearGradient id="head3DGrad" x1="25%" y1="0%" x2="75%" y2="100%">
-                  <stop offset="0%" stopColor="#ffffff" />
-                  <stop offset="45%" stopColor="#f1f5f9" />
-                  <stop offset="80%" stopColor="#cbd5e1" />
-                  <stop offset="100%" stopColor="#94a3b8" />
-                </linearGradient>
-
-                <linearGradient id="armLeftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#cbd5e1" />
-                  <stop offset="40%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#94a3b8" />
-                </linearGradient>
-
-                <linearGradient id="armRightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#cbd5e1" />
-                  <stop offset="60%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#94a3b8" />
-                </linearGradient>
-
-                <linearGradient id="pedestalPlateGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                {/* 2. Theme Sand (Studio Sandstone / Alabaster) */}
+                <linearGradient id="sandBody" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#94a3b8" />
-                  <stop offset="30%" stopColor="#f8fafc" />
-                  <stop offset="70%" stopColor="#ffffff" />
-                  <stop offset="100%" stopColor="#64748b" />
+                  <stop offset="30%" stopColor="#cbd5e1" />
+                  <stop offset="60%" stopColor="#e2e8f0" />
+                  <stop offset="100%" stopColor="#94a3b8" />
+                </linearGradient>
+                <linearGradient id="sandHead" x1="20%" y1="0%" x2="80%" y2="100%">
+                  <stop offset="0%" stopColor="#f1f5f9" />
+                  <stop offset="50%" stopColor="#cbd5e1" />
+                  <stop offset="100%" stopColor="#94a3b8" />
                 </linearGradient>
 
-                {/* Ghost Mannequin Translucent Gradient */}
-                <linearGradient id="ghostGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                {/* 3. Theme Skin (Warm Natural Flesh Contour) */}
+                <linearGradient id="skinBody" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#c2977d" />
+                  <stop offset="35%" stopColor="#e0b69e" />
+                  <stop offset="65%" stopColor="#f1cdb7" />
+                  <stop offset="100%" stopColor="#a67c63" />
+                </linearGradient>
+                <linearGradient id="skinHead" x1="20%" y1="0%" x2="80%" y2="100%">
+                  <stop offset="0%" stopColor="#f5dac8" />
+                  <stop offset="50%" stopColor="#e0b69e" />
+                  <stop offset="100%" stopColor="#a67c63" />
+                </linearGradient>
+
+                {/* 4. Ghost Outline */}
+                <linearGradient id="ghostFill" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#f8fafc" stopOpacity="0.85" />
-                  <stop offset="60%" stopColor="#f1f5f9" stopOpacity="0.80" />
                   <stop offset="100%" stopColor="#e2e8f0" stopOpacity="0.75" />
                 </linearGradient>
 
-                <filter id="bodyShadow" x="-10%" y="-10%" width="120%" height="120%">
-                  <feDropShadow dx="0" dy="6" stdDeviation="8" floodColor="#0f172a" floodOpacity="0.12" />
+                {/* Pedestal Chrome Base */}
+                <linearGradient id="chromeBase" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#64748b" />
+                  <stop offset="30%" stopColor="#f8fafc" />
+                  <stop offset="70%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#475569" />
+                </linearGradient>
+
+                {/* Deep Drop Shadow for Body Volume */}
+                <filter id="studio3dShadow" x="-15%" y="-10%" width="130%" height="120%">
+                  <feDropShadow dx="0" dy="8" stdDeviation="10" floodColor="#0f172a" floodOpacity="0.22" />
                 </filter>
               </defs>
 
-              {mannequinMode === 'real' ? (
+              {mannequinTheme !== 'ghost' ? (
                 /* ======================================================== */
-                /* REAL 3D SCULPTED BOUTIQUE MANNEQUIN BODY                 */
+                /* FULL SCULPTED 3D STUDIO MANNEQUIN BODY                   */
                 /* ======================================================== */
-                <g filter="url(#bodyShadow)">
-                  {/* Studio Pedestal Stand Plate */}
-                  <ellipse cx="240" cy="655" rx="110" ry="14" fill="url(#pedestalPlateGrad)" stroke="#64748b" strokeWidth="1.2" />
-                  <ellipse cx="240" cy="652" rx="90" ry="10" fill="#f1f5f9" stroke="#94a3b8" strokeWidth="0.8" opacity="0.7" />
-                  {/* Stand vertical connection rods to ankles */}
-                  <line x1="202" y1="620" x2="202" y2="652" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
-                  <line x1="278" y1="620" x2="278" y2="652" stroke="#64748b" strokeWidth="4" strokeLinecap="round" />
+                <g filter="url(#studio3dShadow)">
+                  {/* Studio Pedestal Stand Base */}
+                  <ellipse cx="240" cy="655" rx="115" ry="15" fill="url(#chromeBase)" stroke="#475569" strokeWidth="1.2" />
+                  <ellipse cx="240" cy="652" rx="95" ry="10" fill="#ffffff" opacity="0.6" />
+                  {/* Stand Connection Rods */}
+                  <line x1="202" y1="620" x2="202" y2="652" stroke="#475569" strokeWidth="4" strokeLinecap="round" />
+                  <line x1="278" y1="620" x2="278" y2="652" stroke="#475569" strokeWidth="4" strokeLinecap="round" />
 
-                  {/* 1. Mannequin Legs & Feet (Extending from under pants/shorts to shoes) */}
+                  {/* 1. Mannequin Muscular Legs (Left & Right) */}
                   {/* Left Leg */}
                   <path
                     d="M 174,380
-                       C 168,430 174,480 182,520
-                       C 188,550 192,590 194,625
-                       L 214,625
-                       C 216,590 220,550 224,520
-                       C 228,480 234,430 238,380
+                       C 166,430 172,485 180,525
+                       C 186,555 190,590 192,630
+                       L 216,630
+                       C 218,590 222,555 226,525
+                       C 230,485 236,430 238,380
                        Z"
-                    fill="url(#realBodyGrad)"
-                    stroke="#94a3b8"
-                    strokeWidth="1"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1.2"
                   />
                   {/* Left Foot */}
-                  <ellipse cx="204" cy="630" rx="14" ry="7" fill="url(#realBodyGrad)" stroke="#94a3b8" strokeWidth="1" />
+                  <ellipse
+                    cx="204"
+                    cy="634"
+                    rx="15"
+                    ry="8"
+                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                    stroke="#475569"
+                    strokeWidth="1"
+                  />
 
                   {/* Right Leg */}
                   <path
                     d="M 242,380
-                       C 246,430 252,480 256,520
-                       C 260,550 264,590 266,625
-                       L 286,625
-                       C 288,590 292,550 298,520
-                       C 306,480 312,430 306,380
+                       C 244,430 250,485 254,525
+                       C 258,555 262,590 264,630
+                       L 288,630
+                       C 290,590 294,555 300,525
+                       C 308,485 314,430 306,380
                        Z"
-                    fill="url(#realBodyGrad)"
-                    stroke="#94a3b8"
-                    strokeWidth="1"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1.2"
                   />
                   {/* Right Foot */}
-                  <ellipse cx="276" cy="630" rx="14" ry="7" fill="url(#realBodyGrad)" stroke="#94a3b8" strokeWidth="1" />
+                  <ellipse
+                    cx="276"
+                    cy="634"
+                    rx="15"
+                    ry="8"
+                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                    stroke="#475569"
+                    strokeWidth="1"
+                  />
 
-                  {/* 2. Mannequin Pelvis & Torso (Waist & Midriff connecting top to pants) */}
+                  {/* 2. Mannequin Torso & Midriff (Connecting top hem to waist) */}
                   <path
-                    d="M 148,188
-                       C 142,210 160,250 168,285
-                       C 174,312 176,335 174,380
-                       C 190,390 220,395 240,395
-                       C 260,395 290,390 306,380
-                       C 304,335 306,312 312,285
-                       C 320,250 338,210 332,188
-                       C 310,182 280,175 258,172
-                       L 222,172
-                       C 200,175 170,182 148,188
+                    d="M 144,188
+                       C 140,215 158,255 166,290
+                       C 172,315 174,340 172,380
+                       C 190,392 220,396 240,396
+                       C 260,396 290,392 308,380
+                       C 306,340 308,315 314,290
+                       C 322,255 340,215 336,188
+                       C 314,180 282,174 260,172
+                       L 220,172
+                       C 198,174 166,180 144,188
                        Z"
-                    fill="url(#realBodyGrad)"
-                    stroke="#94a3b8"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
                     strokeWidth="1.2"
                   />
 
-                  {/* Defined Waist & Anatomical Midriff Shadowing */}
-                  <path d="M 188,320 Q 240,330 292,320" stroke="#cbd5e1" strokeWidth="2" strokeLinecap="round" />
-                  <path d="M 205,355 Q 240,362 275,355" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
-
-                  {/* 3. Mannequin Left Arm (Emerging naturally through t-shirt/jacket sleeves) */}
+                  {/* 3. Mannequin Left Arm (Deltoid, Bicep, Forearm, Hand) */}
                   <path
-                    d="M 148,188
-                       C 134,205 124,240 126,285
-                       C 128,320 134,360 142,400
-                       C 145,414 152,425 156,424
-                       C 160,423 158,410 155,398
-                       C 150,360 148,320 146,285
-                       C 146,250 156,220 164,198
+                    d="M 144,188
+                       C 128,208 116,245 118,290
+                       C 120,325 128,365 138,405
+                       C 142,420 150,432 155,430
+                       C 160,428 156,412 152,400
+                       C 144,365 140,325 138,290
+                       C 138,250 150,218 160,196
                        Z"
-                    fill="url(#armLeftGrad)"
-                    stroke="#94a3b8"
-                    strokeWidth="1.1"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1.2"
                   />
-                  {/* Left Hand / Wrist Contours */}
-                  <ellipse cx="150" cy="416" rx="6" ry="12" fill="url(#armLeftGrad)" stroke="#94a3b8" strokeWidth="0.8" />
+                  {/* Left Wrist & Hand */}
+                  <ellipse
+                    cx="146"
+                    cy="420"
+                    rx="8"
+                    ry="15"
+                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1"
+                  />
 
                   {/* 4. Mannequin Right Arm */}
                   <path
-                    d="M 332,188
-                       C 346,205 356,240 354,285
-                       C 352,320 346,360 338,400
-                       C 335,414 328,425 324,424
-                       C 320,423 322,410 325,398
-                       C 330,360 332,320 334,285
-                       C 334,250 324,220 316,198
+                    d="M 336,188
+                       C 352,208 364,245 362,290
+                       C 360,325 352,365 342,405
+                       C 338,420 330,432 325,430
+                       C 320,428 324,412 328,400
+                       C 336,365 340,325 342,290
+                       C 342,250 330,218 320,196
                        Z"
-                    fill="url(#armRightGrad)"
-                    stroke="#94a3b8"
-                    strokeWidth="1.1"
-                  />
-                  {/* Right Hand / Wrist Contours */}
-                  <ellipse cx="330" cy="416" rx="6" ry="12" fill="url(#armRightGrad)" stroke="#94a3b8" strokeWidth="0.8" />
-
-                  {/* 5. Sculpted Neck with Clavicles (Visible right above garment neckline) */}
-                  <path
-                    d="M 224,118
-                       L 223,168
-                       Q 223,176 212,180
-                       L 268,180
-                       Q 257,176 257,168
-                       L 256,118
-                       Z"
-                    fill="url(#realBodyGrad)"
-                    stroke="#94a3b8"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
                     strokeWidth="1.2"
                   />
-                  {/* Clavicle / Collarbone 3D Highlights (Right above shirt collar) */}
-                  <path d="M 214,180 Q 240,188 266,180" stroke="#94a3b8" strokeWidth="2.5" strokeLinecap="round" />
-                  <path d="M 226,176 Q 240,182 254,176" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+                  {/* Right Wrist & Hand */}
+                  <ellipse
+                    cx="334"
+                    cy="420"
+                    rx="8"
+                    ry="15"
+                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1"
+                  />
 
-                  {/* 6. Sculpted Luxury Abstract Mannequin Head */}
-                  <ellipse cx="240" cy="74" rx="27" ry="36" fill="url(#head3DGrad)" stroke="#94a3b8" strokeWidth="1.2" />
-                  {/* Temple / Brow Sheen */}
-                  <ellipse cx="236" cy="64" rx="14" ry="18" fill="#ffffff" opacity="0.45" />
-                  {/* Chin / Jawline Contour */}
-                  <path d="M 226,98 Q 240,110 254,98" stroke="#94a3b8" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
+                  {/* 5. Cylindrical Solid Neck Filling Garment Collar */}
+                  <path
+                    d="M 222,112
+                       L 220,172
+                       Q 220,182 210,186
+                       L 270,186
+                       Q 260,182 260,172
+                       L 258,112
+                       Z"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalHead)' : mannequinTheme === 'skin' ? 'url(#skinHead)' : 'url(#sandHead)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1.2"
+                  />
+                  {/* Collarbone / Clavicle 3D Highlights (Visible right above shirt collar) */}
+                  <path d="M 212,186 Q 240,195 268,186" stroke={mannequinTheme === 'charcoal' ? '#64748b' : '#475569'} strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M 224,181 Q 240,188 256,181" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+
+                  {/* 6. Sculpted Luxury Studio Oval Head */}
+                  <ellipse
+                    cx="240"
+                    cy="72"
+                    rx="28"
+                    ry="37"
+                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalHead)' : mannequinTheme === 'skin' ? 'url(#skinHead)' : 'url(#sandHead)'}
+                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                    strokeWidth="1.2"
+                  />
+                  {/* Temple / Jawline Sheen */}
+                  <ellipse cx="236" cy="62" rx="14" ry="18" fill="#ffffff" opacity={mannequinTheme === 'charcoal' ? 0.25 : 0.45} />
+                  <path d="M 226,96 Q 240,108 254,96" stroke={mannequinTheme === 'charcoal' ? '#64748b' : '#475569'} strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
                 </g>
               ) : (
                 /* ======================================================== */
                 /* GHOST MANNEQUIN MINIMALIST SILHOUETTE                     */
                 /* ======================================================== */
                 <g>
-                  {/* Head Oval */}
-                  <ellipse cx="240" cy="78" rx="28" ry="38" fill="url(#ghostGrad)" stroke="#cbd5e1" strokeWidth="1.2" />
-                  {/* Sleek Neck */}
-                  <path d="M 226,112 L 226,145 Q 226,152 220,154 M 254,112 L 254,145 Q 254,152 260,154" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
-
-                  {/* Ghost Mannequin Body Contour */}
+                  <ellipse cx="240" cy="74" rx="28" ry="38" fill="url(#ghostFill)" stroke="#cbd5e1" strokeWidth="1.2" />
+                  <path d="M 224,112 L 224,150 Q 224,158 214,162 M 256,112 L 256,150 Q 256,158 266,162" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
                   <path
-                    d="M 220,154 
-                       C 195,156 160,165 142,176
-                       C 134,182 136,192 144,198
-                       C 162,212 178,245 174,282
-                       C 172,305 160,326 156,345
-                       C 152,364 162,430 172,490
-                       C 178,525 186,590 190,635
-                       L 214,635
-                       C 216,585 220,520 226,460
-                       C 230,420 236,365 240,355
-                       C 244,365 250,420 254,460
-                       C 260,520 264,585 266,635
-                       L 290,635
-                       C 294,590 302,525 308,490
-                       C 318,430 328,364 324,345
-                       C 320,326 308,305 306,282
-                       C 302,245 318,212 336,198
-                       C 344,192 346,182 338,176
-                       C 320,165 285,156 260,154
+                    d="M 214,162 
+                       C 192,165 158,175 140,186
+                       C 132,192 134,202 142,208
+                       C 160,222 176,255 172,292
+                       C 170,315 158,336 154,355
+                       C 150,374 160,440 170,500
+                       C 176,535 184,600 188,645
+                       L 212,645
+                       C 214,595 218,530 224,470
+                       C 228,430 234,375 240,365
+                       C 246,375 252,430 256,470
+                       C 262,530 266,595 268,645
+                       L 292,645
+                       C 296,600 304,535 310,500
+                       C 320,440 330,374 326,355
+                       C 322,336 310,315 308,292
+                       C 304,255 320,222 338,208
+                       C 346,202 348,192 340,186
+                       C 322,175 288,165 266,162
                        Z"
-                    fill="url(#ghostGrad)"
+                    fill="url(#ghostFill)"
                     stroke="#cbd5e1"
                     strokeWidth="1.2"
                   />
-
-                  {/* Waist Guideline */}
-                  <line x1="174" y1="282" x2="306" y2="282" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
-                  {/* Feet Base */}
-                  <ellipse cx="202" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
-                  <ellipse cx="278" cy="640" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                  <line x1="172" y1="292" x2="308" y2="292" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
+                  <ellipse cx="200" cy="650" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                  <ellipse cx="280" cy="650" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
                 </g>
               )}
             </svg>
           )}
 
           {/* ======================================================== */}
-          {/* 2. LAYER 10: SHOES / FOOTWEAR (Z-Index: 10)               */}
+          {/* 3.2 DEFAULT STUDIO SNEAKERS (when no shoes equipped)    */}
+          {/* ======================================================== */}
+          {!shoesItem && (
+            <div
+              style={{
+                top: '88%',
+                zIndex: 10,
+                transform: 'translate(-50%, -50%) scale(0.82)',
+              }}
+              className="absolute left-1/2 w-[56%] aspect-[2.4/1] pointer-events-none opacity-85 filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.18)]"
+            >
+              <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                {/* Left Minimalist Studio White Sneaker */}
+                <path d="M 40,85 C 45,65 70,55 95,60 C 115,65 125,75 130,95 L 35,95 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1.5" />
+                <path d="M 32,95 L 133,95 L 131,105 L 34,105 Z" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1" />
+                {/* Right Minimalist Studio White Sneaker */}
+                <path d="M 170,95 C 175,75 185,65 205,60 C 230,55 255,65 260,85 L 265,95 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1.5" />
+                <path d="M 167,95 L 268,95 L 266,105 L 169,105 Z" fill="#f8fafc" stroke="#94a3b8" strokeWidth="1" />
+              </svg>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 3.3 EQUIPPED SHOES (Z-Index: 10)                        */}
           {/* ======================================================== */}
           {shoesItem && (
             <div
               style={{
-                top: `${calcShoesY}%`,
-                zIndex: shoesItem.placement.z_index || 10,
+                top: '88%',
+                zIndex: 10,
                 transform: `translate(-50%, -50%) scale(${shoesItem.placement.scale ? Math.min(shoesItem.placement.scale, 0.85) : 0.82})`,
               }}
-              className="absolute left-1/2 w-[60%] aspect-[2.2/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.22)]"
+              className="absolute left-1/2 w-[60%] aspect-[2.2/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_10px_16px_rgba(0,0,0,0.24)]"
             >
               <MannequinGarmentImage
                 src={shoesItem.imageUrl}
@@ -570,16 +936,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 3. LAYER 20: BOTTOMWEAR / PANTS (Z-Index: 20 - زیر تی‌شرت) */}
+          {/* 3.4 BOTTOMWEAR / PANTS (Z-Index: 20 or 35 if Tucked)     */}
           {/* ======================================================== */}
           {bottomItem && (
             <div
               style={{
-                top: `${calcBottomY}%`,
-                zIndex: bottomItem.placement.z_index || 20,
-                transform: `translate(-50%, -50%) scale(${bottomItem.placement.scale ? Math.max(bottomItem.placement.scale, 1.15) : 1.20})`,
+                top: `${bottomOffsetY}%`,
+                zIndex: tuckMode === 'tucked' ? 35 : 20,
+                transform: `translate(-50%, -50%) scale(${bottomScale})`,
               }}
-              className="absolute left-1/2 w-[74%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.18)]"
+              className="absolute left-1/2 w-[74%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_14px_20px_rgba(0,0,0,0.20)]"
             >
               <MannequinGarmentImage
                 src={bottomItem.imageUrl}
@@ -589,7 +955,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_bottom')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
                 title="حذف شلوار از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -598,16 +964,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 4. LAYER 30: TOPWEAR / T-SHIRT / HOODIE (Z-Index: 30)      */}
+          {/* 3.5 TOPWEAR / T-SHIRT (Z-Index: 30 or 25 if Tucked)      */}
           {/* ======================================================== */}
           {topItem && (
             <div
               style={{
-                top: `${calcTopY}%`,
-                zIndex: topItem.placement.z_index || 30,
-                transform: `translate(-50%, -50%) scale(${topItem.placement.scale ? Math.min(topItem.placement.scale, 0.90) : 0.85})`,
+                top: `${topOffsetY}%`,
+                zIndex: tuckMode === 'tucked' ? 25 : 30,
+                transform: `translate(-50%, -50%) scale(${topScale})`,
               }}
-              className="absolute left-1/2 w-[64%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_14px_22px_rgba(0,0,0,0.22)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]"
+              className="absolute left-1/2 w-[64%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_14px_22px_rgba(0,0,0,0.24)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
@@ -617,8 +983,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_top')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
-                title="حذف تی‌شرت از ست"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
+                title="حذف بالاتنه از ست"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -626,16 +992,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 5. LAYER 40: OUTERWEAR / JACKET (Z-Index: 40 - روی همه)  */}
+          {/* 3.6 OUTERWEAR / JACKET (Z-Index: 40 - روی همه)          */}
           {/* ======================================================== */}
           {outerItem && (
             <div
               style={{
-                top: `${calcOuterY}%`,
-                zIndex: outerItem.placement.z_index || 40,
+                top: '34%',
+                zIndex: 40,
                 transform: `translate(-50%, -50%) scale(${outerItem.placement.scale ? Math.min(outerItem.placement.scale, 0.98) : 0.92})`,
               }}
-              className="absolute left-1/2 w-[68%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.26)] drop-shadow-[0_5px_8px_rgba(0,0,0,0.14)]"
+              className="absolute left-1/2 w-[68%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_28px_rgba(0,0,0,0.28)] drop-shadow-[0_6px_10px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={outerItem.imageUrl}
@@ -645,7 +1011,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <button
                 type="button"
                 onClick={() => onRemoveSlot('slot_outer')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer"
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-50"
                 title="حذف کت از ست"
               >
                 <X className="w-3.5 h-3.5" />
@@ -655,28 +1021,30 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
         </div>
       </div>
 
-      {/* Bottom Slot Status Pills */}
-      <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-100 z-10">
+      {/* 4. BOTTOM SLOT STATUS PILLS & QUICK STYLING INDICATORS */}
+      <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-100 z-10 shrink-0">
         <div className={`p-2 rounded-xl text-center border transition-all ${
-          topItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+          topItem ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-400'
         }`}>
-          <span className="text-[10px] block font-bold">بالاتنه (روی شلوار)</span>
+          <span className="text-[10px] block font-bold">
+            بالاتنه {tuckMode === 'tucked' ? '(داخل شلوار)' : '(روی شلوار)'}
+          </span>
           <span className="text-xs font-black truncate block mt-0.5">
             {topItem ? topItem.title : 'خالی'}
           </span>
         </div>
 
         <div className={`p-2 rounded-xl text-center border transition-all ${
-          bottomItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+          bottomItem ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-400'
         }`}>
-          <span className="text-[10px] block font-bold">پایین‌تنه (زیر تی‌شرت)</span>
+          <span className="text-[10px] block font-bold">پایین‌تنه (جین/شلوار)</span>
           <span className="text-xs font-black truncate block mt-0.5">
             {bottomItem ? bottomItem.title : 'خالی'}
           </span>
         </div>
 
         <div className={`p-2 rounded-xl text-center border transition-all ${
-          outerItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+          outerItem ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-400'
         }`}>
           <span className="text-[10px] block font-bold">لباس‌رو (کت/کاپشن)</span>
           <span className="text-xs font-black truncate block mt-0.5">
@@ -685,11 +1053,11 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
         </div>
 
         <div className={`p-2 rounded-xl text-center border transition-all ${
-          shoesItem ? 'bg-amber-50 border-amber-300 text-amber-900' : 'bg-slate-50 border-slate-200 text-slate-400'
+          shoesItem ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-xs' : 'bg-slate-50 border-slate-200 text-slate-400'
         }`}>
           <span className="text-[10px] block font-bold">کفش و کتانی</span>
           <span className="text-xs font-black truncate block mt-0.5">
-            {shoesItem ? shoesItem.title : 'خالی'}
+            {shoesItem ? shoesItem.title : 'کتانی استودیویی پیش‌فرض'}
           </span>
         </div>
       </div>

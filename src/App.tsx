@@ -323,6 +323,8 @@ export default function App() {
                 activeOutfit={activeOutfit}
                 onRemoveSlot={handleRemoveSlot}
                 onClearAll={handleClearAll}
+                availableProducts={products}
+                onSelectProduct={handleToggleGarment}
               />
 
               {/* Right Column: Active Outfit Pieces Breakdown & Order */}
