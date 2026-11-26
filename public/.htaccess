@@ -7,6 +7,9 @@
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
+  # 1.1 Rewrite legacy /uploads/* directly to /api/uploads/* (prevent index.html fallback)
+  RewriteRule ^uploads/(.*)$ api/uploads/$1 [L,QSA]
+
   # 2. Route /api/* endpoints to the native PHP API Handler
   RewriteRule ^api/(.*)$ api/index.php [QSA,L]
 

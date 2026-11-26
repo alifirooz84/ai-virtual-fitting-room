@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Check, Trash2 } from 'lucide-react';
 import { ClothingProduct, GarmentSlot, ActiveOutfit } from '../types/clothing';
+import { resolveGarmentImageUrl } from '../utils/api';
 
 interface ClothingCatalogProps {
   products: ClothingProduct[];
@@ -135,9 +136,10 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
                 {/* Garment Preview Thumbnail */}
                 <div className="w-16 h-16 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden relative shadow-xs">
                   <img
-                    src={product.imageUrl}
+                    src={resolveGarmentImageUrl(product.imageUrl)}
                     alt={product.title}
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform"
+                    loading="lazy"
                   />
                   {isEquipped && (
                     <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] shadow-xs">

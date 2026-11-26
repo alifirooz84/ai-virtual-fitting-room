@@ -8,6 +8,7 @@ import {
   Layers,
 } from 'lucide-react';
 import { ActiveOutfit, GarmentSlot, ClothingProduct } from '../types/clothing';
+import { resolveGarmentImageUrl } from '../utils/api';
 
 interface OutfitSummaryPanelProps {
   activeOutfit: ActiveOutfit;
@@ -100,7 +101,7 @@ export const OutfitSummaryPanel: React.FC<OutfitSummaryPanelProps> = ({
               {item ? (
                 <div className="flex items-center gap-2.5 mt-2 bg-white p-2 rounded-xl border border-slate-200">
                   <img
-                    src={item.imageUrl}
+                    src={resolveGarmentImageUrl(item.imageUrl)}
                     alt={item.title}
                     className="w-11 h-11 object-contain rounded-lg bg-slate-50 p-1 shrink-0"
                   />

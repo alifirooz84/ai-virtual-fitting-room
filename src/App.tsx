@@ -7,7 +7,7 @@ import { MerchantUploadView } from './components/MerchantUploadView';
 import { AiPromptGuideModal } from './components/AiPromptGuideModal';
 import { INITIAL_STORES, INITIAL_PRODUCTS } from './data/mockStoresAndProducts';
 import { StoreProfile, ClothingProduct, GarmentSlot, ActiveOutfit } from './types/clothing';
-import { apiFetch } from './utils/api';
+import { apiFetch, resolveGarmentImageUrl } from './utils/api';
 import { dbStorage } from './utils/dbStorage';
 import { Sparkles } from 'lucide-react';
 
@@ -120,7 +120,11 @@ export default function App() {
     [...serverProducts, ...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
       if (!seen.has(p.id)) {
         seen.add(p.id);
-        merged.push(p);
+        const resolvedProduct = {
+          ...p,
+          imageUrl: resolveGarmentImageUrl(p.imageUrl),
+        };
+        merged.push(resolvedProduct);
       }
     });
     setProducts(merged);

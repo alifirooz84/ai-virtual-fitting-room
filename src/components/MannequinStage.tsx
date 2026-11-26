@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { ActiveOutfit, GarmentSlot, ClothingProduct } from '../types/clothing';
 import { removeWhiteBackground, transparencyCache } from '../utils/imageProcessing';
+import { resolveGarmentImageUrl } from '../utils/api';
 
 interface MannequinGarmentImageProps {
   src: string;
@@ -20,20 +21,22 @@ interface MannequinGarmentImageProps {
 }
 
 const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt, className }) => {
-  const [cleanSrc, setCleanSrc] = useState<string>(() => transparencyCache.get(src) || src);
+  const resolved = resolveGarmentImageUrl(src);
+  const [cleanSrc, setCleanSrc] = useState<string>(() => transparencyCache.get(resolved) || resolved);
 
   useEffect(() => {
     let active = true;
-    if (src && !src.startsWith('data:image/svg')) {
-      if (transparencyCache.has(src)) {
-        setCleanSrc(transparencyCache.get(src)!);
+    const targetUrl = resolveGarmentImageUrl(src);
+    if (targetUrl && !targetUrl.startsWith('data:image/svg')) {
+      if (transparencyCache.has(targetUrl)) {
+        setCleanSrc(transparencyCache.get(targetUrl)!);
       } else {
-        removeWhiteBackground(src).then((cleaned) => {
+        removeWhiteBackground(targetUrl).then((cleaned) => {
           if (active) setCleanSrc(cleaned);
         });
       }
     } else {
-      setCleanSrc(src);
+      setCleanSrc(targetUrl);
     }
     return () => {
       active = false;
@@ -130,7 +133,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
       Promise.all(
         slotsToDraw.map((garment) =>
-          removeWhiteBackground(garment.imageUrl).then((cleanUrl) => ({
+          removeWhiteBackground(resolveGarmentImageUrl(garment.imageUrl)).then((cleanUrl) => ({
             garment,
             cleanUrl,
           }))

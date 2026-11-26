@@ -13,6 +13,28 @@ export const getApiBaseUrl = (): string => {
   return '';
 };
 
+/**
+ * Universal Image URL Resolver
+ * Automatically resolves relative paths, fixes /uploads/ to /api/uploads/,
+ * and ensures full compatibility with cPanel Apache routing.
+ */
+export const resolveGarmentImageUrl = (url: string | undefined): string => {
+  if (!url) return '';
+  if (url.startsWith('data:image')) return url;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  let clean = url.trim();
+  // If stored as /uploads/..., redirect to /api/uploads/... where cPanel API serves it
+  if (clean.startsWith('/uploads/')) {
+    clean = '/api' + clean;
+  } else if (clean.startsWith('uploads/')) {
+    clean = '/api/' + clean;
+  }
+
+  const base = getApiBaseUrl();
+  return clean.startsWith('/') ? `${base}${clean}` : `${base}/${clean}`;
+};
+
 export const apiFetch = async (
   endpoint: string,
   init?: RequestInit,

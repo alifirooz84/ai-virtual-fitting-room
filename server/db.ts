@@ -58,18 +58,21 @@ export class JsonDatabase {
                   const fileName = `${p.id}.${ext}`;
                   const filePath = path.join(uploadsDir, fileName);
                   fs.writeFileSync(filePath, Buffer.from(match[2], 'base64'));
-                  p.imageUrl = `/uploads/${fileName}`;
+                  p.imageUrl = `/api/uploads/${fileName}`;
                   migratedCount++;
                 }
               } catch (err) {
                 console.warn('[JsonDatabase] Could not extract base64 for product:', p.id, err);
               }
+            } else if (p.imageUrl && typeof p.imageUrl === 'string' && p.imageUrl.startsWith('/uploads/')) {
+              p.imageUrl = '/api' + p.imageUrl;
+              migratedCount++;
             }
             this.products.set(p.id, p);
           });
 
           if (migratedCount > 0) {
-            console.log(`[JsonDatabase] Successfully migrated ${migratedCount} base64 images to physical disk files in public/uploads/`);
+            console.log(`[JsonDatabase] Successfully migrated/normalized ${migratedCount} product image URLs in server/data/products.json`);
             this.saveProducts();
           }
         } else {

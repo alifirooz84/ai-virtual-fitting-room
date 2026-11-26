@@ -162,7 +162,7 @@ async function startServer() {
             const fileName = `${newId}.${ext}`;
             const filePath = path.join(uploadsDir, fileName);
             fs.writeFileSync(filePath, Buffer.from(match[2], 'base64'));
-            finalImageUrl = `/uploads/${fileName}`;
+            finalImageUrl = `/api/uploads/${fileName}`;
           }
         } catch (fileErr) {
           console.warn('[server.ts] Could not write file to disk, using data URL:', fileErr);
