@@ -1,53 +1,62 @@
 import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
 
 /**
- * Master AI Image Generation Prompt for 3D Ghost Mannequin Apparel (Zero-Tilt & Symmetrical Orthographic View)
- * Solves:
- * 1. Crooked/Tilted 3/4 poses (locks camera to strict 0° frontal orthographic view, bilateral symmetry).
- * 2. Asymmetrical shoulders or tilted hem (locks left and right shoulders to the exact same horizontal height).
- * 3. Ghost mannequin hollow interior (reveals inner collar/lining in 3D volume without any human body).
- * 4. 100% Transparent alpha background with zero white box, zero frame, zero borders.
+ * Master Universal AI Image Generation Prompt (All-in-One Autonomous Decision Engine)
+ * Automatically detects whether the item is an Overcoat, T-Shirt, Jeans, or Shoes,
+ * and executes the precise golden proportion, hollow chest void, or horizontal waistband rules!
  */
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
-Professional commercial fashion catalog photography of a [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and hollow interior collar revealing inside neck lining and tag.
+Professional commercial fashion studio catalog photography of [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and crisp structural drape.
 
-CAMERA & PERSPECTIVE (MANDATORY ZERO-TILT RULES):
-- Strict 0-degree frontal orthographic eye-level camera view (0° yaw, 0° pitch, 0° roll).
-- Absolutely NO 3/4 angle, NO three-quarter perspective, NO tilted mannequin, NO turned torso.
-- Perfect bilateral mirror symmetry: left and right shoulder seams must be on the EXACT same horizontal pixel line.
-- Both sleeves drape downward symmetrically at identical 15-degree angles from the torso.
-- Bottom hem and waistband are strictly 100% horizontal and level with the ground plane (0° slope).
+AUTONOMOUS GARMENT-TYPE DETECTION & ALIGNMENT ARCHITECTURE:
+Identify the garment category from the input name and apply the corresponding execution rules automatically:
 
-FRAMING & CANVASS RATIO (MANDATORY ZERO WHITE BOX TRANSPARENCY):
+CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber):
+- The garment MUST be completely UNBUTTONED and WIDE OPEN in the front, hanging symmetrically straight down.
+- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 84% of canvas width (broader than any inner t-shirt).
+- MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
+- STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the chest gap.
+- Top collar starts at 8% from top canvas border; bottom hem terminates at 88% (long coat) or 74% (jacket).
+
+CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
+- Centered 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and label.
+- Torso width occupies 64% of canvas width (perfect proportion to sit inside the 84% outerwear without sticking out).
+- Collar starts at 10% from top canvas border; bottom hem terminates at 68% from top border.
+- Bottom hem is strictly 100% horizontal and level with the ground plane (0° slope).
+
+CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
+- Waistband starts at exactly 10% from top canvas border and is strictly 100% horizontal and level (0° slope).
+- Waistband width occupies 48% of canvas width; hip and thigh width occupies 58% of canvas width.
+- Leg cuffs terminate at 92% from top canvas border, hanging straight and level with identical bilateral symmetry.
+
+CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
+- Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
+- Soles rest at 88% from top canvas border; pair occupies 66% of canvas width with soft contact shadow underneath.
+
+GLOBAL MANDATORY RULES (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
-- Centered perfectly on canvas with clean margins.
-- Tops: Collar neckline starts at 10% from the top canvas border; bottom hem terminates at 70% from the top border.
-- Bottoms: Waistband starts at 10% from the top border; ankle cuffs terminate at 92% from the top border.
-- MANDATORY ALPHA TRANSPARENCY: The garment MUST be completely isolated on a 100% transparent alpha PNG background (RGBA, alpha = 0 for every pixel outside the garment).
-- STRICT PROHIBITION: Absolutely NO white background box, NO rectangular white card, NO white frame, NO opaque borders, NO background square, NO studio backdrop behind the garment. The clothing silhouette must float cleanly on pure transparency with no square bounding container.
-
-FABRIC & LIGHTING:
-- Ultra-high-resolution realistic fabric texture, natural micro-creases, authentic seams and stitching.
-- Soft diffuse studio high-key lighting, balanced from left and right, completely eliminate one-sided harsh shadows.
+- Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfectly bilateral mirror symmetry.
+- Absolutely NO 3/4 angle, NO tilted shoulders, NO skewed pose, NO human body, NO skin, NO mannequin stand.
+- MANDATORY PURE TRANSPARENCY: Isolated cutout on 100% transparent alpha PNG background (RGBA, zero background borders, zero white box, zero rectangular frames).
+- Soft balanced commercial studio high-key diffuse lighting, sharp authentic fabric textures and seams.
 
 NEGATIVE PROMPTS (MUST AVOID):
-white background, white box, white frame, rectangular border, photo card, opaque backdrop, solid white square, white edges, framing, backdrop, cardboard border, photo outline, solid white canvas, white card overlay, 3/4 view, three-quarter angle, turned body, tilted shoulders, angled torso, dynamic pose, asymmetrical, slanted hem, skewed perspective, side angle, diagonal horizon, one arm raised, bent pose, human body, skin, face, hands, visible mannequin, dummy stand, hanger, floor shadow, cast shadow, dark background, checkerboard pattern.
+buttoned coat, closed front jacket, solid back lining inside chest, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
 `.trim();
 
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-دستورالعمل تولید عکس سه‌بعدی مانکن نامرئی (کاملاً صاف و مستقیم، بدون کجی و بدون کادر سفید دور لباس):
+پرامپت واحد و همه‌کاره تولید عکس لباس با هوش مصنوعی (تشخیص خودکار تمام دسته‌ها):
 
-این پرامپت خطاهای رایج هوش مصنوعی را کاملاً مسدود می‌کند:
-۱. بدون کادر سفید دور لباس (Zero White Box): پرامپت هوش مصنوعی را ملزم می‌کند خروجی را به صورت PNG کاملاً شفاف (Alpha = 0) بدهد تا کادر سفید روی کمر شلوار نیفتد.
-۲. به هیچ وجه عکس در زاویه ۳/۴ رخ یا کج تولید نمی‌شود (0° Frontal Orthographic).
-۳. شانه‌های چپ و راست و لبه پایینی لباس دقیقاً در یک خط تراز افقی قرار می‌گیرند.
-۴. لبه کمر شلوار و پایینی تی‌شرت کاملاً افقی و موازی خط افق هستند تا بدون نیاز به هیچ جابجایی دستی روی هم بنشینند.
-۵. داخل یقه لباس خالی و سه‌بعدی است (Ghost Mannequin 3D Interior).
-
-نکته مهم: سیستم استودیو پرو ما به پاک‌کن خودکار هوشمند مجهز شده است؛ یعنی حتی اگر هوش مصنوعی عکسی با پس‌زمینه یا کادر سفید به شما داد، سیستم به محض آپلود، کادر سفید را به طور خودکار پاک و شفاف می‌کند!
+ویژگی‌های این پرامپت هوشمند:
+این پرامپت به صورت خودکار نوع لباسی که داخل کروشه می‌نویسید را تشخیص می‌دهد و قوانین اختصاصی آن را اجرا می‌کند:
+۱. اگر پالتو یا کت باشد: آن را جلوباز با سینه کاملاً خالی و شفاف و سرشانه‌های عریض (۸۴٪) تولید می‌کند تا تی‌شرت از زیر آن دیده شود.
+۲. اگر تی‌شرت یا هودی باشد: آن را با عرض متناسب (۶۴٪) و یقه خالی ۳بعدی می‌سازد تا دقیقاً در سینه پالتو جا بگیرد.
+۳. اگر شلوار باشد: خط کمر را کاملاً افقی می‌سازد تا همپوشانی بی‌نقص با تی‌شرت داشته باشد.
+۴. اگر کفش باشد: جفت روبه‌رو با زاویه ۰ درجه استودیویی تحویل می‌دهد.
+۵. تمام خروجی‌ها ۱۰۰٪ ترنسپرنت (PNG بدون کادر سفید) هستند.
 
 نحوه استفاده:
-عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] در متن انگلیسی را با نام و رنگ لباستان عوض کنید (مثلاً: beige oversized fleece hoodie) و کل پرامپت انگلیسی را به Gemini، ChatGPT، Midjourney یا Flux بدهید.
+تنها کاری که باید بکنید این است که عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] را با نام لباس و رنگ آن (به انگلیسی) پر کنید و کل متن انگلیسی را به Midjourney، Flux، ChatGPT یا Gemini بدهید!
 `.trim();
 
 /**
