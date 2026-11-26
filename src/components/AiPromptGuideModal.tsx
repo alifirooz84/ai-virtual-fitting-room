@@ -12,6 +12,8 @@ import {
 import {
   GHOST_MANNEQUIN_IMAGE_PROMPT_EN,
   GHOST_MANNEQUIN_IMAGE_PROMPT_FA,
+  LAYERED_APPAREL_IMAGE_PROMPT_EN,
+  LAYERED_APPAREL_IMAGE_PROMPT_FA,
   AI_COMPANION_SPEC_PROMPT_FA,
   AI_COMPANION_SPEC_PROMPT_EN,
 } from '../data/aiPromptGuide';
@@ -25,8 +27,8 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  // Main Tab: 'image' (Zero-Tilt Photo Gen) vs 'json' (Auto-Snap Companion Spec)
-  const [mainTab, setMainTab] = useState<'image' | 'json'>('image');
+  // Main Tab: 'image' | 'layered' | 'json'
+  const [mainTab, setMainTab] = useState<'image' | 'layered' | 'json'>('image');
   const [langTab, setLangTab] = useState<'fa' | 'en'>('en');
   const [copied, setCopied] = useState(false);
 
@@ -37,6 +39,10 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
       ? langTab === 'en'
         ? GHOST_MANNEQUIN_IMAGE_PROMPT_EN
         : GHOST_MANNEQUIN_IMAGE_PROMPT_FA
+      : mainTab === 'layered'
+      ? langTab === 'en'
+        ? LAYERED_APPAREL_IMAGE_PROMPT_EN
+        : LAYERED_APPAREL_IMAGE_PROMPT_FA
       : langTab === 'en'
       ? AI_COMPANION_SPEC_PROMPT_EN
       : AI_COMPANION_SPEC_PROMPT_FA;
@@ -78,22 +84,38 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
           </button>
         </div>
 
-        {/* Top Feature Selector: Image Prompt vs JSON Spec Prompt */}
-        <div className="px-6 pt-4 pb-2 bg-slate-50/50 border-b border-slate-100 flex items-center gap-2 shrink-0">
+        {/* Top Feature Selector: Image Prompt vs Layered Prompt vs JSON Spec Prompt */}
+        <div className="px-6 pt-4 pb-2 bg-slate-50/50 border-b border-slate-100 flex items-center gap-2 shrink-0 flex-wrap">
           <button
             type="button"
             onClick={() => {
               setMainTab('image');
               setLangTab('en');
             }}
-            className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+            className={`flex-1 py-2.5 px-3 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
               mainTab === 'image'
                 ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
                 : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
             }`}
           >
             <Camera className="w-4 h-4" />
-            <span>۱. پرامپت عکس ۳بعدی شفاف (حذف کادر سفید دور لباس و کجی)</span>
+            <span>۱. عکس تکی ۳بعدی (بدون کادر سفید)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setMainTab('layered');
+              setLangTab('en');
+            }}
+            className={`flex-1 py-2.5 px-3 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
+              mainTab === 'layered'
+                ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
+                : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+            }`}
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>۲. استایل لایه‌ای (پیراهن زیر پلیور/دورس)</span>
           </button>
 
           <button
@@ -102,14 +124,14 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
               setMainTab('json');
               setLangTab('fa');
             }}
-            className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+            className={`flex-1 py-2.5 px-3 rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer border ${
               mainTab === 'json'
                 ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-sm'
                 : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
             }`}
           >
             <FileCode className="w-4 h-4" />
-            <span>۲. پرامپت استخراج فایل JSON (تراز خودکار خط کمر)</span>
+            <span>۳. فایل JSON تراز خودکار خط کمر</span>
           </button>
         </div>
 
@@ -148,6 +170,31 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
                   <span className="font-bold text-purple-800">✨ حذف کادر سفید دور لباس:</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
                     خروجی PNG شفاف با آلفا = 0؛ به علاوه پاک‌کن هوشمند تعبیه‌شده در سیستم.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : mainTab === 'layered' ? (
+            /* Explanation for Layered Fashion (Sweater over Shirt / Coat over Tee) */
+            <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 space-y-2">
+              <h4 className="text-xs font-black text-emerald-900 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+                <span>چگونه استایل لایه‌ای (پیراهن زیر دورس با یقه و سرآستین بیرون‌زده) تولید کنیم؟</span>
+              </h4>
+              <p className="text-xs text-slate-700 leading-relaxed">
+                در عکاسی‌های فشن اینستاگرامی (مانند ماسیمو دوتی و زارا)، وقتی پیراهن سفید زیر پلیور پوشیده می‌شود، یقه پیراهن از بالای یقه گرد پلیور بیرون می‌زند و سرآستین‌ها از مچ بیرون می‌آیند.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-emerald-800">👔 متد A (تولید مستقیم ۲ در ۱ با این پرامپت):</span>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    بهترین و شیک‌ترین روش! هوش مصنوعی خود پلیور را با یقه پیراهن سفید برگردانده‌شده و سرآستین اتوکشیده خروجی می‌دهد؛ بدون نیاز به هیچ برش دستی.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-amber-800">🧥 متد B (پالتو یا کت روی تی‌شرت در استودیو پرو):</span>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    در سیستم استودیوی ما، تی‌شرت زیر پالتو خودکار کات هوشمند می‌خورد تا آستین‌هایش بیرون نزند و یقه و سینه آن از میان جلوی باز پالتو بدرخشد.
                   </p>
                 </div>
               </div>

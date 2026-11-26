@@ -91,6 +91,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [outerScale, setOuterScale] = useState(1.12);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(16);
+  const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
 
   const topItem = activeOutfit.slot_top;
   const bottomItem = activeOutfit.slot_bottom;
@@ -412,6 +413,23 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 </span>
               </button>
             )}
+
+            {/* Layered White Shirt Collar Toggle (استایل پیراهن زیر پلیور/کت مثل فشن بلاگرها) */}
+            <button
+              type="button"
+              onClick={() => setHasLayeredCollar((prev) => !prev)}
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                hasLayeredCollar
+                  ? 'bg-amber-100 text-amber-950 border-amber-300 shadow-xs'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+              }`}
+              title="افزودن یقه پیراهن سفید کلاسیک روی دورس، پلیور یا پالتو (استایل لایه‌ای شیک اینستاگرامی)"
+            >
+              <span>👔</span>
+              <span className="hidden sm:inline">
+                {hasLayeredCollar ? 'یقه پیراهن زیر: فعال' : 'یقه پیراهن زیر'}
+              </span>
+            </button>
 
             {/* Camera View Switcher */}
             <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold">
@@ -1125,6 +1143,53 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               >
                 <X className="w-3.5 h-3.5" />
               </button>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* 3.7 LAYERED WHITE SHIRT COLLAR OVERLAY (Z-Index: 45)      */}
+          {/* ======================================================== */}
+          {hasLayeredCollar && (
+            <div
+              style={{
+                top: '27.5%',
+                zIndex: 45,
+                transform: 'translate(-50%, -50%)',
+              }}
+              className="absolute left-1/2 w-[34%] aspect-[2/1] pointer-events-none filter drop-shadow-[0_6px_10px_rgba(0,0,0,0.24)] transition-all duration-300 animate-in fade-in zoom-in-95"
+            >
+              <svg viewBox="0 0 160 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                {/* Inner Neck Band Shadow */}
+                <path d="M 45,30 Q 80,44 115,30 Q 80,50 45,30 Z" fill="#94a3b8" opacity="0.45" />
+                {/* Center Placket & Top Button */}
+                <rect x="74" y="32" width="12" height="30" rx="2" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1" />
+                <circle cx="80" cy="42" r="2.5" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
+                <circle cx="80" cy="54" r="2.5" fill="#ffffff" stroke="#94a3b8" strokeWidth="1" />
+                {/* Left Collar Wing */}
+                <path
+                  d="M 52,22
+                     C 62,20 74,26 78,36
+                     L 58,56
+                     C 53,50 47,34 52,22 Z"
+                  fill="#ffffff"
+                  stroke="#cbd5e1"
+                  strokeWidth="1.2"
+                />
+                <path d="M 54,24 L 76,35" stroke="#f1f5f9" strokeWidth="2" />
+                {/* Right Collar Wing */}
+                <path
+                  d="M 108,22
+                     C 98,20 86,26 82,36
+                     L 102,56
+                     C 107,50 113,34 108,22 Z"
+                  fill="#ffffff"
+                  stroke="#cbd5e1"
+                  strokeWidth="1.2"
+                />
+                <path d="M 106,24 L 84,35" stroke="#f1f5f9" strokeWidth="2" />
+                {/* Collar Edge Seams */}
+                <path d="M 53,24 L 59,54 M 107,24 L 101,54" stroke="#e2e8f0" strokeWidth="0.8" strokeDasharray="1.5 1.5" />
+              </svg>
             </div>
           )}
         </div>

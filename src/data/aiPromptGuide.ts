@@ -51,6 +51,41 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
 `.trim();
 
 /**
+ * Master AI Prompt for Layered Apparel (e.g. Knit Sweater over White Collared Shirt, or Open Coat over Graphic T-Shirt)
+ * Produces the exact high-end Instagram fashion aesthetic where the inner shirt collar and cuffs peek out naturally.
+ */
+export const LAYERED_APPAREL_IMAGE_PROMPT_EN = `
+Professional commercial studio fashion catalog photography of a [NAVY_BLUE_CREWNECK_KNIT_SWEATER] stylishly layered over a crisp [WHITE_COLLARED_POPLIN_DRESS_SHIRT], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and hollow interior collar.
+
+LAYERING & STYLING ARCHITECTURE (INTERLEAVED LAYER RULES):
+- The crisp white dress shirt collar is neatly folded out over the crewneck sweater collar, prominently visible around the neckline.
+- The white shirt cuffs peek out symmetrically by 1.5 cm from the ends of the sweater sleeves.
+- The body and torso of the white shirt are tucked neatly inside the sweater with no side wrinkles protruding.
+- Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfectly bilateral mirror symmetry.
+- Both arms hang down naturally at identical 15-degree angles.
+- Bottom rib hem of the sweater is level and horizontal.
+- 100% Transparent alpha PNG background (RGBA, zero background borders, no white box, pure isolated cutout).
+
+FABRIC & LIGHTING:
+- Ultra-detailed knit texture on the sweater and smooth poplin weave on the collar.
+- Balanced soft high-key studio lighting with delicate contact shadow under the collar fold.
+
+NEGATIVE PROMPTS (MUST AVOID):
+white background box, rectangular frame, wrinkled collar, asymmetrical sleeves, 3/4 view, tilted torso, human face, skin, hands, mannequin stand, opaque backdrop.
+`.trim();
+
+export const LAYERED_APPAREL_IMAGE_PROMPT_FA = `
+دستورالعمل تولید عکس استایل لایه‌ای هوش مصنوعی (پیراهن زیر دورس/پلیور با یقه و سرآستین بیرون‌زده):
+
+چرا این روش بهترین خروجی را می‌دهد؟
+در عکاسی مد و سایت‌های بین‌المللی (مثل زارا و ماسیمو دوتی)، وقتی می‌خواهند یک پلیور را با پیراهن ست کنند، آن را به عنوان یک ست لایه‌ای (۲ در ۱) عکاسی می‌کنند تا یقه پیراهن سفید روی لبه پلیور بنشیند و سرآستین‌ها بیرون بزنند.
+
+پاسخ به سوال: آیا نیاز به عکس برش‌خورده جداگانه هست؟
+- روش اول (توصیه‌شده برای پلیور و پیراهن): نیازی به برش دستی نیست! کافی است این پرامپت را به هوش مصنوعی بدهید تا خود لباس را به صورت دو تکه لایه‌ای با یقه و سرآستین بیرون‌زده خروجی دهد.
+- روش دوم (برای پالتو و کت روی تی‌شرت): در سیستم استودیو ما، سیستم به طور خودکار آستین‌های تی‌شرت زیرین را برش می‌زند (Smart Sleeve Trim) تا از پهلو نزند بیرون و از میان جلوی باز پالتو به زیبایی دیده شود. کافی است در پرامپت کت و پالتو، آن را «جلو باز» (unbuttoned open-front) درخواست کنید.
+`.trim();
+
+/**
  * The Master Multimodal Prompt to give to any AI (Gemini 1.5/2.0, ChatGPT 4o, Claude 3.5 Sonnet)
  * along with the clothing photo. It outputs the exact companion JSON file needed for the fitting room!
  */
