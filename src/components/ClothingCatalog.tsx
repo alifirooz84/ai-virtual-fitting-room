@@ -44,9 +44,9 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
       // Search query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const mTitle = p.title.toLowerCase().includes(q);
-        const mCat = p.category.toLowerCase().includes(q);
-        const mColor = (p.spec.style_details?.primary_color_fa || '').toLowerCase().includes(q);
+        const mTitle = (p.title || (p as any).name || '').toLowerCase().includes(q);
+        const mCat = (p.category || '').toLowerCase().includes(q);
+        const mColor = (p.spec?.style_details?.primary_color_fa || '').toLowerCase().includes(q);
         if (!mTitle && !mCat && !mColor) return false;
       }
       return true;
@@ -154,7 +154,7 @@ export const ClothingCatalog: React.FC<ClothingCatalogProps> = ({
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
                       {slotTitle}
                     </span>
-                    {product.spec.style_details?.fabric_type && (
+                    {product.spec?.style_details?.fabric_type && (
                       <span className="text-[10px] text-slate-500 truncate">
                         • {product.spec.style_details.fabric_type}
                       </span>

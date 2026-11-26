@@ -478,7 +478,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
               >
                 <span>+</span>
-                <span>تست پیشنهاد: {outfitAiAnalysis.recommendedPiece.title.slice(0, 18)}...</span>
+                <span>تست پیشنهاد: {(outfitAiAnalysis.recommendedPiece.title || (outfitAiAnalysis.recommendedPiece as any).name || 'لباس').slice(0, 18)}...</span>
               </button>
             )}
 

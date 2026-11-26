@@ -117,12 +117,40 @@ export default function App() {
     // Merge: Server database products + local IndexedDB + Initial showroom products
     const seen = new Set<string>();
     const merged: ClothingProduct[] = [];
-    [...serverProducts, ...localCustom, ...INITIAL_PRODUCTS].forEach((p) => {
-      if (!seen.has(p.id)) {
-        seen.add(p.id);
-        const resolvedProduct = {
-          ...p,
-          imageUrl: resolveGarmentImageUrl(p.imageUrl),
+    [...serverProducts, ...localCustom, ...INITIAL_PRODUCTS].forEach((rawP: any) => {
+      if (!rawP || !rawP.id) return;
+      if (!seen.has(rawP.id)) {
+        seen.add(rawP.id);
+        const resolvedProduct: ClothingProduct = {
+          ...rawP,
+          title: rawP.title || rawP.name || 'لباس جدید',
+          price: Number(rawP.price) || 0,
+          category: rawP.category || 'tshirt',
+          slot: rawP.slot || (rawP.layer === 1 ? 'slot_top' : rawP.layer === 2 ? 'slot_bottom' : rawP.layer === 3 ? 'slot_outer' : 'slot_top'),
+          imageUrl: resolveGarmentImageUrl(rawP.imageUrl || rawP.transparentAssetUrl),
+          placement: rawP.placement || {
+            anchor: 'torso',
+            offset_x_percent: 0,
+            offset_y_percent: 34,
+            scale: 0.9,
+            z_index: 30,
+          },
+          spec: rawP.spec || {
+            name_fa: rawP.title || rawP.name || 'لباس',
+            category: rawP.category || 'tshirt',
+            slot: rawP.slot || 'slot_top',
+            placement: rawP.placement || { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 34, scale: 0.9, z_index: 30 },
+            style_details: {
+              fabric_type: rawP.color || '',
+              fit_style: 'standard',
+              primary_color_fa: rawP.color || '',
+              accent_color_fa: '',
+              season: 'all_season',
+              estimated_price_toman: Number(rawP.price) || 0,
+            },
+            tags: [],
+            layer_priority: 30,
+          },
         };
         merged.push(resolvedProduct);
       }
