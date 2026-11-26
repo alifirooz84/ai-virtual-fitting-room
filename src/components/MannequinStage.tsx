@@ -55,7 +55,7 @@ const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt,
   return <img src={cleanSrc} alt={alt} className={className} crossOrigin="anonymous" />;
 };
 
-export type MannequinTheme = 'charcoal' | 'sand' | 'skin' | 'ghost';
+export type MannequinTheme = 'human' | 'charcoal' | 'sand' | 'skin' | 'ghost';
 export type CameraPreset = 'full' | 'top' | 'bottom';
 export type TuckMode = 'untucked' | 'tucked';
 
@@ -76,7 +76,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 }) => {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [showSilhouette, setShowSilhouette] = useState(true);
-  const [mannequinTheme, setMannequinTheme] = useState<MannequinTheme>('charcoal');
+  const [mannequinTheme, setMannequinTheme] = useState<MannequinTheme>('human');
   const [tuckMode, setTuckMode] = useState<TuckMode>('untucked');
   const [cameraPreset, setCameraPreset] = useState<CameraPreset>('full');
   const [isFineTuningOpen, setIsFineTuningOpen] = useState(false);
@@ -253,58 +253,75 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
         return;
       }
 
-      Promise.all(
-        slotsToDraw.map((garment) =>
-          removeWhiteBackground(resolveGarmentImageUrl(garment.imageUrl)).then((cleanUrl) => ({
-            garment,
-            cleanUrl,
-          }))
-        )
-      ).then((items) => {
-        let loadedCount = 0;
-        items.forEach(({ garment, cleanUrl }) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => {
-            const slotScale = garment.slot === 'slot_bottom'
-              ? bottomScale
-              : garment.slot === 'slot_shoes'
-              ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.85) : 0.82)
-              : garment.slot === 'slot_outer'
-              ? outerScale
-              : topScale;
+      const renderGarmentsOnCanvas = () => {
+        Promise.all(
+          slotsToDraw.map((garment) =>
+            removeWhiteBackground(resolveGarmentImageUrl(garment.imageUrl)).then((cleanUrl) => ({
+              garment,
+              cleanUrl,
+            }))
+          )
+        ).then((items) => {
+          let loadedCount = 0;
+          items.forEach(({ garment, cleanUrl }) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              const slotScale = garment.slot === 'slot_bottom'
+                ? bottomScale
+                : garment.slot === 'slot_shoes'
+                ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.85) : 0.82)
+                : garment.slot === 'slot_outer'
+                ? outerScale
+                : topScale;
 
-            const effectiveY = garment.slot === 'slot_bottom'
-              ? bottomOffsetY
-              : garment.slot === 'slot_shoes'
-              ? 88
-              : garment.slot === 'slot_outer'
-              ? outerOffsetY
-              : topOffsetY;
+              const effectiveY = garment.slot === 'slot_bottom'
+                ? bottomOffsetY
+                : garment.slot === 'slot_shoes'
+                ? 88
+                : garment.slot === 'slot_outer'
+                ? outerOffsetY
+                : topOffsetY;
 
-            const yPos = (effectiveY / 100) * 1420;
-            const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 440 : garment.slot === 'slot_outer' ? 620 : 500;
-            const w = baseW * slotScale;
-            const h = baseW * slotScale;
-            const xPos = 512 - w / 2;
+              const yPos = (effectiveY / 100) * 1420;
+              const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 440 : garment.slot === 'slot_outer' ? 620 : 500;
+              const w = baseW * slotScale;
+              const h = baseW * slotScale;
+              const xPos = 512 - w / 2;
 
-            ctx.drawImage(img, xPos, yPos - 50, w, h);
-            loadedCount++;
-            if (loadedCount === items.length) {
-              const link = document.createElement('a');
-              link.download = `vton-studio-outfit-${Date.now()}.png`;
-              link.href = canvas.toDataURL('image/png');
-              link.click();
-              setIsExporting(false);
-            }
-          };
-          img.onerror = () => {
-            loadedCount++;
-            if (loadedCount === items.length) setIsExporting(false);
-          };
-          img.src = cleanUrl;
+              ctx.drawImage(img, xPos, yPos - 50, w, h);
+              loadedCount++;
+              if (loadedCount === items.length) {
+                const link = document.createElement('a');
+                link.download = `vton-studio-outfit-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                setIsExporting(false);
+              }
+            };
+            img.onerror = () => {
+              loadedCount++;
+              if (loadedCount === items.length) setIsExporting(false);
+            };
+            img.src = cleanUrl;
+          });
         });
-      });
+      };
+
+      if (mannequinTheme === 'human') {
+        const modelImg = new Image();
+        modelImg.crossOrigin = 'anonymous';
+        modelImg.onload = () => {
+          ctx.drawImage(modelImg, 0, 0, 1024, 1420);
+          renderGarmentsOnCanvas();
+        };
+        modelImg.onerror = () => {
+          renderGarmentsOnCanvas();
+        };
+        modelImg.src = '/models/human_male_model.jpg';
+      } else {
+        renderGarmentsOnCanvas();
+      }
     }, 200);
   };
 
@@ -334,6 +351,20 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold">
               <button
                 type="button"
+                onClick={() => { setMannequinTheme('human'); setShowSilhouette(true); }}
+                className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                  mannequinTheme === 'human' && showSilhouette
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
+                    : 'text-slate-700 hover:text-slate-950'
+                }`}
+                title="مدل انسانی واقعی با چهره، فرم بدنی و آناتومی طبیعی فشن (Real Human Studio Model)"
+              >
+                <span>🧔</span>
+                <span>مدل واقعی</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => { setMannequinTheme('charcoal'); setShowSilhouette(true); }}
                 className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                   mannequinTheme === 'charcoal' && showSilhouette
@@ -343,7 +374,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 title="مانکن زغالی مات استودیویی (کنتراست فوق‌العاده برای دیدن رنگ و فرم لباس)"
               >
                 <span>🖤</span>
-                <span className="hidden xl:inline">زغالی مات</span>
+                <span className="hidden xl:inline">زغالی</span>
               </button>
 
               <button
@@ -358,20 +389,6 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               >
                 <span>🏛️</span>
                 <span className="hidden xl:inline">استودیویی</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => { setMannequinTheme('skin'); setShowSilhouette(true); }}
-                className={`px-2 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
-                  mannequinTheme === 'skin' && showSilhouette
-                    ? 'bg-white text-amber-900 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-                title="مانکن با رنگ پوست طبیعی"
-              >
-                <span>👤</span>
-                <span className="hidden xl:inline">رئال</span>
               </button>
 
               <button
@@ -741,17 +758,29 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {/* Studio Pedestal Base & Soft Contact Shadow */}
           <div className="absolute bottom-6 left-12 right-12 h-6 bg-slate-600/20 rounded-[100%] blur-sm pointer-events-none"></div>
           <div className="absolute bottom-2.5 text-[9px] text-slate-400 font-mono tracking-widest uppercase">
-            {mannequinTheme === 'charcoal'
+            {mannequinTheme === 'human'
+              ? '✦ REAL ATELIER HUMAN FASHION MODEL ✦'
+              : mannequinTheme === 'charcoal'
               ? '✦ 3D CHARCOAL STUDIO MANNEQUIN ✦'
               : mannequinTheme === 'sand'
               ? '✦ 3D ALABASTER STUDIO SCULPT ✦'
-              : mannequinTheme === 'skin'
-              ? '✦ 3D REALISTIC ATELIER BODY ✦'
               : '✦ 3D GHOST MANNEQUIN STUDIO ✦'}
           </div>
 
+          {/* 3.0 REALISTIC HUMAN ATELIER MODEL IMAGE */}
+          {showSilhouette && mannequinTheme === 'human' && (
+            <div className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none select-none overflow-hidden rounded-3xl">
+              <img
+                src="/models/human_male_model.jpg"
+                alt="Real Studio Human Model"
+                className="w-full h-full object-cover object-top filter contrast-[1.02] brightness-[0.98] transition-all duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent pointer-events-none" />
+            </div>
+          )}
+
           {/* 3.1 UNDERLYING 3D MANNEQUIN BODY SVG */}
-          {showSilhouette && (
+          {showSilhouette && mannequinTheme !== 'human' && (
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-300"
               viewBox="0 0 480 740"
