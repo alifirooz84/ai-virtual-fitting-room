@@ -87,6 +87,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [topScale, setTopScale] = useState(0.88);
   const [bottomOffsetY, setBottomOffsetY] = useState(64);
   const [bottomScale, setBottomScale] = useState(1.18);
+  const [outerOffsetY, setOuterOffsetY] = useState(31);
+  const [outerScale, setOuterScale] = useState(1.12);
+  const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
+  const [sleeveTrimPercent, setSleeveTrimPercent] = useState(16);
 
   const topItem = activeOutfit.slot_top;
   const bottomItem = activeOutfit.slot_bottom;
@@ -121,6 +125,19 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       setBottomScale(1.18);
     }
   }, [bottomItem?.id]);
+
+  useEffect(() => {
+    if (outerItem?.placement?.offset_y_percent) {
+      setOuterOffsetY(outerItem.placement.offset_y_percent);
+    } else {
+      setOuterOffsetY(31);
+    }
+    if (outerItem?.placement?.scale) {
+      setOuterScale(Math.max(outerItem.placement.scale, 1.08));
+    } else {
+      setOuterScale(1.12);
+    }
+  }, [outerItem?.id]);
 
   // Dynamic Camera Transform Style
   const cameraTransform = useMemo(() => {
@@ -242,7 +259,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               : garment.slot === 'slot_shoes'
               ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.85) : 0.82)
               : garment.slot === 'slot_outer'
-              ? (garment.placement.scale ? Math.min(garment.placement.scale, 0.98) : 0.92)
+              ? outerScale
               : topScale;
 
             const effectiveY = garment.slot === 'slot_bottom'
@@ -250,11 +267,11 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               : garment.slot === 'slot_shoes'
               ? 88
               : garment.slot === 'slot_outer'
-              ? 34
+              ? outerOffsetY
               : topOffsetY;
 
             const yPos = (effectiveY / 100) * 1420;
-            const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 440 : 500;
+            const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 440 : garment.slot === 'slot_outer' ? 620 : 500;
             const w = baseW * slotScale;
             const h = baseW * slotScale;
             const xPos = 512 - w / 2;
@@ -376,6 +393,25 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 {tuckMode === 'tucked' ? 'استایل: داخل شلوار' : 'استایل: روی شلوار'}
               </span>
             </button>
+
+            {/* Smart Sleeve Trimming for Outerwear (پالتو / کت روی تی‌شرت) */}
+            {outerItem && (
+              <button
+                type="button"
+                onClick={() => setIsSleeveTrimActive((prev) => !prev)}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isSleeveTrimActive
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs'
+                    : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+                }`}
+                title="برش هوشمند آستین لباس زیر پالتو برای جلوگیری از بیرون‌زدگی لبه‌های تی‌شرت"
+              >
+                <span>✂️</span>
+                <span className="hidden sm:inline">
+                  {isSleeveTrimActive ? 'برش زیر پالتو: فعال' : 'برش زیر پالتو: خاموش'}
+                </span>
+              </button>
+            )}
 
             {/* Camera View Switcher */}
             <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200 text-xs font-bold">
@@ -505,6 +541,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 setTopScale(0.88);
                 setBottomOffsetY(64);
                 setBottomScale(1.18);
+                setOuterOffsetY(31);
+                setOuterScale(1.12);
+                setIsSleeveTrimActive(true);
+                setSleeveTrimPercent(16);
               }}
               className="text-[10px] text-amber-400 hover:underline cursor-pointer"
             >
@@ -512,13 +552,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
             {/* Topwear Control */}
             <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
               <div className="flex items-center justify-between font-bold text-slate-200">
                 <span>بالاتنه (تی‌شرت / هودی):</span>
                 <span className="text-[11px] text-amber-400 font-mono">
-                  ارتفاع: {topOffsetY}% | اسکیل: {topScale.toFixed(2)}x
+                  Y: {topOffsetY}% | {topScale.toFixed(2)}x
                 </span>
               </div>
               <div className="space-y-1.5">
@@ -554,7 +594,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <div className="flex items-center justify-between font-bold text-slate-200">
                 <span>پایین‌تنه (شلوار / جین):</span>
                 <span className="text-[11px] text-amber-400 font-mono">
-                  ارتفاع: {bottomOffsetY}% | اسکیل: {bottomScale.toFixed(2)}x
+                  Y: {bottomOffsetY}% | {bottomScale.toFixed(2)}x
                 </span>
               </div>
               <div className="space-y-1.5">
@@ -582,6 +622,70 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     className="flex-1 accent-amber-500 cursor-pointer"
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Outerwear & Sleeve Trim Control */}
+            <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
+              <div className="flex items-center justify-between font-bold text-slate-200">
+                <span>لباس‌رو (کت / پالتو):</span>
+                <span className="text-[11px] text-amber-400 font-mono">
+                  Y: {outerOffsetY}% | {outerScale.toFixed(2)}x
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
+                  <input
+                    type="range"
+                    min="22"
+                    max="40"
+                    step="1"
+                    value={outerOffsetY}
+                    onChange={(e) => setOuterOffsetY(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
+                  <input
+                    type="range"
+                    min="0.95"
+                    max="1.35"
+                    step="0.02"
+                    value={outerScale}
+                    onChange={(e) => setOuterScale(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+                <div className="pt-1 border-t border-slate-700/60 flex items-center justify-between">
+                  <label className="text-[10px] text-slate-300 flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isSleeveTrimActive}
+                      onChange={(e) => setIsSleeveTrimActive(e.target.checked)}
+                      className="accent-amber-500 rounded cursor-pointer"
+                    />
+                    <span>برش آستین زیر پالتو</span>
+                  </label>
+                  <span className="text-[10px] text-amber-400 font-mono">
+                    {isSleeveTrimActive ? `${sleeveTrimPercent}%` : 'خاموش'}
+                  </span>
+                </div>
+                {isSleeveTrimActive && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-400 w-12">برش پهلو:</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="28"
+                      step="1"
+                      value={sleeveTrimPercent}
+                      onChange={(e) => setSleeveTrimPercent(Number(e.target.value))}
+                      className="flex-1 accent-amber-500 cursor-pointer"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -972,6 +1076,11 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 top: `${topOffsetY}%`,
                 zIndex: tuckMode === 'tucked' ? 25 : 30,
                 transform: `translate(-50%, -50%) scale(${topScale})`,
+                clipPath:
+                  outerItem && isSleeveTrimActive
+                    ? `inset(0% ${sleeveTrimPercent}% 0% ${sleeveTrimPercent}%)`
+                    : undefined,
+                transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
               className="absolute left-1/2 w-[64%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_14px_22px_rgba(0,0,0,0.24)] drop-shadow-[0_4px_6px_rgba(0,0,0,0.12)]"
             >
@@ -992,16 +1101,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           )}
 
           {/* ======================================================== */}
-          {/* 3.6 OUTERWEAR / JACKET (Z-Index: 40 - روی همه)          */}
+          {/* 3.6 OUTERWEAR / JACKET / COAT (Z-Index: 40 - روی همه)    */}
           {/* ======================================================== */}
           {outerItem && (
             <div
               style={{
-                top: '34%',
+                top: `${outerOffsetY}%`,
                 zIndex: 40,
-                transform: `translate(-50%, -50%) scale(${outerItem.placement.scale ? Math.min(outerItem.placement.scale, 0.98) : 0.92})`,
+                transform: `translate(-50%, -50%) scale(${outerScale})`,
               }}
-              className="absolute left-1/2 w-[68%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_28px_rgba(0,0,0,0.28)] drop-shadow-[0_6px_10px_rgba(0,0,0,0.16)]"
+              className="absolute left-1/2 w-[76%] sm:w-[78%] aspect-[3/4.2] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_20px_32px_rgba(0,0,0,0.30)] drop-shadow-[0_8px_14px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={outerItem.imageUrl}
@@ -1012,7 +1121,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 type="button"
                 onClick={() => onRemoveSlot('slot_outer')}
                 className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-50"
-                title="حذف کت از ست"
+                title="حذف کت / پالتو از ست"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

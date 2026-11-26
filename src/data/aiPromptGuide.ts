@@ -73,8 +73,8 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 
 ۳. کت، کاپشن، پالتو، بارانی، پَفر (لباس‌رو):
    - "slot": "slot_outer"
-   - لایه فیزیکی: روی تی‌شرت و شلوار قرار می‌گیرد (Z-Index: 40)
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
+   - لایه فیزیکی: روی تی‌شرت و شلوار قرار می‌گیرد (Z-Index: 40) با سرشانه‌های عریض و فرم کشیده و شیک پالتو
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.12, "z_index": 40 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
 ۴. کفش، کتانی، بوت، اسنیکرز (کفش):
@@ -132,9 +132,9 @@ CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
    - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replaces_slot": "slot_bottom"
 
-3. Outerwear / Open Jackets / Overcoats (Outer Layer):
+3. Outerwear / Open Jackets / Overcoats / Palto (Outer Layer):
    - "slot": "slot_outer"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.12, "z_index": 40 }
    - "replaces_slot": "slot_outer"
 
 4. Footwear / Shoes / Sneakers (Tucked flush under pant cuffs):
@@ -176,7 +176,7 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = '�
   const defaultPlacement = {
     slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
     slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
-    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 27, scale: 0.92, z_index: 40 },
+    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 31, scale: 1.12, z_index: 40 },
     slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: 'head' as const, offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 },
   }[slot];
@@ -185,8 +185,10 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = '�
   let targetOffsetY = typeof json.placement?.offset_y_percent === 'number' ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
   if (slot === 'slot_bottom' && (targetOffsetY > 68 || targetOffsetY < 52)) {
     targetOffsetY = 60;
-  } else if ((slot === 'slot_top' || slot === 'slot_outer') && (targetOffsetY < 20 || targetOffsetY > 35)) {
+  } else if (slot === 'slot_top' && (targetOffsetY < 20 || targetOffsetY > 35)) {
     targetOffsetY = 27;
+  } else if (slot === 'slot_outer' && (targetOffsetY < 22 || targetOffsetY > 38)) {
+    targetOffsetY = 31;
   } else if (slot === 'slot_shoes' && (targetOffsetY < 78 || targetOffsetY > 92)) {
     targetOffsetY = 84;
   }

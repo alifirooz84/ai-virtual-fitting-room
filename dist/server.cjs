@@ -24539,8 +24539,8 @@ var AI_COMPANION_SPEC_PROMPT_FA = `
 
 \u06F3. \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646\u060C \u067E\u0627\u0644\u062A\u0648\u060C \u0628\u0627\u0631\u0627\u0646\u06CC\u060C \u067E\u064E\u0641\u0631 (\u0644\u0628\u0627\u0633\u200C\u0631\u0648):
    - "slot": "slot_outer"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0648 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 40)
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0648 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 40) \u0628\u0627 \u0633\u0631\u0634\u0627\u0646\u0647\u200C\u0647\u0627\u06CC \u0639\u0631\u06CC\u0636 \u0648 \u0641\u0631\u0645 \u06A9\u0634\u06CC\u062F\u0647 \u0648 \u0634\u06CC\u06A9 \u067E\u0627\u0644\u062A\u0648
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.12, "z_index": 40 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
 \u06F4. \u06A9\u0641\u0634\u060C \u06A9\u062A\u0627\u0646\u06CC\u060C \u0628\u0648\u062A\u060C \u0627\u0633\u0646\u06CC\u06A9\u0631\u0632 (\u06A9\u0641\u0634):
@@ -24597,9 +24597,9 @@ CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
    - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 60, "scale": 1.22, "z_index": 20 }
    - "replaces_slot": "slot_bottom"
 
-3. Outerwear / Open Jackets / Overcoats (Outer Layer):
+3. Outerwear / Open Jackets / Overcoats / Palto (Outer Layer):
    - "slot": "slot_outer"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.92, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.12, "z_index": 40 }
    - "replaces_slot": "slot_outer"
 
 4. Footwear / Shoes / Sneakers (Tucked flush under pant cuffs):
@@ -24630,15 +24630,17 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
   const defaultPlacement = {
     slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
     slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 27, scale: 0.92, z_index: 40 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 31, scale: 1.12, z_index: 40 },
     slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
   let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
   if (slot === "slot_bottom" && (targetOffsetY > 68 || targetOffsetY < 52)) {
     targetOffsetY = 60;
-  } else if ((slot === "slot_top" || slot === "slot_outer") && (targetOffsetY < 20 || targetOffsetY > 35)) {
+  } else if (slot === "slot_top" && (targetOffsetY < 20 || targetOffsetY > 35)) {
     targetOffsetY = 27;
+  } else if (slot === "slot_outer" && (targetOffsetY < 22 || targetOffsetY > 38)) {
+    targetOffsetY = 31;
   } else if (slot === "slot_shoes" && (targetOffsetY < 78 || targetOffsetY > 92)) {
     targetOffsetY = 84;
   }
