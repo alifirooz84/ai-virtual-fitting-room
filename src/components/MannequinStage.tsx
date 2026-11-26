@@ -82,13 +82,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isFineTuningOpen, setIsFineTuningOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  // Live Fine-Tuning Overrides
+  // Live Fine-Tuning Overrides (Auto-Snap Waistline & Golden Proportion Defaults)
   const [topOffsetY, setTopOffsetY] = useState(34);
   const [topScale, setTopScale] = useState(0.88);
-  const [bottomOffsetY, setBottomOffsetY] = useState(64);
+  const [bottomOffsetY, setBottomOffsetY] = useState(60);
   const [bottomScale, setBottomScale] = useState(1.18);
   const [outerOffsetY, setOuterOffsetY] = useState(31);
-  const [outerScale, setOuterScale] = useState(1.12);
+  const [outerScale, setOuterScale] = useState(1.14);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(16);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
@@ -100,43 +100,54 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
-  // Sync default offsets when active outfit garments change
+  // Auto-Snap Waistline: Eliminates gap between tops and pants seamlessly
   useEffect(() => {
-    if (topItem?.placement?.offset_y_percent) {
-      setTopOffsetY(topItem.placement.offset_y_percent);
+    const rawY = topItem?.placement?.offset_y_percent;
+    if (typeof rawY === 'number') {
+      // Clamp any legacy top Y (like 27%) to canonical 33-35% so the hem overlaps waistband
+      setTopOffsetY(rawY < 32 ? 34 : rawY > 38 ? 35 : rawY);
     } else {
       setTopOffsetY(34);
     }
-    if (topItem?.placement?.scale) {
-      setTopScale(topItem.placement.scale);
+    const rawScale = topItem?.placement?.scale;
+    if (typeof rawScale === 'number' && rawScale >= 0.8 && rawScale <= 1.05) {
+      setTopScale(rawScale);
     } else {
       setTopScale(0.88);
     }
   }, [topItem?.id]);
 
   useEffect(() => {
-    if (bottomItem?.placement?.offset_y_percent) {
-      setBottomOffsetY(bottomItem.placement.offset_y_percent);
+    const rawY = bottomItem?.placement?.offset_y_percent;
+    if (typeof rawY === 'number') {
+      // Snap waistband to meet top hem with zero gap (canonical 59% - 61%)
+      setBottomOffsetY(rawY > 62 ? 60 : rawY < 56 ? 59 : rawY);
     } else {
-      setBottomOffsetY(64);
+      setBottomOffsetY(60);
     }
-    if (bottomItem?.placement?.scale) {
-      setBottomScale(bottomItem.placement.scale);
+    const rawScale = bottomItem?.placement?.scale;
+    // Upgrade legacy scale: 1.0 pants to natural muscular proportion (1.18)
+    if (typeof rawScale === 'number' && rawScale >= 1.12) {
+      setBottomScale(rawScale);
     } else {
       setBottomScale(1.18);
     }
   }, [bottomItem?.id]);
 
   useEffect(() => {
-    if (outerItem?.placement?.offset_y_percent) {
-      setOuterOffsetY(outerItem.placement.offset_y_percent);
+    const rawY = outerItem?.placement?.offset_y_percent;
+    if (typeof rawY === 'number') {
+      // Coat collar locked to shoulders (30% - 32%)
+      setOuterOffsetY(rawY < 28 ? 31 : rawY > 36 ? 31 : rawY);
     } else {
       setOuterOffsetY(31);
     }
-    if (outerItem?.placement?.scale) {
-      setOuterScale(Math.max(outerItem.placement.scale, 1.08));
+    const rawScale = outerItem?.placement?.scale;
+    // Outerwear must be broader than innerwear
+    if (typeof rawScale === 'number' && rawScale >= 1.1) {
+      setOuterScale(rawScale);
     } else {
-      setOuterScale(1.12);
+      setOuterScale(1.14);
     }
   }, [outerItem?.id]);
 
@@ -557,12 +568,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               onClick={() => {
                 setTopOffsetY(34);
                 setTopScale(0.88);
-                setBottomOffsetY(64);
+                setBottomOffsetY(60);
                 setBottomScale(1.18);
                 setOuterOffsetY(31);
-                setOuterScale(1.12);
+                setOuterScale(1.14);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(16);
+                setHasLayeredCollar(false);
               }}
               className="text-[10px] text-amber-400 hover:underline cursor-pointer"
             >

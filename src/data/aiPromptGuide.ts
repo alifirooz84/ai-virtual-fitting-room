@@ -96,8 +96,8 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 قوانین انطباق خودکار خط کمر، تناسب عرضی و لایه‌بندی فیزیکی بدون نیاز به جابجایی دستی (Auto-Snap Layer Hierarchy):
 ۱. هودی، تی‌شرت، دورس، پیراهن، سویشرت، پولوشرت (بالاتنه):
    - "slot": "slot_top"
-   - لایه فیزیکی: روی کمر شلوار قرار می‌گیرد (Z-Index: 30)
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
+   - لایه فیزیکی: روی کمر شلوار قرار می‌گیرد (Z-Index: 30) به طوری که لبه پایینی تی‌شرت روی کمر شلوار بنشیند و فاصله خالی ایجاد نشود
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 34, "scale": 0.88, "z_index": 30 }
    - "replacement_rules.replaces_slot": "slot_top"
 
 ۲. شلوار، جین، اسلش، بگ، کارگو، دامن (پایین‌تنه):
@@ -159,7 +159,7 @@ Return ONLY valid JSON with no markdown wrapping.
 CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
 1. Tops / Hoodies / Shirts / Sweatshirts (Torso Layer):
    - "slot": "slot_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 34, "scale": 0.88, "z_index": 30 }
    - "replaces_slot": "slot_top"
 
 2. Bottoms / Pants / Jeans (Long Leg Layer - Waist meets top hem):
@@ -209,20 +209,20 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = '�
 
   // Exact Canonical Golden Ratio Anchors: Sleek 40% Torso + 60% Leg Silhouette
   const defaultPlacement = {
-    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
-    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
-    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 31, scale: 1.12, z_index: 40 },
+    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 34, scale: 0.88, z_index: 30 },
+    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 60, scale: 1.20, z_index: 20 },
+    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 31, scale: 1.14, z_index: 40 },
     slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: 'head' as const, offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 },
   }[slot];
 
   // Auto-Snap intelligence: auto-correct to canonical anatomical range
   let targetOffsetY = typeof json.placement?.offset_y_percent === 'number' ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === 'slot_bottom' && (targetOffsetY > 68 || targetOffsetY < 52)) {
+  if (slot === 'slot_bottom' && (targetOffsetY > 64 || targetOffsetY < 54)) {
     targetOffsetY = 60;
-  } else if (slot === 'slot_top' && (targetOffsetY < 20 || targetOffsetY > 35)) {
-    targetOffsetY = 27;
-  } else if (slot === 'slot_outer' && (targetOffsetY < 22 || targetOffsetY > 38)) {
+  } else if (slot === 'slot_top' && (targetOffsetY < 30 || targetOffsetY > 38)) {
+    targetOffsetY = 34;
+  } else if (slot === 'slot_outer' && (targetOffsetY < 24 || targetOffsetY > 36)) {
     targetOffsetY = 31;
   } else if (slot === 'slot_shoes' && (targetOffsetY < 78 || targetOffsetY > 92)) {
     targetOffsetY = 84;

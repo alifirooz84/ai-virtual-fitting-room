@@ -24556,8 +24556,8 @@ var AI_COMPANION_SPEC_PROMPT_FA = `
 \u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u0646\u0637\u0628\u0627\u0642 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062E\u0637 \u06A9\u0645\u0631\u060C \u062A\u0646\u0627\u0633\u0628 \u0639\u0631\u0636\u06CC \u0648 \u0644\u0627\u06CC\u0647\u200C\u0628\u0646\u062F\u06CC \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u062C\u0627\u0628\u062C\u0627\u06CC\u06CC \u062F\u0633\u062A\u06CC (Auto-Snap Layer Hierarchy):
 \u06F1. \u0647\u0648\u062F\u06CC\u060C \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u062F\u0648\u0631\u0633\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u0633\u0648\u06CC\u0634\u0631\u062A\u060C \u067E\u0648\u0644\u0648\u0634\u0631\u062A (\u0628\u0627\u0644\u0627\u062A\u0646\u0647):
    - "slot": "slot_top"
-   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 30)
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
+   - \u0644\u0627\u06CC\u0647 \u0641\u06CC\u0632\u06CC\u06A9\u06CC: \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06CC\u200C\u06AF\u06CC\u0631\u062F (Z-Index: 30) \u0628\u0647 \u0637\u0648\u0631\u06CC \u06A9\u0647 \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u062A\u06CC\u200C\u0634\u0631\u062A \u0631\u0648\u06CC \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0628\u0646\u0634\u06CC\u0646\u062F \u0648 \u0641\u0627\u0635\u0644\u0647 \u062E\u0627\u0644\u06CC \u0627\u06CC\u062C\u0627\u062F \u0646\u0634\u0648\u062F
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 34, "scale": 0.88, "z_index": 30 }
    - "replacement_rules.replaces_slot": "slot_top"
 
 \u06F2. \u0634\u0644\u0648\u0627\u0631\u060C \u062C\u06CC\u0646\u060C \u0627\u0633\u0644\u0634\u060C \u0628\u06AF\u060C \u06A9\u0627\u0631\u06AF\u0648\u060C \u062F\u0627\u0645\u0646 (\u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647):
@@ -24618,7 +24618,7 @@ Return ONLY valid JSON with no markdown wrapping.
 CANONICAL ANCHOR POSITIONS (ANATOMICAL GOLDEN RATIO):
 1. Tops / Hoodies / Shirts / Sweatshirts (Torso Layer):
    - "slot": "slot_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 27, "scale": 0.85, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 34, "scale": 0.88, "z_index": 30 }
    - "replaces_slot": "slot_top"
 
 2. Bottoms / Pants / Jeans (Long Leg Layer - Waist meets top hem):
@@ -24657,18 +24657,18 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     slot = "slot_top";
   }
   const defaultPlacement = {
-    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 27, scale: 0.85, z_index: 30 },
-    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 60, scale: 1.22, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 31, scale: 1.12, z_index: 40 },
+    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 34, scale: 0.88, z_index: 30 },
+    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 60, scale: 1.2, z_index: 20 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 31, scale: 1.14, z_index: 40 },
     slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 84, scale: 0.82, z_index: 10 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
   let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === "slot_bottom" && (targetOffsetY > 68 || targetOffsetY < 52)) {
+  if (slot === "slot_bottom" && (targetOffsetY > 64 || targetOffsetY < 54)) {
     targetOffsetY = 60;
-  } else if (slot === "slot_top" && (targetOffsetY < 20 || targetOffsetY > 35)) {
-    targetOffsetY = 27;
-  } else if (slot === "slot_outer" && (targetOffsetY < 22 || targetOffsetY > 38)) {
+  } else if (slot === "slot_top" && (targetOffsetY < 30 || targetOffsetY > 38)) {
+    targetOffsetY = 34;
+  } else if (slot === "slot_outer" && (targetOffsetY < 24 || targetOffsetY > 36)) {
     targetOffsetY = 31;
   } else if (slot === "slot_shoes" && (targetOffsetY < 78 || targetOffsetY > 92)) {
     targetOffsetY = 84;
