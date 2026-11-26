@@ -1,6 +1,8 @@
 import { StoreProfile, ClothingProduct } from '../types/clothing';
 import { normalizeGarmentAiSpec } from './aiPromptGuide';
 
+const realSneakersUrl = '/models/white_leather_sneakers.png';
+
 export const INITIAL_STORES: StoreProfile[] = [
   {
     id: 'store-zara',
@@ -327,15 +329,15 @@ export const INITIAL_PRODUCTS: ClothingProduct[] = [
     price: 1850000,
     category: 'shoes',
     slot: 'slot_shoes',
-    imageUrl: SVG_ASSETS.whiteSneakers,
-    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+    imageUrl: realSneakersUrl,
+    placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
     spec: normalizeGarmentAiSpec({
       garment_id: 'ZAR-SHS-004',
       name_fa: 'کتانی لژدار چرم سفید',
       name_en: 'White Platform Minimalist Leather Sneakers',
       slot: 'slot_shoes',
       category: 'shoes',
-      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+      placement: { anchor: 'feet', offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
       style_details: { primary_color_fa: 'سفید خالص', primary_color_en: 'Pure White', color_hex: '#f8fafc', fabric_type: 'چرم مصنوعی و کفی EVA', estimated_price_toman: 1850000 },
     }),
     createdAt: '2026-01-11T12:15:00Z',

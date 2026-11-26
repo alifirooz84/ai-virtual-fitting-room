@@ -30,6 +30,7 @@ jobs:
           mkdir -p release_frontend
           cp dist/index.html release_frontend/
           cp -r dist/assets release_frontend/
+          if [ -d dist/models ]; then cp -r dist/models release_frontend/; fi
           cat << 'EOF' > release_frontend/.htaccess
           # Multi-Store AI Virtual Fitting Room - Apache SPA Routing & Optimization
           <IfModule mod_rewrite.c>

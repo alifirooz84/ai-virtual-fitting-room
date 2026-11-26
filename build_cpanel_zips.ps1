@@ -136,6 +136,9 @@ New-Item -ItemType Directory -Path $frontendTemp | Out-Null
 # 1. Copy index.html, assets/, api/ and .htaccess
 Copy-Item (Join-Path $projectDir "dist\index.html") $frontendTemp -Force
 Copy-Item (Join-Path $projectDir "dist\assets") (Join-Path $frontendTemp "assets") -Recurse -Force
+if (Test-Path (Join-Path $projectDir "dist\models")) {
+    Copy-Item (Join-Path $projectDir "dist\models") (Join-Path $frontendTemp "models") -Recurse -Force
+}
 if (Test-Path (Join-Path $projectDir "dist\api")) {
     Copy-Item (Join-Path $projectDir "dist\api") (Join-Path $frontendTemp "api") -Recurse -Force
 }

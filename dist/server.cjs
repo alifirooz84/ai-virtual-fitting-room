@@ -24712,6 +24712,7 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
 }
 
 // src/data/mockStoresAndProducts.ts
+var realSneakersUrl = "/models/white_leather_sneakers.png";
 var INITIAL_STORES = [
   {
     id: "store-zara",
@@ -25024,15 +25025,15 @@ var INITIAL_PRODUCTS = [
     price: 185e4,
     category: "shoes",
     slot: "slot_shoes",
-    imageUrl: SVG_ASSETS.whiteSneakers,
-    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+    imageUrl: realSneakersUrl,
+    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-SHS-004",
       name_fa: "\u06A9\u062A\u0627\u0646\u06CC \u0644\u0698\u062F\u0627\u0631 \u0686\u0631\u0645 \u0633\u0641\u06CC\u062F",
       name_en: "White Platform Minimalist Leather Sneakers",
       slot: "slot_shoes",
       category: "shoes",
-      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
       style_details: { primary_color_fa: "\u0633\u0641\u06CC\u062F \u062E\u0627\u0644\u0635", primary_color_en: "Pure White", color_hex: "#f8fafc", fabric_type: "\u0686\u0631\u0645 \u0645\u0635\u0646\u0648\u0639\u06CC \u0648 \u06A9\u0641\u06CC EVA", estimated_price_toman: 185e4 }
     }),
     createdAt: "2026-01-11T12:15:00Z"
