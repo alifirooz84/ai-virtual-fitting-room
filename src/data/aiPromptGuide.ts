@@ -51,38 +51,37 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
 `.trim();
 
 /**
- * Master AI Prompt for Layered Apparel (e.g. Knit Sweater over White Collared Shirt, or Open Coat over Graphic T-Shirt)
- * Produces the exact high-end Instagram fashion aesthetic where the inner shirt collar and cuffs peek out naturally.
+ * Master AI Prompt for Layered & Open-Front Outerwear Apparel (e.g. Open Camel Overcoat, Cardigan, Bomber Jacket)
+ * Enforces hollow chest void between lapels so inner t-shirt / shirt shows cleanly through.
  */
 export const LAYERED_APPAREL_IMAGE_PROMPT_EN = `
-Professional commercial studio fashion catalog photography of a [NAVY_BLUE_CREWNECK_KNIT_SWEATER] stylishly layered over a crisp [WHITE_COLLARED_POPLIN_DRESS_SHIRT], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and hollow interior collar.
+Professional commercial studio fashion catalog photography of an unbuttoned open-front [EXACT_CLOTHING_ITEM_NAME_AND_COLOR, e.g. CAMEL_WOOL_OVERCOAT_WITH_NOTCHED_LAPELS], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and open drape.
 
-LAYERING & STYLING ARCHITECTURE (INTERLEAVED LAYER RULES):
-- The crisp white dress shirt collar is neatly folded out over the crewneck sweater collar, prominently visible around the neckline.
-- The white shirt cuffs peek out symmetrically by 1.5 cm from the ends of the sweater sleeves.
-- The body and torso of the white shirt are tucked neatly inside the sweater with no side wrinkles protruding.
-- Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfectly bilateral mirror symmetry.
-- Both arms hang down naturally at identical 15-degree angles.
-- Bottom rib hem of the sweater is level and horizontal.
-- 100% Transparent alpha PNG background (RGBA, zero background borders, no white box, pure isolated cutout).
+OPEN-FRONT HOLLOW CHEST ARCHITECTURE (MANDATORY TRANSPARENCY RULES):
+- The garment is completely UNBUTTONED and WIDE OPEN in the front, with both front panels hanging symmetrically straight down.
+- Generous 30% chest opening gap between the left and right lapels.
+- MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
+- STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the front chest opening gap. Do NOT fill the chest gap with any cloth or mannequin background.
+- Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfect bilateral mirror symmetry.
+- Both sleeves drape downward straight and symmetrically at identical 15-degree angles.
+- 100% isolated cutout on pure transparent alpha PNG background (zero white box, zero borders).
 
 FABRIC & LIGHTING:
-- Ultra-detailed knit texture on the sweater and smooth poplin weave on the collar.
-- Balanced soft high-key studio lighting with delicate contact shadow under the collar fold.
+- Ultra-detailed fabric weave, sharp tailored lapel creases, authentic fabric weight and depth.
+- Balanced soft studio high-key lighting with subtle inner contact shadows along lapel edges.
 
 NEGATIVE PROMPTS (MUST AVOID):
-white background box, rectangular frame, wrinkled collar, asymmetrical sleeves, 3/4 view, tilted torso, human face, skin, hands, mannequin stand, opaque backdrop.
+buttoned coat, closed front, zipped jacket, solid back lining inside chest, inner fabric covering chest, brown lining behind lapels, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted torso, human body, neck, face, hands, visible mannequin stand.
 `.trim();
 
 export const LAYERED_APPAREL_IMAGE_PROMPT_FA = `
-دستورالعمل تولید عکس استایل لایه‌ای هوش مصنوعی (پیراهن زیر دورس/پلیور با یقه و سرآستین بیرون‌زده):
+دستورالعمل تولید عکس لباس‌های رو و لایه‌ای (پالتو، کت، سویشرت زیپ‌باز و کاردیگان جلوباز):
 
-چرا این روش بهترین خروجی را می‌دهد؟
-در عکاسی مد و سایت‌های بین‌المللی (مثل زارا و ماسیمو دوتی)، وقتی می‌خواهند یک پلیور را با پیراهن ست کنند، آن را به عنوان یک ست لایه‌ای (۲ در ۱) عکاسی می‌کنند تا یقه پیراهن سفید روی لبه پلیور بنشیند و سرآستین‌ها بیرون بزنند.
-
-پاسخ به سوال: آیا نیاز به عکس برش‌خورده جداگانه هست؟
-- روش اول (توصیه‌شده برای پلیور و پیراهن): نیازی به برش دستی نیست! کافی است این پرامپت را به هوش مصنوعی بدهید تا خود لباس را به صورت دو تکه لایه‌ای با یقه و سرآستین بیرون‌زده خروجی دهد.
-- روش دوم (برای پالتو و کت روی تی‌شرت): در سیستم استودیو ما، سیستم به طور خودکار آستین‌های تی‌شرت زیرین را برش می‌زند (Smart Sleeve Trim) تا از پهلو نزند بیرون و از میان جلوی باز پالتو به زیبایی دیده شود. کافی است در پرامپت کت و پالتو، آن را «جلو باز» (unbuttoned open-front) درخواست کنید.
+چرا این پرامپت برای لباس‌های رو حیاتی است؟
+۱. جلوباز کامل (Unbuttoned Open-Front): دو طرف کت یا پالتو کاملاً باز و متقارن هستند (حداقل ۳۰٪ عرض سینه باز است).
+۲. سینه کاملاً خالی و شفاف (Hollow Chest Void): هوش مصنوعی به هیچ وجه پشت پالتو را با آستر پر نمی‌کند، بنابراین لباس زیری (تی‌شرت یا پیراهن) به زیبایی تمام از میان پالتو دیده می‌شود.
+۳. تقارن و بدون کجی (0° Frontal Orthographic): زاویه کاملاً مستقیم است و سرشانه‌ها در یک تراز افقی قرار دارند.
+۴. بدون کادر سفید دور لباس (Pure Alpha PNG): دور لباس ۱۰۰٪ شفاف است و مستقیماً روی استیج پرو می‌نشیند.
 `.trim();
 
 /**
@@ -109,7 +108,9 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 ۳. کت، کاپشن، پالتو، بارانی، پَفر (لباس‌رو):
    - "slot": "slot_outer"
    - لایه فیزیکی: روی تی‌شرت و شلوار قرار می‌گیرد (Z-Index: 40) با سرشانه‌های عریض و فرم کشیده و شیک پالتو
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.12, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 31, "scale": 1.14, "z_index": 40 }
+   - اگر لباس جلو باز است (مثل پالتو جلو باز یا کت):
+     "layering_behavior": { "is_open_front": true, "reveals_inner_top": true, "inner_top_sleeve_trim_percent": 16 }
    - "replacement_rules.replaces_slot": "slot_outer"
 
 ۴. کفش، کتانی، بوت، اسنیکرز (کفش):
@@ -121,8 +122,8 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 ساختار خروجی JSON که باید بازگردانید:
 \`\`\`json
 {
-  "garment_id": "شناسه، مثلا: TOP-TSH-01 یا PNT-JEAN-02",
-  "name_fa": "نام دقیق فارسی لباس بر اساس عکس (مثلا: هودی کلاه‌دار دورس بژ)",
+  "garment_id": "شناسه، مثلا: TOP-TSH-01 یا OUTER-COAT-01",
+  "name_fa": "نام دقیق فارسی لباس بر اساس عکس (مثلا: پالتو بلند فوتر پشمی شتری جلو باز)",
   "name_en": "English Product Name",
   "category": "tshirt" | "shirt" | "hoodie" | "sweater" | "pants" | "jeans" | "shorts" | "skirt" | "jacket" | "coat" | "shoes",
   "slot": "slot_top" | "slot_bottom" | "slot_outer" | "slot_shoes",
@@ -130,9 +131,14 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
   "placement": {
     "anchor": "torso" | "waist" | "shoulders" | "feet",
     "offset_x_percent": 0,
-    "offset_y_percent": 30,
+    "offset_y_percent": 34,
     "scale": 1.0,
     "z_index": 30
+  },
+  "layering_behavior": {
+    "is_open_front": false,
+    "reveals_inner_top": false,
+    "inner_top_sleeve_trim_percent": 16
   },
   "replacement_rules": {
     "replaces_slot": "slot_top" | "slot_bottom" | "slot_outer" | "slot_shoes",
@@ -142,7 +148,7 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
     "primary_color_fa": "نام رنگ اصلی فارسی",
     "primary_color_en": "Color in English",
     "color_hex": "#RRGGBB",
-    "fabric_type": "جنس پارچه (مثلا: دورس پنبه، دنیم سنگشور، کتان)",
+    "fabric_type": "جنس پارچه (مثلا: دورس پنبه، فوتر پشمی، دنیم سنگشور)",
     "fit_style": "regular" | "oversized" | "slim" | "relaxed",
     "season": "spring_summer" | "fall_winter" | "all_season",
     "estimated_price_toman": 1450000
