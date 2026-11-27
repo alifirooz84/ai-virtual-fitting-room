@@ -24485,6 +24485,17 @@ GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment sh
 MANDATORY: DO NOT output text, code, or analysis \u2014 IMMEDIATELY GENERATE THE IMAGE following the Basic AI Fashion Standardization Algorithm:
 
 ================================================================================
+[CRITICAL INSTRUCTION: STRUCTURAL RE-ENGINEERING \u2014 DO NOT JUST COPY THE PHOTO!]
+The attached photo is STRICTLY A MATERIAL, COLOR, AND TEXTURE REFERENCE.
+DO NOT simply replicate, redraw, or duplicate the photo in its original pose or setting!
+YOU MUST TRANSFORM AND RE-STRUCTURE THE GARMENT into a 3D Ghost Mannequin catalog shot:
+1. If the garment is closed, zipped, or buttoned -> FORCE IT COMPLETELY UNZIPPED AND WIDE OPEN with a hollow see-through chest void.
+2. If the garment is flat on a floor/table, folded, on a hanger, or worn by a human -> CONVERT IT into an upright invisible 3D ghost mannequin with hollow 3D neck cavity.
+3. REMOVE all humans, faces, body parts, hangers, furniture, wrinkles, and background elements.
+4. Output ONLY the clean, standalone garment isolated on pure seamless white studio background.
+================================================================================
+
+================================================================================
 [UNIFIED AI SPATIAL STANDARDIZATION ALGORITHM (V2.5)]
 All garment outputs MUST strictly adhere to the universal 1024x1024 anatomical grid.
 Every category has a fixed, non-deviating bounding box and spatial anchor so all items
@@ -24544,6 +24555,7 @@ var GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
    - \u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647 (\u0634\u0644\u0648\u0627\u0631): \u06A9\u0645\u0631 \u06F4\u06F7\u066A \u062F\u0631 \u062A\u0631\u0627\u0632 \u06F6\u066A\u060C \u062F\u0645\u067E\u0627 \u062F\u0631 \u06F9\u06F4\u066A (\u0645\u0645\u0627\u0633 \u0628\u0627 \u06A9\u0641\u0634).
    - \u06A9\u0641\u0634: \u06A9\u0641\u06CC \u062F\u0631 \u06F8\u06F8\u066A\u060C \u062A\u0631\u0627\u0632 \u0645\u0633\u062A\u0642\u06CC\u0645 \u0631\u0648 \u0628\u0647 \u0631\u0648.
 \u06F3. \u0639\u062F\u0645 \u062A\u0648\u0644\u06CC\u062F \u06A9\u062F \u06CC\u0627 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC: \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0645\u0633\u062A\u0642\u06CC\u0645\u0627\u064B \u0639\u06A9\u0633 \u06F3\u0628\u0639\u062F\u06CC \u0622\u0645\u0627\u062F\u0647 \u067E\u0631\u0648 \u0631\u0627 \u062E\u0631\u0648\u062C\u06CC \u0645\u06CC\u200C\u062F\u0647\u062F.
+\u06F4. \u062F\u06AF\u0631\u06AF\u0648\u0646\u200C\u0633\u0627\u0632\u06CC \u06A9\u0627\u0645\u0644 \u0641\u0631\u0645 \u0644\u0628\u0627\u0633 (Structural Transformation): \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0628\u0647 \u062C\u0627\u06CC \u0627\u06CC\u0646\u06A9\u0647 \u0641\u0642\u0637 \u0639\u06A9\u0633 \u0634\u0645\u0627 \u0631\u0627 \u06A9\u067E\u06CC \u06CC\u0627 \u0646\u0642\u0627\u0634\u06CC \u0645\u062C\u062F\u062F \u06A9\u0646\u062F\u060C \u0622\u0646 \u0631\u0627 \u0633\u0627\u062E\u062A\u0627\u0631\u0628\u0646\u062F\u06CC \u0645\u06CC\u200C\u06A9\u0646\u062F: \u0627\u06AF\u0631 \u0644\u0628\u0627\u0633 \u0631\u0648\u06CC \u0686\u0648\u0628\u200C\u0644\u0628\u0627\u0633\u06CC\u060C \u062A\u062E\u062A \u06CC\u0627 \u062A\u0646 \u0645\u0627\u0646\u06A9\u0646 \u0641\u06CC\u0632\u06CC\u06A9\u06CC \u0628\u0627\u0634\u062F\u060C \u06CC\u0627 \u0627\u06AF\u0631 \u0632\u06CC\u067E\u0634 \u0628\u0633\u062A\u0647 \u0628\u0627\u0634\u062F\u060C \u0622\u0646 \u0631\u0627 \u06A9\u0627\u0645\u0644\u0627\u064B \u0628\u0627\u0632 \u06A9\u0631\u062F\u0647 \u0648 \u0631\u0648\u06CC \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0633\u0647\u200C\u0628\u0639\u062F\u06CC \u062C\u0644\u0648\u0628\u0627\u0632 \u0628\u0627 \u0633\u06CC\u0646\u0647 \u0634\u0641\u0627\u0641 \u0648 \u06AF\u0631\u06CC\u062F \u0627\u0633\u062A\u0627\u0646\u062F\u0627\u0631\u062F \u0645\u06CC\u200C\u0646\u0634\u0627\u0646\u062F.
 
 \u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0633\u0627\u062F\u0647:
 \u06F1. \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u062E\u0648\u062F \u0631\u0627 \u062F\u0631 ChatGPT\u060C Gemini \u06CC\u0627 Midjourney \u0622\u067E\u0644\u0648\u062F \u06A9\u0646\u06CC\u062F.

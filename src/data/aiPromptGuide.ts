@@ -9,6 +9,17 @@ GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment sh
 MANDATORY: DO NOT output text, code, or analysis — IMMEDIATELY GENERATE THE IMAGE following the Basic AI Fashion Standardization Algorithm:
 
 ================================================================================
+[CRITICAL INSTRUCTION: STRUCTURAL RE-ENGINEERING — DO NOT JUST COPY THE PHOTO!]
+The attached photo is STRICTLY A MATERIAL, COLOR, AND TEXTURE REFERENCE.
+DO NOT simply replicate, redraw, or duplicate the photo in its original pose or setting!
+YOU MUST TRANSFORM AND RE-STRUCTURE THE GARMENT into a 3D Ghost Mannequin catalog shot:
+1. If the garment is closed, zipped, or buttoned -> FORCE IT COMPLETELY UNZIPPED AND WIDE OPEN with a hollow see-through chest void.
+2. If the garment is flat on a floor/table, folded, on a hanger, or worn by a human -> CONVERT IT into an upright invisible 3D ghost mannequin with hollow 3D neck cavity.
+3. REMOVE all humans, faces, body parts, hangers, furniture, wrinkles, and background elements.
+4. Output ONLY the clean, standalone garment isolated on pure seamless white studio background.
+================================================================================
+
+================================================================================
 [UNIFIED AI SPATIAL STANDARDIZATION ALGORITHM (V2.5)]
 All garment outputs MUST strictly adhere to the universal 1024x1024 anatomical grid.
 Every category has a fixed, non-deviating bounding box and spatial anchor so all items
@@ -69,6 +80,7 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
    - پایین‌تنه (شلوار): کمر ۴۷٪ در تراز ۶٪، دمپا در ۹۴٪ (مماس با کفش).
    - کفش: کفی در ۸۸٪، تراز مستقیم رو به رو.
 ۳. عدم تولید کد یا متن اضافی: هوش مصنوعی مستقیماً عکس ۳بعدی آماده پرو را خروجی می‌دهد.
+۴. دگرگون‌سازی کامل فرم لباس (Structural Transformation): هوش مصنوعی به جای اینکه فقط عکس شما را کپی یا نقاشی مجدد کند، آن را ساختاربندی می‌کند: اگر لباس روی چوب‌لباسی، تخت یا تن مانکن فیزیکی باشد، یا اگر زیپش بسته باشد، آن را کاملاً باز کرده و روی مانکن نامرئی سه‌بعدی جلوباز با سینه شفاف و گرید استاندارد می‌نشاند.
 
 نحوه استفاده ساده:
 ۱. عکس لباس خود را در ChatGPT، Gemini یا Midjourney آپلود کنید.
