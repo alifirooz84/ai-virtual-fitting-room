@@ -159,7 +159,7 @@ export function removeWhiteBackground(
         let head = 0;
         let tail = 0;
 
-        // Pixel is studio backdrop if it is achromatic (low saturation) and bright enough
+        // Pixel is studio backdrop if it is achromatic (low saturation) and bright enough, OR Chroma-Key Green
         const isBackdropTone = (pIdx: number): boolean => {
           const a = data[pIdx + 3];
           if (a < 15) return true; // already transparent
@@ -167,6 +167,11 @@ export function removeWhiteBackground(
           const r = data[pIdx];
           const g = data[pIdx + 1];
           const b = data[pIdx + 2];
+
+          // Chroma-Key Green Detection (#00FF00, neon green void for perfect studio cutout)
+          if (g > 140 && r < 115 && b < 115 && g - Math.max(r, b) > 40) {
+            return true;
+          }
 
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
           if (lum < 130) return false; // Fabric shadows or dark clothing
@@ -213,12 +218,12 @@ export function removeWhiteBackground(
         }
 
         // Hollow Chest Void Auto-Seeding (for open outerwear / coats / jackets)
-        // Eliminates ghost mannequin white/grey neck or un-keyed background between lapels
+        // Eliminates ghost mannequin white/grey neck or un-keyed background between lapels/zippers
         if (slot === 'slot_outer' || slot === 'slot_outerwear') {
           const midXMin = Math.floor(w * 0.38);
           const midXMax = Math.floor(w * 0.62);
           const midYMin = Math.floor(h * 0.08);
-          const midYMax = Math.floor(h * 0.35);
+          const midYMax = Math.floor(h * 0.90);
           for (let y = midYMin; y <= midYMax; y += 4) {
             for (let x = midXMin; x <= midXMax; x += 4) {
               const p = y * w + x;

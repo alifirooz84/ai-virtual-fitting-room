@@ -102,6 +102,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
+  const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(true);
+  const [outerVoidWidthPercent, setOuterVoidWidthPercent] = useState(18);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
 
   // 3D Spatial Parallax Tilt (Dynamic depth on mouse movement)
@@ -335,7 +337,26 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             const h = baseW * slotScale;
             const xPos = 512 - w / 2;
 
-            ctx.drawImage(img, xPos, yPos - 50, w, h);
+            if (garment.slot === 'slot_outer' && isOuterVoidMaskActive) {
+              const offCanvas = document.createElement('canvas');
+              offCanvas.width = w;
+              offCanvas.height = h;
+              const offCtx = offCanvas.getContext('2d');
+              if (offCtx) {
+                offCtx.drawImage(img, 0, 0, w, h);
+                offCtx.globalCompositeOperation = 'destination-out';
+                const cutW = (outerVoidWidthPercent / 100) * w;
+                const cutX = (w - cutW) / 2;
+                const cutY = h * 0.14;
+                const cutH = h * 0.78;
+                offCtx.fillRect(cutX, cutY, cutW, cutH);
+                ctx.drawImage(offCanvas, xPos, yPos - 50, w, h);
+              } else {
+                ctx.drawImage(img, xPos, yPos - 50, w, h);
+              }
+            } else {
+              ctx.drawImage(img, xPos, yPos - 50, w, h);
+            }
             loadedCount++;
             if (loadedCount === items.length) {
               const link = document.createElement('a');
@@ -455,21 +476,40 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
             {/* Smart Sleeve Trimming for Outerwear (پالتو / کت روی تی‌شرت) */}
             {outerItem && (
-              <button
-                type="button"
-                onClick={() => setIsSleeveTrimActive((prev) => !prev)}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
-                  isSleeveTrimActive
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs'
-                    : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
-                }`}
-                title="برش هوشمند آستین لباس زیر پالتو برای جلوگیری از بیرون‌زدگی لبه‌های تی‌شرت"
-              >
-                <span>✂️</span>
-                <span className="hidden sm:inline">
-                  {isSleeveTrimActive ? 'برش زیر پالتو: فعال' : 'برش زیر پالتو: خاموش'}
-                </span>
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsSleeveTrimActive((prev) => !prev)}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isSleeveTrimActive
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs'
+                      : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+                  }`}
+                  title="برش هوشمند آستین لباس زیر پالتو برای جلوگیری از بیرون‌زدگی لبه‌های تی‌شرت"
+                >
+                  <span>✂️</span>
+                  <span className="hidden sm:inline">
+                    {isSleeveTrimActive ? 'برش آستین زیر: فعال' : 'برش آستین زیر: خاموش'}
+                  </span>
+                </button>
+
+                {/* Smart Outerwear Inner Zipper Void Cutter (برش آستر داخل زیپ پالتو/کاپشن) */}
+                <button
+                  type="button"
+                  onClick={() => setIsOuterVoidMaskActive((prev) => !prev)}
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    isOuterVoidMaskActive
+                      ? 'bg-amber-50 text-amber-800 border-amber-300 shadow-xs'
+                      : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-slate-100'
+                  }`}
+                  title="برش هوشمند آستر یا پارچه پشتی داخل زیپ کاپشن/پالتو برای دیده شدن کامل تی‌شرت و طرح سینه"
+                >
+                  <span>🎽</span>
+                  <span className="hidden sm:inline">
+                    {isOuterVoidMaskActive ? 'برش آستر زیپ: فعال' : 'برش آستر زیپ: خاموش'}
+                  </span>
+                </button>
+              </>
             )}
 
             {/* Layered White Shirt Collar Toggle (استایل پیراهن زیر پلیور/کت مثل فشن بلاگرها) */}
@@ -624,6 +664,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(18);
+                setIsOuterVoidMaskActive(true);
+                setOuterVoidWidthPercent(18);
                 setHasLayeredCollar(false);
               }}
               className="text-[10px] text-amber-400 hover:underline cursor-pointer"
@@ -752,6 +794,34 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     {isSleeveTrimActive ? `${sleeveTrimPercent}%` : 'خاموش'}
                   </span>
                 </div>
+                <div className="pt-1 border-t border-slate-700/60 flex items-center justify-between">
+                  <label className="text-[10px] text-slate-300 flex items-center gap-1 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={isOuterVoidMaskActive}
+                      onChange={(e) => setIsOuterVoidMaskActive(e.target.checked)}
+                      className="accent-amber-500 rounded cursor-pointer"
+                    />
+                    <span>برش آستر داخل زیپ</span>
+                  </label>
+                  <span className="text-[10px] text-amber-400 font-mono">
+                    {isOuterVoidMaskActive ? `${outerVoidWidthPercent}%` : 'خاموش'}
+                  </span>
+                </div>
+                {isOuterVoidMaskActive && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-slate-400 w-12">فضای زیپ:</span>
+                    <input
+                      type="range"
+                      min="8"
+                      max="32"
+                      step="1"
+                      value={outerVoidWidthPercent}
+                      onChange={(e) => setOuterVoidWidthPercent(Number(e.target.value))}
+                      className="flex-1 accent-amber-500 cursor-pointer"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1232,6 +1302,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 top: `${outerOffsetY}%`,
                 zIndex: 40,
                 transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
+                clipPath: isOuterVoidMaskActive
+                  ? `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${50 - outerVoidWidthPercent / 2}% 14%, ${50 + outerVoidWidthPercent / 2}% 14%, ${50 + outerVoidWidthPercent / 2}% 92%, ${50 - outerVoidWidthPercent / 2}% 92%, ${50 - outerVoidWidthPercent / 2}% 14%)`
+                  : undefined,
+                transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
               className="absolute left-1/2 w-[82%] sm:w-[84%] aspect-[3/3.9] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]"
             >

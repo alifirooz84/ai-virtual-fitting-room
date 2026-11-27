@@ -179,22 +179,28 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             <div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 space-y-2">
               <h4 className="text-xs font-black text-emerald-900 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-emerald-600" />
-                <span>چگونه استایل لایه‌ای (پیراهن زیر دورس با یقه و سرآستین بیرون‌زده) تولید کنیم؟</span>
+                <span>راز تولید کاپشن و پالتوی جلوباز با نمایش کامل تی‌شرت زیرین (بدون پوشاندن سینه)</span>
               </h4>
               <p className="text-xs text-slate-700 leading-relaxed">
-                در عکاسی‌های فشن اینستاگرامی (مانند ماسیمو دوتی و زارا)، وقتی پیراهن سفید زیر پلیور پوشیده می‌شود، یقه پیراهن از بالای یقه گرد پلیور بیرون می‌زند و سرآستین‌ها از مچ بیرون می‌آیند.
+                هوش‌های مصنوعی در حالت عادی داخل کاپشن را با آستر زرد/مشکی یا دیواره پشتی پر می‌کنند که باعث می‌شود تی‌شرت زیرین پوشانده شود. این پرامپت با ۳ ترفند معماری مهندسی‌شده این مشکل را ریشه‌ای حل می‌کند:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-xs">
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                  <span className="font-bold text-emerald-800">👔 متد A (تولید مستقیم ۲ در ۱ با این پرامپت):</span>
+                  <span className="font-bold text-amber-800">🪽 بازشوی بال‌مانند (Winged Drape):</span>
                   <p className="text-[11px] text-slate-600 mt-0.5">
-                    بهترین و شیک‌ترین روش! هوش مصنوعی خود پلیور را با یقه پیراهن سفید برگردانده‌شده و سرآستین اتوکشیده خروجی می‌دهد؛ بدون نیاز به هیچ برش دستی.
+                    جلوی کاپشن/پالتو کاملاً باز و با زاویه ۳۵ درجه به طرفین متمایل می‌شود تا حداقل ۴۰٪ عرض سینه برای نمایش کامل تی‌شرت آزاد باشد.
                   </p>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
-                  <span className="font-bold text-amber-800">🧥 متد B (پالتو یا کت روی تی‌شرت در استودیو پرو):</span>
+                  <span className="font-bold text-emerald-800">🎽 فضای خالی شفاف (Hollow Void):</span>
                   <p className="text-[11px] text-slate-600 mt-0.5">
-                    در سیستم استودیوی ما، تی‌شرت زیر پالتو خودکار کات هوشمند می‌خورد تا آستین‌هایش بیرون نزند و یقه و سینه آن از میان جلوی باز پالتو بدرخشد.
+                    به هوش مصنوعی صریحاً دستور داده شده که هیچ پارچه یا آستر پشتی نکشد و فضای بین دو زیپ کاملاً خالی و شفاف به پس‌زمینه باشد.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-slate-200 shadow-xs">
+                  <span className="font-bold text-blue-800">⚡ برش هوشمند آستر در نرم‌افزار:</span>
+                  <p className="text-[11px] text-slate-600 mt-0.5">
+                    حتی اگر عکسی با آستر بسته آپلود کنید، دکمه «برش آستر زیپ» در نوار بالای استودیو آن را درجا برایتان خالی و شفاف می‌کند!
                   </p>
                 </div>
               </div>

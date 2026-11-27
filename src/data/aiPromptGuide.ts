@@ -7,7 +7,7 @@ import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
 [PRIMARY DIRECTIVE - STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
 Analyze the input text [EXACT_CLOTHING_NAME_AND_COLOR] and autonomously classify its garment category:
-- Category 1: OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber) -> Execute CASE A.
+- Category 1: OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker) -> Execute CASE A.
 - Category 2: TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear) -> Execute CASE B.
 - Category 3: BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt) -> Execute CASE C.
 - Category 4: FOOTWEAR (Sneakers, Shoes, Boots, Loafers) -> Execute CASE D.
@@ -16,11 +16,11 @@ Professional commercial fashion studio catalog photography of [EXACT_CLOTHING_IT
 
 EXECUTION RULES PER CLASSIFIED CATEGORY:
 
-CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber):
-- The garment MUST be completely UNBUTTONED and WIDE OPEN in the front, hanging symmetrically straight down.
+CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker):
+- WINGED WIDE-OPEN DRAPE: The jacket/coat MUST be completely UNZIPPED and UNBUTTONED, draped wide open to the sides at 35-degree winged angles, exposing a generous 40% chest-to-waist open gap in the center.
+- MANDATORY HOLLOW SEE-THROUGH VOID (NO BACK FABRIC): The entire central opening gap between the left and right front panels MUST be a completely HOLLOW, SEE-THROUGH VOID looking straight through to the solid seamless studio background behind the mannequin.
+- ABSOLUTELY STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, ZERO colored interior fabric, ZERO interior back wall, and ZERO inner collar behind the zipper gap. The gap must be 100% empty space so an underlying t-shirt can be worn beneath it.
 - BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally wraps over any inner t-shirt).
-- MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
-- STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the chest gap.
 - Top collar starts at 10% from top canvas border; bottom hem terminates at 74% (long coat) or 56% (jacket) so pants legs remain clearly visible.
 
 CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
@@ -42,11 +42,11 @@ GLOBAL MANDATORY RULES (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
 - Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfectly bilateral mirror symmetry.
 - Absolutely NO 3/4 angle, NO tilted shoulders, NO skewed pose, NO human body, NO skin, NO mannequin stand.
-- MANDATORY PURE TRANSPARENCY: Isolated cutout on 100% transparent alpha PNG background (RGBA, zero background borders, zero white box, zero rectangular frames).
+- MANDATORY PURE TRANSPARENCY: Isolated cutout on pure seamless white studio background or 100% transparent alpha PNG background (RGBA, zero background borders, zero white box, zero rectangular frames).
 - Soft balanced commercial studio high-key diffuse lighting, sharp authentic fabric textures and seams.
 
 NEGATIVE PROMPTS (MUST AVOID):
-buttoned coat, closed front jacket, solid back lining inside chest, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
+solid back lining, inner back fabric, inner yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
 `.trim();
 
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
@@ -54,14 +54,19 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
 
 ویژگی‌های این پرامپت هوشمند:
 این پرامپت به صورت خودکار نوع لباسی که داخل کروشه می‌نویسید را تشخیص می‌دهد و قوانین اختصاصی آن را اجرا می‌کند:
-۱. اگر پالتو یا کت باشد: آن را جلوباز با سینه کاملاً خالی و شفاف و سرشانه‌های عریض (۸۴٪) تولید می‌کند تا تی‌شرت از زیر آن دیده شود.
-۲. اگر تی‌شرت یا هودی باشد: آن را با عرض متناسب (۶۴٪) و یقه خالی ۳بعدی می‌سازد تا دقیقاً در سینه پالتو جا بگیرد.
+۱. اگر پالتو یا کت یا کاپشن باشد:
+   - آن را زیپ‌باز یا دکمه‌باز با زاویه بال‌مانند (Winged Drape با زاویه ۳۵ درجه) تولید می‌کند تا حداقل ۴۰٪ عرض سینه کاملاً باز باشد.
+   - فضای خالی مرکزی (Hollow See-Through Void): هیچ آستر یا پارچه پشتی در بین زیپ‌ها کشیده نمی‌شود و پشت لباس کاملاً خالی و شفاف به پس‌زمینه نگاه می‌کند تا تی‌شرت زیرین به زیبایی خودنمایی کند.
+   - عرض سرشانه بر روی ۷۶٪ تنظیم شده تا کاملاً لباس زیرین را در بر بگیرد.
+۲. اگر تی‌شرت، هودی یا پیراهن باشد:
+   - آن را با عرض متناسب (۶۰٪) و یقه خالی ۳بعدی می‌سازد تا دقیقاً در سینه پالتو جا بگیرد.
+   - لبه پایینی کاملاً افقی و در تراز ۵۴٪ تنظیم شده تا با کمر شلوار چفت شود.
 ۳. اگر شلوار باشد: خط کمر را کاملاً افقی می‌سازد تا همپوشانی بی‌نقص با تی‌شرت داشته باشد.
 ۴. اگر کفش باشد: جفت روبه‌رو با زاویه ۰ درجه استودیویی تحویل می‌دهد.
-۵. تمام خروجی‌ها ۱۰۰٪ ترنسپرنت (PNG بدون کادر سفید) هستند.
+۵. تمام خروجی‌ها ایزوله و بدون کادر زائد هستند.
 
 نحوه استفاده:
-تنها کاری که باید بکنید این است که عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] را با نام لباس و رنگ آن (به انگلیسی) پر کنید و کل متن انگلیسی را به Midjourney، Flux، ChatGPT یا Gemini بدهید!
+تنها کاری که باید بکنید این است که عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] را با نام لباس و رنگ آن (به انگلیسی، مثلاً: Bright Yellow Softshell Windbreaker Jacket with Black Zippers) پر کنید و کل متن انگلیسی را به Midjourney، Flux، ChatGPT یا Gemini بدهید!
 `.trim();
 
 /**
@@ -69,33 +74,33 @@ export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
  * Enforces hollow chest void between lapels so inner t-shirt / shirt shows cleanly through.
  */
 export const LAYERED_APPAREL_IMAGE_PROMPT_EN = `
-Professional commercial studio fashion catalog photography of an unbuttoned open-front [EXACT_CLOTHING_ITEM_NAME_AND_COLOR, e.g. CAMEL_WOOL_OVERCOAT_WITH_NOTCHED_LAPELS], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and open drape.
+Professional commercial studio fashion catalog photography of an unbuttoned wide-open front [EXACT_CLOTHING_ITEM_NAME_AND_COLOR, e.g. CAMEL_WOOL_OVERCOAT_WITH_NOTCHED_LAPELS], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and winged open drape.
 
 OPEN-FRONT HOLLOW CHEST ARCHITECTURE (MANDATORY TRANSPARENCY RULES):
-- The garment is completely UNBUTTONED and WIDE OPEN in the front, with both front panels hanging symmetrically straight down.
-- Generous 30% chest opening gap between the left and right lapels.
-- MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
-- STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the front chest opening gap. Do NOT fill the chest gap with any cloth or mannequin background.
+- WIDE WINGED DRAPE: The garment is completely UNBUTTONED / UNZIPPED and WIDE OPEN in the front, with both front panels draped symmetrically outward at 35-degree angles.
+- Generous 40% chest opening gap between the left and right lapels/zippers.
+- MANDATORY HOLLOW SEE-THROUGH CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and SEE-THROUGH, directly showing the solid seamless white studio background behind it.
+- STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, ZERO colored interior fabric, ZERO interior back wall, and ZERO inner back collar visible through the front chest opening gap. Do NOT fill the chest gap with any cloth or interior panel.
 - Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfect bilateral mirror symmetry.
 - Both sleeves drape downward straight and symmetrically at identical 15-degree angles.
-- 100% isolated cutout on pure transparent alpha PNG background (zero white box, zero borders).
+- 100% isolated cutout on pure seamless white studio background or transparent alpha PNG background (zero white box, zero borders).
 
 FABRIC & LIGHTING:
 - Ultra-detailed fabric weave, sharp tailored lapel creases, authentic fabric weight and depth.
 - Balanced soft studio high-key lighting with subtle inner contact shadows along lapel edges.
 
 NEGATIVE PROMPTS (MUST AVOID):
-buttoned coat, closed front, zipped jacket, solid back lining inside chest, inner fabric covering chest, brown lining behind lapels, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted torso, human body, neck, face, hands, visible mannequin stand.
+solid back lining, inner back fabric, inner yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front, zipped jacket, inner fabric covering chest, brown lining behind lapels, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted torso, human body, neck, face, hands, visible mannequin stand.
 `.trim();
 
 export const LAYERED_APPAREL_IMAGE_PROMPT_FA = `
-دستورالعمل تولید عکس لباس‌های رو و لایه‌ای (پالتو، کت، سویشرت زیپ‌باز و کاردیگان جلوباز):
+دستورالعمل تولید عکس لباس‌های رو و لایه‌ای (پالتو، کت، کاپشن زیپ‌باز و کاردیگان جلوباز):
 
 چرا این پرامپت برای لباس‌های رو حیاتی است؟
-۱. جلوباز کامل (Unbuttoned Open-Front): دو طرف کت یا پالتو کاملاً باز و متقارن هستند (حداقل ۳۰٪ عرض سینه باز است).
-۲. سینه کاملاً خالی و شفاف (Hollow Chest Void): هوش مصنوعی به هیچ وجه پشت پالتو را با آستر پر نمی‌کند، بنابراین لباس زیری (تی‌شرت یا پیراهن) به زیبایی تمام از میان پالتو دیده می‌شود.
+۱. جلوباز بال‌مانند کامل (Winged Open-Front): دو طرف کت یا کاپشن کاملاً باز و متقارن هستند (حداقل ۴۰٪ عرض سینه باز است تا طرح تی‌شرت زیرین کاملاً دیده شود).
+۲. سینه کاملاً خالی و شفاف (Hollow Chest Void): هوش مصنوعی به هیچ وجه پشت پالتو/کاپشن را با آستر یا پارچه پشتی پر نمی‌کند، بنابراین لباس زیری (تی‌شرت یا پیراهن) به زیبایی تمام از میان زیپ یا دکمه‌های باز دیده می‌شود.
 ۳. تقارن و بدون کجی (0° Frontal Orthographic): زاویه کاملاً مستقیم است و سرشانه‌ها در یک تراز افقی قرار دارند.
-۴. بدون کادر سفید دور لباس (Pure Alpha PNG): دور لباس ۱۰۰٪ شفاف است و مستقیماً روی استیج پرو می‌نشیند.
+۴. بدون کادر سفید دور لباس (Pure Cutout): دور لباس و فضای داخل زیپ کاملاً تمیز است و مستقیماً روی استیج پرو می‌نشیند.
 `.trim();
 
 /**
