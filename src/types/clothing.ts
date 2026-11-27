@@ -25,6 +25,12 @@ export interface GarmentAiSpec {
   slot: GarmentSlot;
   layer_level?: LayerLevel;
   placement: GarmentPlacement;
+  layering_behavior?: {
+    is_open_front?: boolean;
+    reveals_inner_top?: boolean;
+    inner_top_sleeve_trim_percent?: number;
+    chest_opening_width_percent?: number;
+  };
   replacement_rules: {
     replaces_slot: GarmentSlot;
     compatible_slots: GarmentSlot[];

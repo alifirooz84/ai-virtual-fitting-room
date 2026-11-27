@@ -269,6 +269,12 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = 'Ù
       scale: customScale,
       z_index: customZIndex,
     },
+    layering_behavior: slot === 'slot_outer' ? {
+      is_open_front: json.layering_behavior?.is_open_front ?? true,
+      reveals_inner_top: json.layering_behavior?.reveals_inner_top ?? true,
+      inner_top_sleeve_trim_percent: json.layering_behavior?.inner_top_sleeve_trim_percent ?? 18,
+      chest_opening_width_percent: json.layering_behavior?.chest_opening_width_percent ?? 20,
+    } : undefined,
     replacement_rules: {
       replaces_slot: slot,
       compatible_slots: ['slot_top', 'slot_bottom', 'slot_outer', 'slot_shoes'].filter(s => s !== slot) as GarmentSlot[],

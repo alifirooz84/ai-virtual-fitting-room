@@ -183,6 +183,23 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
     } else {
       setOuterScale(isLongCoat ? 1.05 : 1.02);
     }
+
+    // Auto-harmonize layering behavior: trim inner sleeves and reveal chest void
+    if (outerItem) {
+      setIsSleeveTrimActive(true);
+      const specTrim = outerItem.spec?.layering_behavior?.inner_top_sleeve_trim_percent;
+      if (typeof specTrim === 'number') {
+        setSleeveTrimPercent(specTrim);
+      }
+      const revealsInner = outerItem.spec?.layering_behavior?.reveals_inner_top;
+      if (revealsInner !== false) {
+        setIsOuterVoidMaskActive(true);
+      }
+      const voidW = outerItem.spec?.layering_behavior?.chest_opening_width_percent;
+      if (typeof voidW === 'number') {
+        setOuterVoidWidthPercent(voidW);
+      }
+    }
   }, [outerItem?.id]);
 
   useEffect(() => {
