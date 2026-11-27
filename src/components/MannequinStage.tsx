@@ -92,13 +92,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Calibrated Golden Proportion Standards)
-  const [topOffsetY, setTopOffsetY] = useState(41.0);
-  const [topScale, setTopScale] = useState(0.92);
-  const [bottomOffsetY, setBottomOffsetY] = useState(58.5);
-  const [bottomScale, setBottomScale] = useState(1.02);
-  const [outerOffsetY, setOuterOffsetY] = useState(36.0);
+  const [topOffsetY, setTopOffsetY] = useState(33.5);
+  const [topScale, setTopScale] = useState(0.90);
+  const [bottomOffsetY, setBottomOffsetY] = useState(69.0);
+  const [bottomScale, setBottomScale] = useState(1.04);
+  const [outerOffsetY, setOuterOffsetY] = useState(37.0);
   const [outerScale, setOuterScale] = useState(1.04);
-  const [shoesOffsetY, setShoesOffsetY] = useState(86.5);
+  const [shoesOffsetY, setShoesOffsetY] = useState(88.0);
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
@@ -133,19 +133,20 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   // Auto-Snap Waistline: Seamless overlap between topwear and pants
   useEffect(() => {
+    // If outerwear is present, t-shirt fits snugly inside coat collar & lapels
     const rawY = topItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 36 && rawY <= 46) {
+    if (typeof rawY === 'number' && rawY >= 30 && rawY <= 40) {
       setTopOffsetY(rawY);
     } else {
-      setTopOffsetY(41.0);
+      setTopOffsetY(outerItem ? 33.5 : 36.0);
     }
     const rawScale = topItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.82 && rawScale <= 1.08) {
+    if (typeof rawScale === 'number' && rawScale >= 0.82 && rawScale <= 1.05) {
       setTopScale(rawScale);
     } else {
-      setTopScale(0.92);
+      setTopScale(outerItem ? 0.90 : 0.92);
     }
-  }, [topItem?.id]);
+  }, [topItem?.id, !!outerItem]);
 
   useEffect(() => {
     const isCropped =
@@ -153,16 +154,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       bottomItem?.title?.toLowerCase().includes('crop');
 
     const rawY = bottomItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 50 && rawY <= 72) {
+    if (typeof rawY === 'number' && rawY >= 60 && rawY <= 74) {
       setBottomOffsetY(rawY);
     } else {
-      setBottomOffsetY(isCropped ? 58.5 : 64.0);
+      setBottomOffsetY(isCropped ? 64.0 : 69.0);
     }
     const rawScale = bottomItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.90 && rawScale <= 1.20) {
+    if (typeof rawScale === 'number' && rawScale >= 0.95 && rawScale <= 1.15) {
       setBottomScale(rawScale);
     } else {
-      setBottomScale(isCropped ? 1.0 : 1.04);
+      setBottomScale(isCropped ? 1.00 : 1.04);
     }
   }, [bottomItem?.id, bottomItem?.title]);
 
@@ -175,17 +176,17 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       outerItem?.title?.toLowerCase().includes('trench');
 
     const rawY = outerItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 28 && rawY <= 44) {
+    if (typeof rawY === 'number' && rawY >= 30 && rawY <= 42) {
       setOuterOffsetY(rawY);
     } else {
-      setOuterOffsetY(isLongCoat ? 37.0 : 35.5);
+      setOuterOffsetY(isLongCoat ? 37.0 : 34.0);
     }
 
     const rawScale = outerItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.92 && rawScale <= 1.18) {
+    if (typeof rawScale === 'number' && rawScale >= 0.95 && rawScale <= 1.15) {
       setOuterScale(rawScale);
     } else {
-      setOuterScale(isLongCoat ? 1.06 : 1.04);
+      setOuterScale(isLongCoat ? 1.04 : 1.02);
     }
 
     // Auto-harmonize layering behavior: trim inner sleeves and reveal chest void
@@ -194,6 +195,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       const specTrim = outerItem.spec?.layering_behavior?.inner_top_sleeve_trim_percent;
       if (typeof specTrim === 'number') {
         setSleeveTrimPercent(specTrim);
+      } else {
+        setSleeveTrimPercent(18);
       }
       const revealsInner = outerItem.spec?.layering_behavior?.reveals_inner_top;
       if (revealsInner !== false) {
@@ -202,6 +205,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       const voidW = outerItem.spec?.layering_behavior?.chest_opening_width_percent;
       if (typeof voidW === 'number') {
         setOuterVoidWidthPercent(voidW);
+      } else {
+        setOuterVoidWidthPercent(24);
       }
     }
   }, [outerItem?.id]);
@@ -681,13 +686,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               type="button"
               onClick={() => {
                 const isCrop = bottomItem?.title?.includes('کراپ') || bottomItem?.title?.toLowerCase().includes('crop');
-                setTopOffsetY(41.0);
-                setTopScale(0.92);
-                setBottomOffsetY(isCrop ? 58.5 : 64.0);
+                const isCoat = outerItem?.category === 'coat' || outerItem?.title?.includes('پالتو') || outerItem?.title?.includes('بارانی') || outerItem?.title?.toLowerCase().includes('coat');
+                setTopOffsetY(outerItem ? 33.5 : 36.0);
+                setTopScale(outerItem ? 0.90 : 0.92);
+                setBottomOffsetY(isCrop ? 64.0 : 69.0);
                 setBottomScale(isCrop ? 1.00 : 1.04);
-                setOuterOffsetY(36.0);
-                setOuterScale(1.04);
-                setShoesOffsetY(86.5);
+                setOuterOffsetY(isCoat ? 37.0 : 34.0);
+                setOuterScale(isCoat ? 1.04 : 1.02);
+                setShoesOffsetY(88.0);
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(18);
@@ -1300,7 +1306,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   zIndex: tuckMode === 'tucked' ? 35 : 20,
                   transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
                 }}
-                className={`absolute left-1/2 w-[62%] sm:w-[65%] ${isCrop ? 'aspect-[3/4.6]' : 'aspect-[3/5.1]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]`}
+                className={`absolute left-1/2 w-[62%] sm:w-[65%] ${isCrop ? 'aspect-[3/4.4]' : 'aspect-[3/4.8]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]`}
               >
                 <MannequinGarmentImage
                   src={bottomItem.imageUrl}
@@ -1361,35 +1367,44 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {/* ======================================================== */}
           {/* 3.6 OUTERWEAR / JACKET / COAT (Z-Index: 40 - روی همه)    */}
           {/* ======================================================== */}
-          {outerItem && (
-            <div
-              style={{
-                top: `${outerOffsetY}%`,
-                zIndex: 40,
-                transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
-                clipPath: isOuterVoidMaskActive
-                  ? `polygon(0% 0%, 0% 100%, ${50 - outerVoidWidthPercent / 2}% 100%, ${50 - outerVoidWidthPercent / 2}% 32%, 50% 20%, ${50 + outerVoidWidthPercent / 2}% 32%, ${50 + outerVoidWidthPercent / 2}% 100%, 100% 100%, 100% 0%)`
-                  : undefined,
-                transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
-              }}
-              className="absolute left-1/2 w-[82%] sm:w-[84%] aspect-[3/3.9] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]"
-            >
-              <MannequinGarmentImage
-                src={outerItem.imageUrl}
-                alt={outerItem.title}
-                slot="slot_outer"
-                className="w-full h-full object-contain"
-              />
-              <button
-                type="button"
-                onClick={() => onRemoveSlot('slot_outer')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-50"
-                title="حذف کت / پالتو از ست"
+          {outerItem && (() => {
+            const isLongCoat =
+              outerItem.category === 'coat' ||
+              outerItem.title?.includes('پالتو') ||
+              outerItem.title?.includes('بارانی') ||
+              outerItem.title?.toLowerCase().includes('coat') ||
+              outerItem.title?.toLowerCase().includes('trench');
+
+            return (
+              <div
+                style={{
+                  top: `${outerOffsetY}%`,
+                  zIndex: 40,
+                  transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
+                  clipPath: isOuterVoidMaskActive
+                    ? `polygon(0% 0%, 0% 100%, ${50 - outerVoidWidthPercent / 2}% 100%, ${50 - outerVoidWidthPercent / 2}% 32%, 50% 20%, ${50 + outerVoidWidthPercent / 2}% 32%, ${50 + outerVoidWidthPercent / 2}% 100%, 100% 100%, 100% 0%)`
+                    : undefined,
+                  transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
+                }}
+                className={`absolute left-1/2 w-[82%] sm:w-[84%] ${isLongCoat ? 'aspect-[3/3.9]' : 'aspect-[3/3.3]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]`}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+                <MannequinGarmentImage
+                  src={outerItem.imageUrl}
+                  alt={outerItem.title}
+                  slot="slot_outer"
+                  className="w-full h-full object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={() => onRemoveSlot('slot_outer')}
+                  className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-50"
+                  title="حذف کت / پالتو از ست"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            );
+          })()}
 
           {/* ======================================================== */}
           {/* 3.7 LAYERED WHITE SHIRT COLLAR OVERLAY (Z-Index: 45)      */}

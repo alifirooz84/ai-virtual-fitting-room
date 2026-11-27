@@ -24669,21 +24669,21 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     slot = "slot_top";
   }
   const defaultPlacement = {
-    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 41, scale: 0.92, z_index: 30 },
-    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 60, scale: 1.02, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 36, scale: 1.04, z_index: 40 },
-    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 86.5, scale: 0.9, z_index: 22 },
+    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 33.5, scale: 0.9, z_index: 30 },
+    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 69, scale: 1.04, z_index: 20 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 37, scale: 1.04, z_index: 40 },
+    slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.9, z_index: 22 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
   let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === "slot_bottom" && (targetOffsetY > 72 || targetOffsetY < 52)) {
-    targetOffsetY = 60;
-  } else if (slot === "slot_top" && (targetOffsetY < 36 || targetOffsetY > 46)) {
-    targetOffsetY = 41;
+  if (slot === "slot_bottom" && (targetOffsetY > 74 || targetOffsetY < 60)) {
+    targetOffsetY = 69;
+  } else if (slot === "slot_top" && (targetOffsetY < 28 || targetOffsetY > 40)) {
+    targetOffsetY = 33.5;
   } else if (slot === "slot_outer" && (targetOffsetY < 30 || targetOffsetY > 42)) {
-    targetOffsetY = 36;
-  } else if (slot === "slot_shoes" && (targetOffsetY < 80 || targetOffsetY > 92)) {
-    targetOffsetY = 86.5;
+    targetOffsetY = 37;
+  } else if (slot === "slot_shoes" && (targetOffsetY < 82 || targetOffsetY > 94)) {
+    targetOffsetY = 88;
   }
   const customScale = typeof json.placement?.scale === "number" && json.placement.scale >= 0.7 && json.placement.scale <= 1.4 ? json.placement.scale : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === "number" ? json.placement.z_index : defaultPlacement.z_index;
