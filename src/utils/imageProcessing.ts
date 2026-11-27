@@ -152,14 +152,15 @@ export function removeWhiteBackground(
           effectiveLumThreshold = Math.max(140, Math.floor(avgLum - colorTolerance - 10));
         }
 
-        // 2. BFS Flood-Fill from image boundaries inwards
+        // 2. BFS Flood-Fill from image boundaries inwards (Gradient-Adaptive)
         const totalPixels = w * h;
         const visited = new Uint8Array(totalPixels);
         const queue = new Int32Array(totalPixels);
         let head = 0;
         let tail = 0;
 
-        const isMatchingBg = (pIdx: number): boolean => {
+        // Pixel is studio backdrop if it is achromatic (low saturation) and bright enough
+        const isBackdropTone = (pIdx: number): boolean => {
           const a = data[pIdx + 3];
           if (a < 15) return true; // already transparent
 
@@ -168,41 +169,44 @@ export function removeWhiteBackground(
           const b = data[pIdx + 2];
 
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-          if (lum < effectiveLumThreshold) return false;
+          if (lum < 130) return false; // Fabric shadows or dark clothing
 
           const satDiff = Math.max(r, g, b) - Math.min(r, g, b);
-          if (satDiff > saturationMax) return false;
+          // Studio white/grey cycloramas are strictly monochrome (satDiff <= 30)
+          if (satDiff > 32) return false;
 
+          // Either close to global average OR neutral bright studio backdrop
           const dr = Math.abs(r - targetR);
           const dg = Math.abs(g - targetG);
           const db = Math.abs(b - targetB);
+          if (dr <= 65 && dg <= 65 && db <= 65) return true;
 
-          return dr <= colorTolerance && dg <= colorTolerance && db <= colorTolerance;
+          return lum >= 140 && satDiff <= 25;
         };
 
-        // Seed horizontal borders (top & bottom)
+        // Seed ALL 4 perimeter edges (top, bottom, left, right)
+        // Seeding from both top and bottom ensures smooth gradients are keyed from both ends
         for (let x = 0; x < w; x++) {
           const topPix = x;
           const btmPix = (h - 1) * w + x;
-          if (isMatchingBg(topPix * 4)) {
+          if (!visited[topPix] && isBackdropTone(topPix * 4)) {
             visited[topPix] = 1;
             queue[tail++] = topPix;
           }
-          if (isMatchingBg(btmPix * 4)) {
+          if (!visited[btmPix] && isBackdropTone(btmPix * 4)) {
             visited[btmPix] = 1;
             queue[tail++] = btmPix;
           }
         }
 
-        // Seed vertical borders (left & right)
         for (let y = 0; y < h; y++) {
           const leftPix = y * w;
           const rightPix = y * w + (w - 1);
-          if (!visited[leftPix] && isMatchingBg(leftPix * 4)) {
+          if (!visited[leftPix] && isBackdropTone(leftPix * 4)) {
             visited[leftPix] = 1;
             queue[tail++] = leftPix;
           }
-          if (!visited[rightPix] && isMatchingBg(rightPix * 4)) {
+          if (!visited[rightPix] && isBackdropTone(rightPix * 4)) {
             visited[rightPix] = 1;
             queue[tail++] = rightPix;
           }
@@ -211,14 +215,14 @@ export function removeWhiteBackground(
         // Hollow Chest Void Auto-Seeding (for open outerwear / coats / jackets)
         // Eliminates ghost mannequin white/grey neck or un-keyed background between lapels
         if (slot === 'slot_outer' || slot === 'slot_outerwear') {
-          const midXMin = Math.floor(w * 0.40);
-          const midXMax = Math.floor(w * 0.60);
+          const midXMin = Math.floor(w * 0.38);
+          const midXMax = Math.floor(w * 0.62);
           const midYMin = Math.floor(h * 0.08);
-          const midYMax = Math.floor(h * 0.32);
+          const midYMax = Math.floor(h * 0.35);
           for (let y = midYMin; y <= midYMax; y += 4) {
             for (let x = midXMin; x <= midXMax; x += 4) {
               const p = y * w + x;
-              if (!visited[p] && isMatchingBg(p * 4)) {
+              if (!visited[p] && isBackdropTone(p * 4)) {
                 visited[p] = 1;
                 queue[tail++] = p;
               }
@@ -226,41 +230,42 @@ export function removeWhiteBackground(
           }
         }
 
-        // Execute BFS queue
+        // Execute BFS queue with smooth neighbor continuity
         while (head < tail) {
           const curr = queue[head++];
           const cx = curr % w;
           const cy = Math.floor(curr / w);
+          const currIdx = curr * 4;
+          const cr = data[currIdx];
+          const cg = data[currIdx + 1];
+          const cb = data[currIdx + 2];
+
+          const checkNeighbor = (next: number) => {
+            if (visited[next]) return;
+            const nIdx = next * 4;
+            if (data[nIdx + 3] < 15) {
+              visited[next] = 1;
+              queue[tail++] = next;
+              return;
+            }
+            if (isBackdropTone(nIdx)) {
+              // Continuity check with parent to prevent bleeding into high-contrast clothing edges
+              const nr = data[nIdx];
+              const ng = data[nIdx + 1];
+              const nb = data[nIdx + 2];
+              const diff = Math.max(Math.abs(nr - cr), Math.abs(ng - cg), Math.abs(nb - cb));
+              if (diff <= 28) {
+                visited[next] = 1;
+                queue[tail++] = next;
+              }
+            }
+          };
 
           // 4-directional expansion
-          if (cx + 1 < w) {
-            const next = curr + 1;
-            if (!visited[next] && isMatchingBg(next * 4)) {
-              visited[next] = 1;
-              queue[tail++] = next;
-            }
-          }
-          if (cx - 1 >= 0) {
-            const next = curr - 1;
-            if (!visited[next] && isMatchingBg(next * 4)) {
-              visited[next] = 1;
-              queue[tail++] = next;
-            }
-          }
-          if (cy + 1 < h) {
-            const next = curr + w;
-            if (!visited[next] && isMatchingBg(next * 4)) {
-              visited[next] = 1;
-              queue[tail++] = next;
-            }
-          }
-          if (cy - 1 >= 0) {
-            const next = curr - w;
-            if (!visited[next] && isMatchingBg(next * 4)) {
-              visited[next] = 1;
-              queue[tail++] = next;
-            }
-          }
+          if (cx + 1 < w) checkNeighbor(curr + 1);
+          if (cx - 1 >= 0) checkNeighbor(curr - 1);
+          if (cy + 1 < h) checkNeighbor(curr + w);
+          if (cy - 1 >= 0) checkNeighbor(curr - w);
         }
 
         // Set all visited pixels to 100% transparent alpha = 0
@@ -413,10 +418,10 @@ export function normalizeGarmentScaleAndPosition(
   let targetY: number;
 
   if (slot === 'slot_bottom') {
-    targetH = Math.round(targetSize * 0.80);
+    targetH = Math.round(targetSize * 0.84);
     targetW = Math.round(targetH * aspect);
     targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.10);
+    targetY = Math.round(targetSize * 0.08);
   } else if (slot === 'slot_shoes') {
     targetW = Math.round(targetSize * 0.58);
     targetH = Math.round(targetW / aspect);

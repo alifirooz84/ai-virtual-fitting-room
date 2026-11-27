@@ -94,14 +94,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   // Live Fine-Tuning Overrides (Auto-Snap Waistline & Golden Proportion Defaults)
   const [topOffsetY, setTopOffsetY] = useState(36.5);
   const [topScale, setTopScale] = useState(0.92);
-  const [bottomOffsetY, setBottomOffsetY] = useState(64.0);
-  const [bottomScale, setBottomScale] = useState(1.0);
+  const [bottomOffsetY, setBottomOffsetY] = useState(65.5);
+  const [bottomScale, setBottomScale] = useState(1.05);
   const [outerOffsetY, setOuterOffsetY] = useState(37.0);
-  const [outerScale, setOuterScale] = useState(1.02);
+  const [outerScale, setOuterScale] = useState(1.05);
   const [shoesOffsetY, setShoesOffsetY] = useState(86.5);
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
-  const [sleeveTrimPercent, setSleeveTrimPercent] = useState(8);
+  const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
 
   // 3D Spatial Parallax Tilt (Dynamic depth on mouse movement)
@@ -147,16 +147,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   useEffect(() => {
     const rawY = bottomItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 58 && rawY <= 70) {
+    if (typeof rawY === 'number' && rawY >= 58 && rawY <= 72) {
       setBottomOffsetY(rawY);
     } else {
-      setBottomOffsetY(64.0);
+      setBottomOffsetY(65.5);
     }
     const rawScale = bottomItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.88 && rawScale <= 1.12) {
+    if (typeof rawScale === 'number' && rawScale >= 0.90 && rawScale <= 1.18) {
       setBottomScale(rawScale);
     } else {
-      setBottomScale(1.0);
+      setBottomScale(1.05);
     }
   }, [bottomItem?.id]);
 
@@ -176,10 +176,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
     }
 
     const rawScale = outerItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.92 && rawScale <= 1.15) {
+    if (typeof rawScale === 'number' && rawScale >= 0.92 && rawScale <= 1.18) {
       setOuterScale(rawScale);
     } else {
-      setOuterScale(isLongCoat ? 1.02 : 1.0);
+      setOuterScale(isLongCoat ? 1.05 : 1.02);
     }
   }, [outerItem?.id]);
 
@@ -587,10 +587,11 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               <button
                 type="button"
                 onClick={() => onSelectProduct(outfitAiAnalysis.recommendedPiece!)}
-                className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-black transition-all flex items-center gap-1 shadow-xs cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs font-black transition-all flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap"
+                title={`افزودن ${outfitAiAnalysis.recommendedPiece.title} به ست`}
               >
                 <span>+</span>
-                <span>تست پیشنهاد: {(outfitAiAnalysis.recommendedPiece.title || (outfitAiAnalysis.recommendedPiece as any).name || 'لباس').slice(0, 18)}...</span>
+                <span>افزودن پیشنهاد: {outfitAiAnalysis.recommendedPiece.title || 'محصول'}</span>
               </button>
             )}
 
@@ -615,14 +616,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               onClick={() => {
                 setTopOffsetY(36.5);
                 setTopScale(0.92);
-                setBottomOffsetY(64.0);
-                setBottomScale(1.0);
+                setBottomOffsetY(65.5);
+                setBottomScale(1.05);
                 setOuterOffsetY(37.0);
-                setOuterScale(1.02);
+                setOuterScale(1.05);
                 setShoesOffsetY(86.5);
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
-                setSleeveTrimPercent(8);
+                setSleeveTrimPercent(18);
                 setHasLayeredCollar(false);
               }}
               className="text-[10px] text-amber-400 hover:underline cursor-pointer"
@@ -1060,36 +1061,42 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 /* GHOST MANNEQUIN MINIMALIST SILHOUETTE                     */
                 /* ======================================================== */
                 <g>
-                  <ellipse cx="240" cy="74" rx="28" ry="38" fill="url(#ghostFill)" stroke="#cbd5e1" strokeWidth="1.2" />
-                  <path d="M 224,112 L 224,150 Q 224,158 214,162 M 256,112 L 256,150 Q 256,158 266,162" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
+                  {/* Studio Pedestal Stand Base */}
+                  <ellipse cx="240" cy="650" rx="90" ry="12" fill="url(#ghostFill)" stroke="#cbd5e1" strokeWidth="1.2" />
+                  {/* Elegant Minimalist Head */}
+                  <ellipse cx="240" cy="74" rx="26" ry="36" fill="url(#ghostFill)" stroke="#cbd5e1" strokeWidth="1.2" />
+                  {/* Slim Atelier Neck */}
+                  <path d="M 226,110 L 226,160 Q 226,166 218,170 M 254,110 L 254,160 Q 254,166 262,170" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
+
+                  {/* Tailored Ghost Silhouette Body (Designed specifically for virtual clothing try-on) */}
+                  {/* Shoulders width: 156px, Arms naturally inside outerwear boundary, Legs terminating at ankles Y:628 */}
                   <path
-                    d="M 214,162 
-                       C 192,165 158,175 140,186
-                       C 132,192 134,202 142,208
-                       C 160,222 176,255 172,292
-                       C 170,315 158,336 154,355
-                       C 150,374 160,440 170,500
-                       C 176,535 184,600 188,645
-                       L 212,645
-                       C 214,595 218,530 224,470
-                       C 228,430 234,375 240,365
-                       C 246,375 252,430 256,470
-                       C 262,530 266,595 268,645
-                       L 292,645
-                       C 296,600 304,535 310,500
-                       C 320,440 330,374 326,355
-                       C 322,336 310,315 308,292
-                       C 304,255 320,222 338,208
-                       C 346,202 348,192 340,186
-                       C 322,175 288,165 266,162
+                    d="M 218,170
+                       C 198,172 178,178 164,186
+                       C 156,192 154,206 156,220
+                       C 158,245 162,280 166,310
+                       C 168,335 166,360 164,380
+                       C 162,400 168,460 174,510
+                       C 178,545 184,590 188,628
+                       L 214,628
+                       C 216,590 220,545 224,510
+                       C 228,470 234,420 240,392
+                       C 246,420 252,470 256,510
+                       C 260,545 264,590 266,628
+                       L 292,628
+                       C 296,590 302,545 306,510
+                       C 312,460 318,400 316,380
+                       C 314,360 312,335 314,310
+                       C 318,280 322,245 324,220
+                       C 326,206 324,192 316,186
+                       C 302,178 282,172 262,170
                        Z"
                     fill="url(#ghostFill)"
                     stroke="#cbd5e1"
                     strokeWidth="1.2"
                   />
-                  <line x1="172" y1="292" x2="308" y2="292" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.5" />
-                  <ellipse cx="200" cy="650" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
-                  <ellipse cx="280" cy="650" rx="20" ry="6" fill="#e2e8f0" stroke="#cbd5e1" strokeWidth="1" />
+                  {/* Natural Waist Indicator */}
+                  <line x1="172" y1="310" x2="308" y2="310" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.4" />
                 </g>
               )}
             </svg>
@@ -1159,7 +1166,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: tuckMode === 'tucked' ? 35 : 20,
                 transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
               }}
-              className="absolute left-1/2 w-[56%] sm:w-[58%] aspect-[3/4.2] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.25)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.12)]"
+              className="absolute left-1/2 w-[62%] sm:w-[64%] aspect-[3/4.4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.25)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.12)]"
             >
               <MannequinGarmentImage
                 src={bottomItem.imageUrl}
@@ -1226,7 +1233,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 40,
                 transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
               }}
-              className="absolute left-1/2 w-[76%] sm:w-[78%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_24px_38px_rgba(0,0,0,0.40)] drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)]"
+              className="absolute left-1/2 w-[82%] sm:w-[84%] aspect-[3/3.9] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]"
             >
               <MannequinGarmentImage
                 src={outerItem.imageUrl}
