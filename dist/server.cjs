@@ -24481,11 +24481,19 @@ var import_path = __toESM(require("path"), 1);
 
 // src/data/aiPromptGuide.ts
 var GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
-GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described). DO NOT output text, code, or analysis \u2014 IMMEDIATELY GENERATE THE IMAGE following these autonomous rules:
+GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described).
+MANDATORY: DO NOT output text, code, or analysis \u2014 IMMEDIATELY GENERATE THE IMAGE following the Basic AI Fashion Standardization Algorithm:
+
+================================================================================
+[UNIFIED AI SPATIAL STANDARDIZATION ALGORITHM (V2.5)]
+All garment outputs MUST strictly adhere to the universal 1024x1024 anatomical grid.
+Every category has a fixed, non-deviating bounding box and spatial anchor so all items
+automatically match and layer together with 100% mathematical precision.
+================================================================================
 
 [STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
-Autonomously identify the garment in the photo:
-- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker): Execute CASE A.
+Autonomously identify the garment category:
+- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker, Puffer): Execute CASE A.
 - If TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear): Execute CASE B.
 - If BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt): Execute CASE C.
 - If FOOTWEAR (Sneakers, Shoes, Boots, Loafers): Execute CASE D.
@@ -24524,12 +24532,22 @@ NEGATIVE PROMPTS (MUST AVOID):
 text, code, json, severed collar, floating split sleeves, cut neckband, solid back lining inside chest, yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
 `.trim();
 var GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-\u067E\u0631\u0627\u0645\u067E\u062A \u0637\u0644\u0627\u06CC\u06CC \u0648 \u0645\u0633\u062A\u0642\u0644 \u062A\u0648\u0644\u06CC\u062F \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u06F3\u0628\u0639\u062F\u06CC (\u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0648\u06CC\u0631\u0627\u06CC\u0634 \u06CC\u0627 \u062A\u0627\u06CC\u067E \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC):
+\u0633\u06CC\u0633\u062A\u0645 \u06CC\u06A9\u067E\u0627\u0631\u0686\u0647 \u0648 \u0627\u0644\u06AF\u0648\u0631\u06CC\u062A\u0645 \u067E\u0627\u06CC\u0647 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0628\u0631\u0627\u06CC \u062A\u0648\u0644\u06CC\u062F \u0639\u06A9\u0633 \u0627\u0633\u062A\u0627\u0646\u062F\u0627\u0631\u062F \u0644\u0628\u0627\u0633 \u06F3\u0628\u0639\u062F\u06CC:
 
-\u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0628\u0633\u06CC\u0627\u0631 \u0633\u0627\u062F\u0647:
-\u06F1. \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u062E\u0648\u062F \u0631\u0627 \u062F\u0631 ChatGPT (\u06CC\u0627 Gemini / Midjourney) \u0622\u067E\u0644\u0648\u062F \u06A9\u0646\u06CC\u062F.
-\u06F2. \u06A9\u0644 \u0645\u062A\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u067E\u0631\u0627\u0645\u067E\u062A \u0631\u0627 \u0628\u062F\u0648\u0646 \u0647\u06CC\u0686 \u062A\u063A\u06CC\u06CC\u0631\u06CC \u06A9\u067E\u06CC \u0648 \u0627\u0631\u0633\u0627\u0644 \u06A9\u0646\u06CC\u062F!
-\u06F3. \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0639\u06A9\u0633 \u0627\u0631\u0633\u0627\u0644\u06CC \u0634\u0645\u0627 \u0631\u0627 \u0628\u0631\u0631\u0633\u06CC \u06A9\u0631\u062F\u0647\u060C \u0646\u0648\u0639 \u0644\u0628\u0627\u0633 \u0631\u0627 \u062E\u0648\u062F\u0634 \u062A\u0634\u062E\u06CC\u0635 \u0645\u06CC\u200C\u062F\u0647\u062F \u0648 \u0645\u0633\u062A\u0642\u06CC\u0645\u0627\u064B \u0639\u06A9\u0633 \u06F3\u0628\u0639\u062F\u06CC \u0627\u0633\u062A\u0648\u062F\u06CC\u0648\u06CC\u06CC \u0631\u0648\u06CC \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0631\u0627 \u062A\u0648\u0644\u06CC\u062F \u0645\u06CC\u200C\u06A9\u0646\u062F (\u0628\u062F\u0648\u0646 \u062A\u0648\u0644\u06CC\u062F \u06A9\u062F \u06CC\u0627 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC).
+\u0627\u06CC\u0646 \u067E\u0631\u0627\u0645\u067E\u062A \u0628\u0631 \u0627\u0633\u0627\u0633 \xAB\u0627\u0644\u06AF\u0648\u0631\u06CC\u062A\u0645 \u0627\u0633\u062A\u0627\u0646\u062F\u0627\u0631\u062F\u0633\u0627\u0632\u06CC \u0627\u0631\u062A\u0648\u06AF\u0631\u0627\u0641\u06CC\u06A9 \u06F1\u06F0\u06F2\u06F4\xD7\u06F1\u06F0\u06F2\u06F4\xBB \u0637\u0631\u0627\u062D\u06CC \u0634\u062F\u0647 \u0627\u0633\u062A \u0648 \u062A\u0636\u0645\u06CC\u0646 \u0645\u06CC\u200C\u06A9\u0646\u062F \u062A\u0645\u0627\u0645 \u062E\u0631\u0648\u062C\u06CC\u200C\u0647\u0627\u06CC \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC (\u0686\u0647 \u067E\u0627\u0644\u062A\u0648\u060C \u0686\u0647 \u062A\u06CC\u0634\u0631\u062A\u060C \u0686\u0647 \u0634\u0644\u0648\u0627\u0631 \u0648 \u0686\u0647 \u06A9\u0641\u0634) \u062F\u0631 \u06CC\u06A9 \u0633\u06CC\u0633\u062A\u0645 \u0645\u062E\u062A\u0635\u0627\u062A\u06CC \u06CC\u06A9\u0633\u0627\u0646 \u0648 \u0628\u0627 \u0645\u0642\u06CC\u0627\u0633\u200C\u0647\u0627\u06CC \u0645\u0647\u0646\u062F\u0633\u06CC\u200C\u0634\u062F\u0647 \u062A\u0648\u0644\u06CC\u062F \u0634\u0648\u0646\u062F:
+
+\u0648\u06CC\u0698\u06AF\u06CC\u200C\u0647\u0627\u06CC \u0627\u0644\u06AF\u0648\u0631\u06CC\u062A\u0645 \u0647\u0648\u0634\u0645\u0646\u062F:
+\u06F1. \u062A\u0634\u062E\u06CC\u0635 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062F\u0633\u062A\u0647 \u0644\u0628\u0627\u0633 (Outerwear / Topwear / Bottomwear / Footwear) \u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u062A\u0627\u06CC\u067E \u0634\u0645\u0627.
+\u06F2. \u0642\u0641\u0644 \u0634\u062F\u0646 \u067E\u0647\u0646\u0627 \u0648 \u062A\u0631\u0627\u0632\u0647\u0627\u06CC \u0637\u0644\u0627\u06CC\u06CC:
+   - \u0644\u0628\u0627\u0633\u200C\u0631\u0648 (\u067E\u0627\u0644\u062A\u0648/\u06A9\u062A): \u067E\u0647\u0646\u0627 \u06F7\u06F5\u066A\u060C \u06CC\u0642\u0647 \u062F\u0631 \u06F6\u066A\u060C \u062C\u0644\u0648\u0628\u0627\u0632 \u0628\u0627 \u0632\u0627\u0648\u06CC\u0647 \u06F3\u06F5 \u062F\u0631\u062C\u0647 \u0648 \u0633\u06CC\u0646\u0647 \u06A9\u0627\u0645\u0644\u0627\u064B \u062E\u0627\u0644\u06CC \u0648 \u0634\u0641\u0627\u0641 (\u0628\u062F\u0648\u0646 \u0622\u0633\u062A\u0631 \u067E\u0634\u062A\u06CC).
+   - \u0628\u0627\u0644\u0627\u062A\u0646\u0647 (\u062A\u06CC\u200C\u0634\u0631\u062A/\u0647\u0648\u062F\u06CC): \u067E\u0647\u0646\u0627 \u06F6\u06F0\u066A (\u062F\u0642\u06CC\u0642\u0627\u064B \u0628\u0631\u0627\u06CC \u062C\u0627\u06AF\u06CC\u0631\u06CC \u0632\u06CC\u0628\u0627 \u062F\u0627\u062E\u0644 \u067E\u0627\u0644\u062A\u0648 \u0628\u062F\u0648\u0646 \u0628\u06CC\u0631\u0648\u0646\u200C\u0632\u062F\u06AF\u06CC)\u060C \u06CC\u0642\u0647 \u062F\u0631 \u06F1\u06F0\u066A\u060C \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u062F\u0631 \u06F5\u06F2\u066A (\u062A\u0631\u0627\u0632 \u062F\u0642\u06CC\u0642 \u06A9\u0645\u0631).
+   - \u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647 (\u0634\u0644\u0648\u0627\u0631): \u06A9\u0645\u0631 \u06F4\u06F7\u066A \u062F\u0631 \u062A\u0631\u0627\u0632 \u06F6\u066A\u060C \u062F\u0645\u067E\u0627 \u062F\u0631 \u06F9\u06F4\u066A (\u0645\u0645\u0627\u0633 \u0628\u0627 \u06A9\u0641\u0634).
+   - \u06A9\u0641\u0634: \u06A9\u0641\u06CC \u062F\u0631 \u06F8\u06F8\u066A\u060C \u062A\u0631\u0627\u0632 \u0645\u0633\u062A\u0642\u06CC\u0645 \u0631\u0648 \u0628\u0647 \u0631\u0648.
+\u06F3. \u0639\u062F\u0645 \u062A\u0648\u0644\u06CC\u062F \u06A9\u062F \u06CC\u0627 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC: \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0645\u0633\u062A\u0642\u06CC\u0645\u0627\u064B \u0639\u06A9\u0633 \u06F3\u0628\u0639\u062F\u06CC \u0622\u0645\u0627\u062F\u0647 \u067E\u0631\u0648 \u0631\u0627 \u062E\u0631\u0648\u062C\u06CC \u0645\u06CC\u200C\u062F\u0647\u062F.
+
+\u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0633\u0627\u062F\u0647:
+\u06F1. \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u062E\u0648\u062F \u0631\u0627 \u062F\u0631 ChatGPT\u060C Gemini \u06CC\u0627 Midjourney \u0622\u067E\u0644\u0648\u062F \u06A9\u0646\u06CC\u062F.
+\u06F2. \u0645\u062A\u0646 \u067E\u0631\u0627\u0645\u067E\u062A \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u0631\u0627 \u06A9\u067E\u06CC \u0648 \u0628\u062F\u0648\u0646 \u062A\u063A\u06CC\u06CC\u0631 \u0627\u0631\u0633\u0627\u0644 \u0646\u0645\u0627\u06CC\u06CC\u062F.
 `.trim();
 var LAYERED_APPAREL_IMAGE_PROMPT_EN = `
 Professional commercial studio fashion catalog photography of an unbuttoned wide-open front [EXACT_CLOTHING_ITEM_NAME_AND_COLOR, e.g. CAMEL_WOOL_OVERCOAT_WITH_NOTCHED_LAPELS], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and winged open drape.
@@ -24677,17 +24695,23 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.9, z_index: 22 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
-  let targetOffsetY = typeof json.placement?.offset_y_percent === "number" ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === "slot_bottom" && (targetOffsetY > 74 || targetOffsetY < 60)) {
-    targetOffsetY = 69;
-  } else if (slot === "slot_top" && (targetOffsetY < 28 || targetOffsetY > 40)) {
+  const isCropped = rawName.includes("\u06A9\u0631\u0627\u067E") || rawName.includes("crop");
+  const isLongCoat = rawCat.includes("coat") || rawName.includes("\u067E\u0627\u0644\u062A\u0648") || rawName.includes("\u0628\u0627\u0631\u0627\u0646\u06CC") || rawName.includes("coat") || rawName.includes("trench");
+  let targetOffsetY = defaultPlacement.offset_y_percent;
+  let customScale = defaultPlacement.scale;
+  if (slot === "slot_bottom") {
+    targetOffsetY = isCropped ? 64 : 69;
+    customScale = isCropped ? 1 : 1.04;
+  } else if (slot === "slot_outer") {
+    targetOffsetY = isLongCoat ? 37 : 34;
+    customScale = isLongCoat ? 1.04 : 1.02;
+  } else if (slot === "slot_top") {
     targetOffsetY = 33.5;
-  } else if (slot === "slot_outer" && (targetOffsetY < 30 || targetOffsetY > 42)) {
-    targetOffsetY = 37;
-  } else if (slot === "slot_shoes" && (targetOffsetY < 82 || targetOffsetY > 94)) {
+    customScale = 0.9;
+  } else if (slot === "slot_shoes") {
     targetOffsetY = 88;
+    customScale = 0.9;
   }
-  const customScale = typeof json.placement?.scale === "number" && json.placement.scale >= 0.7 && json.placement.scale <= 1.4 ? json.placement.scale : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === "number" ? json.placement.z_index : defaultPlacement.z_index;
   return {
     garment_id: json.garment_id || `GARMENT-${Date.now().toString().slice(-6)}`,

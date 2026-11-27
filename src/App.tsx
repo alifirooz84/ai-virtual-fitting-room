@@ -6,6 +6,7 @@ import { OutfitSummaryPanel } from './components/OutfitSummaryPanel';
 import { MerchantUploadView } from './components/MerchantUploadView';
 import { AiPromptGuideModal } from './components/AiPromptGuideModal';
 import { INITIAL_STORES, INITIAL_PRODUCTS } from './data/mockStoresAndProducts';
+import { normalizeGarmentAiSpec } from './data/aiPromptGuide';
 import { StoreProfile, ClothingProduct, GarmentSlot, ActiveOutfit } from './types/clothing';
 import { apiFetch, resolveGarmentImageUrl } from './utils/api';
 import { dbStorage } from './utils/dbStorage';
@@ -121,36 +122,17 @@ export default function App() {
       if (!rawP || !rawP.id) return;
       if (!seen.has(rawP.id)) {
         seen.add(rawP.id);
+        const title = rawP.title || rawP.name || 'لباس جدید';
+        const spec = normalizeGarmentAiSpec(rawP.spec || rawP, title);
         const resolvedProduct: ClothingProduct = {
           ...rawP,
-          title: rawP.title || rawP.name || 'لباس جدید',
+          title,
           price: Number(rawP.price) || 0,
-          category: rawP.category || 'tshirt',
-          slot: rawP.slot || (rawP.layer === 1 ? 'slot_top' : rawP.layer === 2 ? 'slot_bottom' : rawP.layer === 3 ? 'slot_outer' : 'slot_top'),
+          category: spec.category || rawP.category || 'tshirt',
+          slot: spec.slot,
           imageUrl: resolveGarmentImageUrl(rawP.imageUrl || rawP.transparentAssetUrl),
-          placement: rawP.placement || {
-            anchor: 'torso',
-            offset_x_percent: 0,
-            offset_y_percent: 34,
-            scale: 0.9,
-            z_index: 30,
-          },
-          spec: rawP.spec || {
-            name_fa: rawP.title || rawP.name || 'لباس',
-            category: rawP.category || 'tshirt',
-            slot: rawP.slot || 'slot_top',
-            placement: rawP.placement || { anchor: 'torso', offset_x_percent: 0, offset_y_percent: 34, scale: 0.9, z_index: 30 },
-            style_details: {
-              fabric_type: rawP.color || '',
-              fit_style: 'standard',
-              primary_color_fa: rawP.color || '',
-              accent_color_fa: '',
-              season: 'all_season',
-              estimated_price_toman: Number(rawP.price) || 0,
-            },
-            tags: [],
-            layer_priority: 30,
-          },
+          placement: spec.placement,
+          spec,
         };
         merged.push(resolvedProduct);
       }

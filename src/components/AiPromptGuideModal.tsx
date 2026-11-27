@@ -70,7 +70,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
                 <span>مرجع پرامپت‌های استودیو پرو مجازی هوش مصنوعی</span>
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
-                تولید لباس ۳بعدی بدون کجی و چرخش + استخراج فایل JSON تراز خودکار (Auto-Snap)
+                تولید لباس ۳بعدی بر اساس الگوریتم یکپارچه ابعاد و مختصات (تراز ۱۰۰٪ اتوماتیک بدون نیاز به جابجایی دستی)
               </p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             }`}
           >
             <Camera className="w-4 h-4" />
-            <span>۱. عکس تکی ۳بعدی (بدون کادر سفید)</span>
+            <span>۱. پرامپت جامع تولید ۳بعدی (الگوریتم یکپارچه)</span>
           </button>
 
           <button
@@ -115,7 +115,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            <span>۲. استایل لایه‌ای (پیراهن زیر پلیور/دورس)</span>
+            <span>۲. پالتو و کاپشن جلوباز (سینه خالی و شفاف)</span>
           </button>
 
           <button
@@ -131,7 +131,7 @@ export const AiPromptGuideModal: React.FC<AiPromptGuideModalProps> = ({
             }`}
           >
             <FileCode className="w-4 h-4" />
-            <span>۳. فایل JSON تراز خودکار خط کمر</span>
+            <span>۳. مشخصات و JSON کالیبراسیون طلایی</span>
           </button>
         </div>
 

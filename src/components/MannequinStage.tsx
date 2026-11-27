@@ -134,18 +134,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   // Auto-Snap Waistline: Seamless overlap between topwear and pants
   useEffect(() => {
     // If outerwear is present, t-shirt fits snugly inside coat collar & lapels
-    const rawY = topItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 30 && rawY <= 40) {
-      setTopOffsetY(rawY);
-    } else {
-      setTopOffsetY(outerItem ? 33.5 : 36.0);
-    }
-    const rawScale = topItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.82 && rawScale <= 1.05) {
-      setTopScale(rawScale);
-    } else {
-      setTopScale(outerItem ? 0.90 : 0.92);
-    }
+    setTopOffsetY(outerItem ? 33.5 : 36.0);
+    setTopScale(outerItem ? 0.90 : 0.92);
   }, [topItem?.id, !!outerItem]);
 
   useEffect(() => {
@@ -153,18 +143,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       bottomItem?.title?.includes('کراپ') ||
       bottomItem?.title?.toLowerCase().includes('crop');
 
-    const rawY = bottomItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 60 && rawY <= 74) {
-      setBottomOffsetY(rawY);
-    } else {
-      setBottomOffsetY(isCropped ? 64.0 : 69.0);
-    }
-    const rawScale = bottomItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.95 && rawScale <= 1.15) {
-      setBottomScale(rawScale);
-    } else {
-      setBottomScale(isCropped ? 1.00 : 1.04);
-    }
+    setBottomOffsetY(isCropped ? 64.0 : 69.0);
+    setBottomScale(isCropped ? 1.00 : 1.04);
   }, [bottomItem?.id, bottomItem?.title]);
 
   useEffect(() => {
@@ -175,55 +155,21 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       outerItem?.title?.toLowerCase().includes('coat') ||
       outerItem?.title?.toLowerCase().includes('trench');
 
-    const rawY = outerItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 30 && rawY <= 42) {
-      setOuterOffsetY(rawY);
-    } else {
-      setOuterOffsetY(isLongCoat ? 37.0 : 34.0);
-    }
-
-    const rawScale = outerItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.95 && rawScale <= 1.15) {
-      setOuterScale(rawScale);
-    } else {
-      setOuterScale(isLongCoat ? 1.04 : 1.02);
-    }
+    setOuterOffsetY(isLongCoat ? 37.0 : 34.0);
+    setOuterScale(isLongCoat ? 1.04 : 1.02);
 
     // Auto-harmonize layering behavior: trim inner sleeves and reveal chest void
     if (outerItem) {
       setIsSleeveTrimActive(true);
-      const specTrim = outerItem.spec?.layering_behavior?.inner_top_sleeve_trim_percent;
-      if (typeof specTrim === 'number') {
-        setSleeveTrimPercent(specTrim);
-      } else {
-        setSleeveTrimPercent(18);
-      }
-      const revealsInner = outerItem.spec?.layering_behavior?.reveals_inner_top;
-      if (revealsInner !== false) {
-        setIsOuterVoidMaskActive(true);
-      }
-      const voidW = outerItem.spec?.layering_behavior?.chest_opening_width_percent;
-      if (typeof voidW === 'number') {
-        setOuterVoidWidthPercent(voidW);
-      } else {
-        setOuterVoidWidthPercent(24);
-      }
+      setSleeveTrimPercent(18);
+      setIsOuterVoidMaskActive(true);
+      setOuterVoidWidthPercent(24);
     }
-  }, [outerItem?.id]);
+  }, [outerItem?.id, outerItem?.title, outerItem?.category]);
 
   useEffect(() => {
-    const rawY = shoesItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 82 && rawY <= 92) {
-      setShoesOffsetY(rawY);
-    } else {
-      setShoesOffsetY(86.5);
-    }
-    const rawScale = shoesItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.80 && rawScale <= 1.05) {
-      setShoesScale(rawScale);
-    } else {
-      setShoesScale(0.90);
-    }
+    setShoesOffsetY(88.0);
+    setShoesScale(0.90);
   }, [shoesItem?.id]);
 
   // Dynamic Camera Transform Style

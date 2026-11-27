@@ -206,6 +206,30 @@
       },
       "fitInstructionsFa": "لایه ۴۰ مانکن. روی تی‌شرت و پیراهن قرار می‌گیرد. سرشانه‌ها از X=160 تا 320 گسترده شده و کشبافت پایین در Y=395 جمع می‌شود.",
       "fitInstructionsEn": "Z-layer 40. Outerwear fits over shirts. Shoulders span X=160 to 320 with waist ribbing hugging at Y=395."
+    },
+    "slot": "slot_outer",
+    "placement": {
+      "anchor": "shoulders",
+      "offset_x_percent": 0,
+      "offset_y_percent": 34,
+      "scale": 1.02,
+      "z_index": 40
+    },
+    "spec": {
+      "slot": "slot_outer",
+      "placement": {
+        "anchor": "shoulders",
+        "offset_x_percent": 0,
+        "offset_y_percent": 34,
+        "scale": 1.02,
+        "z_index": 40
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
+      }
     }
   },
   {
@@ -413,6 +437,30 @@
       },
       "fitInstructionsFa": "لایه ۴۰ مانکن. روی تی‌شرت و پیراهن قرار می‌گیرد. سرشانه‌ها از X=160 تا 320 گسترده شده و کشبافت پایین در Y=395 جمع می‌شود.",
       "fitInstructionsEn": "Z-layer 40. Outerwear fits over shirts. Shoulders span X=160 to 320 with waist ribbing hugging at Y=395."
+    },
+    "slot": "slot_outer",
+    "placement": {
+      "anchor": "shoulders",
+      "offset_x_percent": 0,
+      "offset_y_percent": 34,
+      "scale": 1.02,
+      "z_index": 40
+    },
+    "spec": {
+      "slot": "slot_outer",
+      "placement": {
+        "anchor": "shoulders",
+        "offset_x_percent": 0,
+        "offset_y_percent": 34,
+        "scale": 1.02,
+        "z_index": 40
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
+      }
     }
   },
   {
@@ -627,6 +675,30 @@
       },
       "fitInstructionsFa": "لایه ۴۰ مانکن. روی تی‌شرت و پیراهن قرار می‌گیرد. سرشانه‌ها از X=160 تا 320 گسترده شده و کشبافت پایین در Y=395 جمع می‌شود.",
       "fitInstructionsEn": "Z-layer 40. Outerwear fits over shirts. Shoulders span X=160 to 320 with waist ribbing hugging at Y=395."
+    },
+    "slot": "slot_outer",
+    "placement": {
+      "anchor": "shoulders",
+      "offset_x_percent": 0,
+      "offset_y_percent": 34,
+      "scale": 1.02,
+      "z_index": 40
+    },
+    "spec": {
+      "slot": "slot_outer",
+      "placement": {
+        "anchor": "shoulders",
+        "offset_x_percent": 0,
+        "offset_y_percent": 34,
+        "scale": 1.02,
+        "z_index": 40
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
+      }
     }
   },
   {
@@ -842,6 +914,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -1057,6 +1147,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -1272,6 +1380,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -1486,6 +1612,24 @@
       },
       "fitInstructionsFa": "نقطه اتصال یقه در (240, 150) تثبیت شود. محور دکمه‌ها عمودی روی خط مرکزی قرار گرفته و لبه هلالی دمپا در Y=400 به پایان می‌رسد.",
       "fitInstructionsEn": "Collar locks at (240, 150). Button placket stays vertical along the center axis. Curved shirt-tail hem grounds at Y=400."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -1700,6 +1844,24 @@
       },
       "fitInstructionsFa": "نقطه اتصال یقه در (240, 150) تثبیت شود. محور دکمه‌ها عمودی روی خط مرکزی قرار گرفته و لبه هلالی دمپا در Y=400 به پایان می‌رسد.",
       "fitInstructionsEn": "Collar locks at (240, 150). Button placket stays vertical along the center axis. Curved shirt-tail hem grounds at Y=400."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -1914,6 +2076,24 @@
       },
       "fitInstructionsFa": "نقطه اتصال یقه در (240, 150) تثبیت شود. محور دکمه‌ها عمودی روی خط مرکزی قرار گرفته و لبه هلالی دمپا در Y=400 به پایان می‌رسد.",
       "fitInstructionsEn": "Collar locks at (240, 150). Button placket stays vertical along the center axis. Curved shirt-tail hem grounds at Y=400."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -2116,6 +2296,24 @@
       },
       "fitInstructionsFa": "دکمه پرچ کمر در (240, 342) فیکس شده، خطوط سایه چین‌های ویسکرز روی ران اعمال و دمپا در Y=628 قرار گیرد.",
       "fitInstructionsEn": "Locks top button to (240, 342). Renders authentic denim whisker creases along upper thighs. Cuffs sit at Y=628."
+    },
+    "slot": "slot_bottom",
+    "placement": {
+      "anchor": "waist",
+      "offset_x_percent": 0,
+      "offset_y_percent": 69,
+      "scale": 1.04,
+      "z_index": 20
+    },
+    "spec": {
+      "slot": "slot_bottom",
+      "placement": {
+        "anchor": "waist",
+        "offset_x_percent": 0,
+        "offset_y_percent": 69,
+        "scale": 1.04,
+        "z_index": 20
+      }
     }
   },
   {
@@ -2336,6 +2534,24 @@
       },
       "fitInstructionsFa": "کمر شلوار دقیقاً در Y=340 بین X=170 و 310 تراز شود. فاق در (240, 425) منطبق شده و پاچه‌های راسته در مچ پا در Y=625 خاتمه یابند.",
       "fitInstructionsEn": "Waistband aligns at Y=340 from X=170 to 310. Crotch apex snaps to (240, 425). Cuffs terminate at ankle line Y=625."
+    },
+    "slot": "slot_bottom",
+    "placement": {
+      "anchor": "waist",
+      "offset_x_percent": 0,
+      "offset_y_percent": 64,
+      "scale": 1,
+      "z_index": 20
+    },
+    "spec": {
+      "slot": "slot_bottom",
+      "placement": {
+        "anchor": "waist",
+        "offset_x_percent": 0,
+        "offset_y_percent": 64,
+        "scale": 1,
+        "z_index": 20
+      }
     }
   },
   {
@@ -2556,6 +2772,24 @@
       },
       "fitInstructionsFa": "کمر شلوار دقیقاً در Y=340 بین X=170 و 310 تراز شود. فاق در (240, 425) منطبق شده و پاچه‌های راسته در مچ پا در Y=625 خاتمه یابند.",
       "fitInstructionsEn": "Waistband aligns at Y=340 from X=170 to 310. Crotch apex snaps to (240, 425). Cuffs terminate at ankle line Y=625."
+    },
+    "slot": "slot_bottom",
+    "placement": {
+      "anchor": "waist",
+      "offset_x_percent": 0,
+      "offset_y_percent": 69,
+      "scale": 1.04,
+      "z_index": 20
+    },
+    "spec": {
+      "slot": "slot_bottom",
+      "placement": {
+        "anchor": "waist",
+        "offset_x_percent": 0,
+        "offset_y_percent": 69,
+        "scale": 1.04,
+        "z_index": 20
+      }
     }
   },
   {
@@ -2751,6 +2985,30 @@
       },
       "fitInstructionsFa": "لایه ۵۰ مانکن. از شانه تا زانو در Y=530 ادامه یافته و پوشش‌دهنده کامل بالاتنه و شلوار است.",
       "fitInstructionsEn": "Z-layer 50. Extends from neckline past waist down to knee benchmark at Y=530, wrapping all underlayers."
+    },
+    "slot": "slot_outer",
+    "placement": {
+      "anchor": "shoulders",
+      "offset_x_percent": 0,
+      "offset_y_percent": 37,
+      "scale": 1.04,
+      "z_index": 40
+    },
+    "spec": {
+      "slot": "slot_outer",
+      "placement": {
+        "anchor": "shoulders",
+        "offset_x_percent": 0,
+        "offset_y_percent": 37,
+        "scale": 1.04,
+        "z_index": 40
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
+      }
     }
   },
   {
@@ -2945,6 +3203,30 @@
       },
       "fitInstructionsFa": "لایه ۵۰ مانکن. از شانه تا زانو در Y=530 ادامه یافته و پوشش‌دهنده کامل بالاتنه و شلوار است.",
       "fitInstructionsEn": "Z-layer 50. Extends from neckline past waist down to knee benchmark at Y=530, wrapping all underlayers."
+    },
+    "slot": "slot_outer",
+    "placement": {
+      "anchor": "shoulders",
+      "offset_x_percent": 0,
+      "offset_y_percent": 37,
+      "scale": 1.04,
+      "z_index": 40
+    },
+    "spec": {
+      "slot": "slot_outer",
+      "placement": {
+        "anchor": "shoulders",
+        "offset_x_percent": 0,
+        "offset_y_percent": 37,
+        "scale": 1.04,
+        "z_index": 40
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
+      }
     }
   },
   {
@@ -3131,6 +3413,24 @@
       },
       "fitInstructionsFa": "لایه ۱۰ (پایین‌ترین لایه). در ارتفاع Y=620 تا 700 دقیقاً زیر پاچه‌های شلوار قرار می‌گیرد.",
       "fitInstructionsEn": "Base Z-layer 10. Positions feet at the ground baseline from Y=620 to 700 directly beneath the trouser hem."
+    },
+    "slot": "slot_shoes",
+    "placement": {
+      "anchor": "feet",
+      "offset_x_percent": 0,
+      "offset_y_percent": 88,
+      "scale": 0.9,
+      "z_index": 22
+    },
+    "spec": {
+      "slot": "slot_shoes",
+      "placement": {
+        "anchor": "feet",
+        "offset_x_percent": 0,
+        "offset_y_percent": 88,
+        "scale": 0.9,
+        "z_index": 22
+      }
     }
   },
   {
@@ -3316,6 +3616,24 @@
       },
       "fitInstructionsFa": "لایه ۱۰ (پایین‌ترین لایه). در ارتفاع Y=620 تا 700 دقیقاً زیر پاچه‌های شلوار قرار می‌گیرد.",
       "fitInstructionsEn": "Base Z-layer 10. Positions feet at the ground baseline from Y=620 to 700 directly beneath the trouser hem."
+    },
+    "slot": "slot_shoes",
+    "placement": {
+      "anchor": "feet",
+      "offset_x_percent": 0,
+      "offset_y_percent": 88,
+      "scale": 0.9,
+      "z_index": 22
+    },
+    "spec": {
+      "slot": "slot_shoes",
+      "placement": {
+        "anchor": "feet",
+        "offset_x_percent": 0,
+        "offset_y_percent": 88,
+        "scale": 0.9,
+        "z_index": 22
+      }
     }
   },
   {
@@ -3532,6 +3850,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -3749,6 +4085,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -3967,6 +4321,24 @@
       },
       "fitInstructionsFa": "لبه یقه را در نقطه (240, 155) منطبق کنید. عرض شانه‌ها از 165 تا 315 گسترده شده و لبه پایین لباس دقیقاً روی خط باسن در Y=390 تراز می‌گردد.",
       "fitInstructionsEn": "Snap collar center to (240, 155). Shoulders span from X=165 to 315. Lower hem aligns at Y=390 across the upper hip level."
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -4191,6 +4563,24 @@
       },
       "fitInstructionsFa": "کمر شلوار دقیقاً در Y=340 بین X=170 و 310 تراز شود. فاق در (240, 425) منطبق شده و پاچه‌های راسته در مچ پا در Y=625 خاتمه یابند.",
       "fitInstructionsEn": "Waistband aligns at Y=340 from X=170 to 310. Crotch apex snaps to (240, 425). Cuffs terminate at ankle line Y=625."
+    },
+    "slot": "slot_bottom",
+    "placement": {
+      "anchor": "waist",
+      "offset_x_percent": 0,
+      "offset_y_percent": 69,
+      "scale": 1.04,
+      "z_index": 20
+    },
+    "spec": {
+      "slot": "slot_bottom",
+      "placement": {
+        "anchor": "waist",
+        "offset_x_percent": 0,
+        "offset_y_percent": 69,
+        "scale": 1.04,
+        "z_index": 20
+      }
     }
   },
   {
@@ -4421,6 +4811,24 @@
         "sleeveTrimBehavior": "torso_flush_sleeves",
         "waistSeamY": 375
       }
+    },
+    "slot": "slot_top",
+    "placement": {
+      "anchor": "torso",
+      "offset_x_percent": 0,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
+      "z_index": 30
+    },
+    "spec": {
+      "slot": "slot_top",
+      "placement": {
+        "anchor": "torso",
+        "offset_x_percent": 0,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
+        "z_index": 30
+      }
     }
   },
   {
@@ -4434,8 +4842,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 74,
-      "scale": 0.95,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4448,8 +4856,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 74,
-        "scale": 0.95,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4483,8 +4891,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 74,
-      "scale": 0.95,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4497,8 +4905,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 74,
-        "scale": 0.95,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4532,8 +4940,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 74,
-      "scale": 0.95,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4546,8 +4954,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 74,
-        "scale": 0.95,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4581,8 +4989,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 76,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4595,8 +5003,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 76,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4630,8 +5038,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 26,
-      "scale": 1.05,
+      "offset_y_percent": 34,
+      "scale": 1.02,
       "z_index": 40
     },
     "spec": {
@@ -4644,8 +5052,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 26,
-        "scale": 1.05,
+        "offset_y_percent": 34,
+        "scale": 1.02,
         "z_index": 40
       },
       "replacement_rules": {
@@ -4664,6 +5072,12 @@
         "fit_style": "regular",
         "season": "fall_winter",
         "estimated_price_toman": 1450000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-25T14:52:50.710Z"
@@ -4679,8 +5093,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 20,
-      "scale": 1.05,
+      "offset_y_percent": 34,
+      "scale": 1.02,
       "z_index": 40
     },
     "spec": {
@@ -4693,8 +5107,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 20,
-        "scale": 1.05,
+        "offset_y_percent": 34,
+        "scale": 1.02,
         "z_index": 40
       },
       "replacement_rules": {
@@ -4713,6 +5127,12 @@
         "fit_style": "oversized",
         "season": "fall_winter",
         "estimated_price_toman": 1350000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-25T14:57:07.833Z"
@@ -4726,10 +5146,10 @@
     "slot": "slot_outer",
     "imageUrl": "/api/uploads/prod-atelier-milano-1795623512338.png",
     "placement": {
-      "anchor": "torso",
+      "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 30,
-      "scale": 1.05,
+      "offset_y_percent": 34,
+      "scale": 1.02,
       "z_index": 40
     },
     "spec": {
@@ -4740,10 +5160,10 @@
       "slot": "slot_outer",
       "layer_level": "outerwear",
       "placement": {
-        "anchor": "torso",
+        "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 30,
-        "scale": 1.05,
+        "offset_y_percent": 34,
+        "scale": 1.02,
         "z_index": 40
       },
       "replacement_rules": {
@@ -4762,6 +5182,12 @@
         "fit_style": "relaxed",
         "season": "all_season",
         "estimated_price_toman": 850000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-25T16:18:32.338Z"
@@ -4777,8 +5203,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 64,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4791,8 +5217,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 64,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4875,8 +5301,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 64,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4889,8 +5315,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 64,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -4924,8 +5350,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 64,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -4938,8 +5364,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 64,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5071,8 +5497,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 64,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -5085,8 +5511,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 64,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5120,8 +5546,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 64,
-      "scale": 1,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -5134,8 +5560,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 64,
-        "scale": 1,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5169,8 +5595,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.85,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5183,8 +5609,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.85,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5218,8 +5644,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.85,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5232,8 +5658,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.85,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5268,8 +5694,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.85,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5282,8 +5708,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.85,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5318,8 +5744,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.85,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5332,8 +5758,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.85,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5368,8 +5794,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 60,
-      "scale": 1.2,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -5382,8 +5808,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 60,
-        "scale": 1.2,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5418,8 +5844,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 60,
-      "scale": 1.2,
+      "offset_y_percent": 69,
+      "scale": 1.04,
       "z_index": 20
     },
     "spec": {
@@ -5432,8 +5858,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 60,
-        "scale": 1.2,
+        "offset_y_percent": 69,
+        "scale": 1.04,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5468,8 +5894,8 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 60,
-      "scale": 1.2,
+      "offset_y_percent": 64,
+      "scale": 1,
       "z_index": 20
     },
     "spec": {
@@ -5482,8 +5908,8 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 60,
-        "scale": 1.2,
+        "offset_y_percent": 64,
+        "scale": 1,
         "z_index": 20
       },
       "replacement_rules": {
@@ -5517,8 +5943,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5531,8 +5957,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5551,6 +5977,12 @@
         "fit_style": "relaxed",
         "season": "winter",
         "estimated_price_toman": 3800000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-26T12:08:20.266Z"
@@ -5566,8 +5998,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5580,8 +6012,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5600,6 +6032,12 @@
         "fit_style": "regular",
         "season": "fall_winter",
         "estimated_price_toman": 3800000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-26T12:28:10.442Z"
@@ -5615,8 +6053,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5629,8 +6067,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5649,6 +6087,12 @@
         "fit_style": "regular",
         "season": "winter",
         "estimated_price_toman": 3800000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-26T12:54:09.773Z"
@@ -5664,8 +6108,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 34,
-      "scale": 0.85,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5678,8 +6122,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 34,
-        "scale": 0.85,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5713,8 +6157,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5727,8 +6171,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5747,6 +6191,12 @@
         "fit_style": "regular",
         "season": "fall_winter",
         "estimated_price_toman": 3650000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-26T21:33:37.847Z"
@@ -5762,8 +6212,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5776,8 +6226,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5796,6 +6246,12 @@
         "fit_style": "tailored",
         "season": "fall_winter",
         "estimated_price_toman": 3650000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-27T08:27:02.126Z"
@@ -5811,8 +6267,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5825,8 +6281,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5845,6 +6301,12 @@
         "fit_style": "regular",
         "season": "fall_winter",
         "estimated_price_toman": 1850000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-27T13:57:28.207Z"
@@ -5860,8 +6322,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 37,
+      "scale": 1.04,
       "z_index": 40
     },
     "spec": {
@@ -5874,8 +6336,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 37,
+        "scale": 1.04,
         "z_index": 40
       },
       "replacement_rules": {
@@ -5894,6 +6356,12 @@
         "fit_style": "regular",
         "season": "fall_winter",
         "estimated_price_toman": 1850000
+      },
+      "layering_behavior": {
+        "is_open_front": true,
+        "reveals_inner_top": true,
+        "inner_top_sleeve_trim_percent": 18,
+        "chest_opening_width_percent": 24
       }
     },
     "createdAt": "2026-11-27T14:07:29.189Z"
@@ -5909,8 +6377,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 36.5,
-      "scale": 0.92,
+      "offset_y_percent": 33.5,
+      "scale": 0.9,
       "z_index": 30
     },
     "spec": {
@@ -5923,8 +6391,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 36.5,
-        "scale": 0.92,
+        "offset_y_percent": 33.5,
+        "scale": 0.9,
         "z_index": 30
       },
       "replacement_rules": {
@@ -5958,8 +6426,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 27,
-      "scale": 0.92,
+      "offset_y_percent": 34,
+      "scale": 1.02,
       "z_index": 40
     },
     "spec": {
@@ -5972,15 +6440,15 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 27,
-        "scale": 0.92,
+        "offset_y_percent": 34,
+        "scale": 1.02,
         "z_index": 40
       },
       "layering_behavior": {
         "is_open_front": true,
         "reveals_inner_top": true,
         "inner_top_sleeve_trim_percent": 18,
-        "chest_opening_width_percent": 20
+        "chest_opening_width_percent": 24
       },
       "replacement_rules": {
         "replaces_slot": "slot_outer",

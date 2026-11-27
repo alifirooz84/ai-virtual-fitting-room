@@ -5,11 +5,19 @@ import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
  * First autonomously classifies the garment category, then executes the exact golden proportion rules!
  */
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
-GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described). DO NOT output text, code, or analysis — IMMEDIATELY GENERATE THE IMAGE following these autonomous rules:
+GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described).
+MANDATORY: DO NOT output text, code, or analysis — IMMEDIATELY GENERATE THE IMAGE following the Basic AI Fashion Standardization Algorithm:
+
+================================================================================
+[UNIFIED AI SPATIAL STANDARDIZATION ALGORITHM (V2.5)]
+All garment outputs MUST strictly adhere to the universal 1024x1024 anatomical grid.
+Every category has a fixed, non-deviating bounding box and spatial anchor so all items
+automatically match and layer together with 100% mathematical precision.
+================================================================================
 
 [STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
-Autonomously identify the garment in the photo:
-- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker): Execute CASE A.
+Autonomously identify the garment category:
+- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker, Puffer): Execute CASE A.
 - If TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear): Execute CASE B.
 - If BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt): Execute CASE C.
 - If FOOTWEAR (Sneakers, Shoes, Boots, Loafers): Execute CASE D.
@@ -49,12 +57,22 @@ text, code, json, severed collar, floating split sleeves, cut neckband, solid ba
 `.trim();
 
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-پرامپت طلایی و مستقل تولید عکس لباس ۳بعدی (بدون نیاز به ویرایش یا تایپ متن اضافی):
+سیستم یکپارچه و الگوریتم پایه هوش مصنوعی برای تولید عکس استاندارد لباس ۳بعدی:
 
-نحوه استفاده بسیار ساده:
-۱. عکس لباس خود را در ChatGPT (یا Gemini / Midjourney) آپلود کنید.
-۲. کل متن انگلیسی پرامپت را بدون هیچ تغییری کپی و ارسال کنید!
-۳. هوش مصنوعی عکس ارسالی شما را بررسی کرده، نوع لباس را خودش تشخیص می‌دهد و مستقیماً عکس ۳بعدی استودیویی روی مانکن نامرئی را تولید می‌کند (بدون تولید کد یا متن اضافی).
+این پرامپت بر اساس «الگوریتم استانداردسازی ارتوگرافیک ۱۰۲۴×۱۰۲۴» طراحی شده است و تضمین می‌کند تمام خروجی‌های هوش مصنوعی (چه پالتو، چه تیشرت، چه شلوار و چه کفش) در یک سیستم مختصاتی یکسان و با مقیاس‌های مهندسی‌شده تولید شوند:
+
+ویژگی‌های الگوریتم هوشمند:
+۱. تشخیص خودکار دسته لباس (Outerwear / Topwear / Bottomwear / Footwear) بدون نیاز به تایپ شما.
+۲. قفل شدن پهنا و ترازهای طلایی:
+   - لباس‌رو (پالتو/کت): پهنا ۷۵٪، یقه در ۶٪، جلوباز با زاویه ۳۵ درجه و سینه کاملاً خالی و شفاف (بدون آستر پشتی).
+   - بالاتنه (تی‌شرت/هودی): پهنا ۶۰٪ (دقیقاً برای جاگیری زیبا داخل پالتو بدون بیرون‌زدگی)، یقه در ۱۰٪، لبه پایینی در ۵۲٪ (تراز دقیق کمر).
+   - پایین‌تنه (شلوار): کمر ۴۷٪ در تراز ۶٪، دمپا در ۹۴٪ (مماس با کفش).
+   - کفش: کفی در ۸۸٪، تراز مستقیم رو به رو.
+۳. عدم تولید کد یا متن اضافی: هوش مصنوعی مستقیماً عکس ۳بعدی آماده پرو را خروجی می‌دهد.
+
+نحوه استفاده ساده:
+۱. عکس لباس خود را در ChatGPT، Gemini یا Midjourney آپلود کنید.
+۲. متن پرامپت انگلیسی را کپی و بدون تغییر ارسال نمایید.
 `.trim();
 
 /**
@@ -226,21 +244,27 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = '�
     slot_accessory: { anchor: 'head' as const, offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 },
   }[slot];
 
-  // Auto-Snap intelligence: auto-correct to canonical anatomical range
-  let targetOffsetY = typeof json.placement?.offset_y_percent === 'number' ? json.placement.offset_y_percent : defaultPlacement.offset_y_percent;
-  if (slot === 'slot_bottom' && (targetOffsetY > 74 || targetOffsetY < 60)) {
-    targetOffsetY = 69.0;
-  } else if (slot === 'slot_top' && (targetOffsetY < 28 || targetOffsetY > 40)) {
+  // Autonomous Golden Anchor Lock: perfectly snaps all items into canonical ratio
+  const isCropped = rawName.includes('کراپ') || rawName.includes('crop');
+  const isLongCoat = rawCat.includes('coat') || rawName.includes('پالتو') || rawName.includes('بارانی') || rawName.includes('coat') || rawName.includes('trench');
+
+  let targetOffsetY = defaultPlacement.offset_y_percent;
+  let customScale = defaultPlacement.scale;
+
+  if (slot === 'slot_bottom') {
+    targetOffsetY = isCropped ? 64.0 : 69.0;
+    customScale = isCropped ? 1.00 : 1.04;
+  } else if (slot === 'slot_outer') {
+    targetOffsetY = isLongCoat ? 37.0 : 34.0;
+    customScale = isLongCoat ? 1.04 : 1.02;
+  } else if (slot === 'slot_top') {
     targetOffsetY = 33.5;
-  } else if (slot === 'slot_outer' && (targetOffsetY < 30 || targetOffsetY > 42)) {
-    targetOffsetY = 37.0;
-  } else if (slot === 'slot_shoes' && (targetOffsetY < 82 || targetOffsetY > 94)) {
+    customScale = 0.90;
+  } else if (slot === 'slot_shoes') {
     targetOffsetY = 88.0;
+    customScale = 0.90;
   }
 
-  const customScale = typeof json.placement?.scale === 'number' && json.placement.scale >= 0.7 && json.placement.scale <= 1.4
-    ? json.placement.scale
-    : defaultPlacement.scale;
   const customZIndex = typeof json.placement?.z_index === 'number' ? json.placement.z_index : defaultPlacement.z_index;
 
   return {
