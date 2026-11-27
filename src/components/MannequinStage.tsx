@@ -92,10 +92,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Calibrated Golden Proportion Standards)
-  const [topOffsetY, setTopOffsetY] = useState(37.5);
+  const [topOffsetY, setTopOffsetY] = useState(41.0);
   const [topScale, setTopScale] = useState(0.92);
-  const [bottomOffsetY, setBottomOffsetY] = useState(66.5);
-  const [bottomScale, setBottomScale] = useState(1.06);
+  const [bottomOffsetY, setBottomOffsetY] = useState(58.5);
+  const [bottomScale, setBottomScale] = useState(1.02);
   const [outerOffsetY, setOuterOffsetY] = useState(36.0);
   const [outerScale, setOuterScale] = useState(1.04);
   const [shoesOffsetY, setShoesOffsetY] = useState(86.5);
@@ -134,10 +134,10 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   // Auto-Snap Waistline: Seamless overlap between topwear and pants
   useEffect(() => {
     const rawY = topItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 30 && rawY <= 44) {
+    if (typeof rawY === 'number' && rawY >= 36 && rawY <= 46) {
       setTopOffsetY(rawY);
     } else {
-      setTopOffsetY(37.5);
+      setTopOffsetY(41.0);
     }
     const rawScale = topItem?.placement?.scale;
     if (typeof rawScale === 'number' && rawScale >= 0.82 && rawScale <= 1.08) {
@@ -148,19 +148,23 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   }, [topItem?.id]);
 
   useEffect(() => {
+    const isCropped =
+      bottomItem?.title?.includes('کراپ') ||
+      bottomItem?.title?.toLowerCase().includes('crop');
+
     const rawY = bottomItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number' && rawY >= 58 && rawY <= 74) {
+    if (typeof rawY === 'number' && rawY >= 50 && rawY <= 72) {
       setBottomOffsetY(rawY);
     } else {
-      setBottomOffsetY(66.5);
+      setBottomOffsetY(isCropped ? 58.5 : 64.0);
     }
     const rawScale = bottomItem?.placement?.scale;
     if (typeof rawScale === 'number' && rawScale >= 0.90 && rawScale <= 1.20) {
       setBottomScale(rawScale);
     } else {
-      setBottomScale(1.06);
+      setBottomScale(isCropped ? 1.0 : 1.04);
     }
-  }, [bottomItem?.id]);
+  }, [bottomItem?.id, bottomItem?.title]);
 
   useEffect(() => {
     const isLongCoat =
@@ -676,10 +680,11 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             <button
               type="button"
               onClick={() => {
-                setTopOffsetY(37.5);
+                const isCrop = bottomItem?.title?.includes('کراپ') || bottomItem?.title?.toLowerCase().includes('crop');
+                setTopOffsetY(41.0);
                 setTopScale(0.92);
-                setBottomOffsetY(66.5);
-                setBottomScale(1.06);
+                setBottomOffsetY(isCrop ? 58.5 : 64.0);
+                setBottomScale(isCrop ? 1.00 : 1.04);
                 setOuterOffsetY(36.0);
                 setOuterScale(1.04);
                 setShoesOffsetY(86.5);
@@ -1000,122 +1005,131 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <line x1="202" y1="620" x2="202" y2="652" stroke="#475569" strokeWidth="4" strokeLinecap="round" />
                   <line x1="278" y1="620" x2="278" y2="652" stroke="#475569" strokeWidth="4" strokeLinecap="round" />
 
-                  {/* 1. Mannequin Muscular Legs (Left & Right) */}
-                  {/* Left Leg */}
-                  <path
-                    d="M 174,380
-                       C 166,430 172,485 180,525
-                       C 186,555 190,590 192,630
-                       L 216,630
-                       C 218,590 222,555 226,525
-                       C 230,485 236,430 238,380
-                       Z"
-                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1.2"
-                  />
-                  {/* Left Foot */}
-                  <ellipse
-                    cx="204"
-                    cy="634"
-                    rx="15"
-                    ry="8"
-                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
-                    stroke="#475569"
-                    strokeWidth="1"
-                  />
+                  {/* 1. Mannequin Muscular Legs (Left & Right - Hidden when pants are worn) */}
+                  {!bottomItem && (
+                    <g>
+                      {/* Left Leg */}
+                      <path
+                        d="M 174,380
+                           C 166,430 172,485 180,525
+                           C 186,555 190,590 192,630
+                           L 216,630
+                           C 218,590 222,555 226,525
+                           C 230,485 236,430 238,380
+                           Z"
+                        fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1.2"
+                      />
+                      {/* Left Foot */}
+                      <ellipse
+                        cx="204"
+                        cy="634"
+                        rx="15"
+                        ry="8"
+                        fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                        stroke="#475569"
+                        strokeWidth="1"
+                      />
 
-                  {/* Right Leg */}
-                  <path
-                    d="M 242,380
-                       C 244,430 250,485 254,525
-                       C 258,555 262,590 264,630
-                       L 288,630
-                       C 290,590 294,555 300,525
-                       C 308,485 314,430 306,380
-                       Z"
-                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1.2"
-                  />
-                  {/* Right Foot */}
-                  <ellipse
-                    cx="276"
-                    cy="634"
-                    rx="15"
-                    ry="8"
-                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
-                    stroke="#475569"
-                    strokeWidth="1"
-                  />
+                      {/* Right Leg */}
+                      <path
+                        d="M 242,380
+                           C 244,430 250,485 254,525
+                           C 258,555 262,590 264,630
+                           L 288,630
+                           C 290,590 294,555 300,525
+                           C 308,485 314,430 306,380
+                           Z"
+                        fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1.2"
+                      />
+                      {/* Right Foot */}
+                      <ellipse
+                        cx="276"
+                        cy="634"
+                        rx="15"
+                        ry="8"
+                        fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                        stroke="#475569"
+                        strokeWidth="1"
+                      />
+                    </g>
+                  )}
 
-                  {/* 2. Mannequin Torso & Midriff (Connecting top hem to waist) */}
-                  <path
-                    d="M 144,188
-                       C 140,215 158,255 166,290
-                       C 172,315 174,340 172,380
-                       C 190,392 220,396 240,396
-                       C 260,396 290,392 308,380
-                       C 306,340 308,315 314,290
-                       C 322,255 340,215 336,188
-                       C 314,180 282,174 260,172
-                       L 220,172
-                       C 198,174 166,180 144,188
-                       Z"
-                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1.2"
-                  />
+                  {/* 2. Mannequin Torso & Midriff (Hidden when shirt or jacket is worn) */}
+                  {(!topItem && !outerItem) && (
+                    <path
+                      d="M 144,188
+                         C 140,215 158,255 166,290
+                         C 172,315 174,340 172,380
+                         C 190,392 220,396 240,396
+                         C 260,396 290,392 308,380
+                         C 306,340 308,315 314,290
+                         C 322,255 340,215 336,188
+                         C 314,180 282,174 260,172
+                         L 220,172
+                         C 198,174 166,180 144,188
+                         Z"
+                      fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                      stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                      strokeWidth="1.2"
+                    />
+                  )}
 
-                  {/* 3. Mannequin Left Arm (Deltoid, Bicep, Forearm, Hand - Tucked cleanly inside garment sleeves) */}
-                  <path
-                    d="M 148,188
-                       C 142,208 138,245 140,290
-                       C 142,325 146,365 150,405
-                       C 152,416 156,424 158,422
-                       C 160,420 158,410 156,400
-                       C 152,365 148,325 148,290
-                       C 148,250 152,218 158,196
-                       Z"
-                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1.2"
-                  />
-                  {/* Left Wrist & Hand */}
-                  <ellipse
-                    cx="152"
-                    cy="415"
-                    rx="6"
-                    ry="12"
-                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1"
-                  />
+                  {/* 3. Mannequin Arms & Hands (Hidden when shirt or jacket is worn) */}
+                  {(!topItem && !outerItem) && (
+                    <g>
+                      {/* Left Arm */}
+                      <path
+                        d="M 148,188
+                           C 142,208 138,245 140,290
+                           C 142,325 146,365 150,405
+                           C 152,416 156,424 158,422
+                           C 160,420 158,410 156,400
+                           C 152,365 148,325 148,290
+                           C 148,250 152,218 158,196
+                           Z"
+                        fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1.2"
+                      />
+                      <ellipse
+                        cx="152"
+                        cy="415"
+                        rx="6"
+                        ry="12"
+                        fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1"
+                      />
 
-                  {/* 4. Mannequin Right Arm - Tucked cleanly inside garment sleeves */}
-                  <path
-                    d="M 332,188
-                       C 338,208 342,245 340,290
-                       C 338,325 334,365 330,405
-                       C 328,416 324,424 322,422
-                       C 320,420 322,410 324,400
-                       C 328,365 332,325 332,290
-                       C 332,250 328,218 322,196
-                       Z"
-                    fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1.2"
-                  />
-                  {/* Right Wrist & Hand */}
-                  <ellipse
-                    cx="328"
-                    cy="415"
-                    rx="6"
-                    ry="12"
-                    fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
-                    stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
-                    strokeWidth="1"
-                  />
+                      {/* Right Arm */}
+                      <path
+                        d="M 332,188
+                           C 338,208 342,245 340,290
+                           C 338,325 334,365 330,405
+                           C 328,416 324,424 322,422
+                           C 320,420 322,410 324,400
+                           C 328,365 332,325 332,290
+                           C 332,250 328,218 322,196
+                           Z"
+                        fill={mannequinTheme === 'charcoal' ? 'url(#charcoalBody)' : mannequinTheme === 'skin' ? 'url(#skinBody)' : 'url(#sandBody)'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1.2"
+                      />
+                      <ellipse
+                        cx="328"
+                        cy="415"
+                        rx="6"
+                        ry="12"
+                        fill={mannequinTheme === 'charcoal' ? '#1e293b' : mannequinTheme === 'skin' ? '#c2977d' : '#94a3b8'}
+                        stroke={mannequinTheme === 'charcoal' ? '#475569' : '#64748b'}
+                        strokeWidth="1"
+                      />
+                    </g>
+                  )}
 
                   {/* 5. Cylindrical Solid Neck Filling Garment Collar */}
                   <path
@@ -1160,33 +1174,49 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   {/* Slim Atelier Neck */}
                   <path d="M 226,110 L 226,160 Q 226,166 218,170 M 254,110 L 254,160 Q 254,166 262,170" stroke="#cbd5e1" strokeWidth="1.2" fill="none" />
 
-                  {/* Tailored Ghost Silhouette Body (Designed specifically for virtual clothing try-on) */}
-                  {/* Shoulders width: 156px, Arms tucked cleanly inside garment sleeves, Legs terminating at ankles Y:630 */}
-                  <path
-                    d="M 218,170
-                       C 200,172 182,176 168,184
-                       C 160,190 158,204 158,220
-                       C 158,245 160,280 162,310
-                       C 162,335 162,360 162,380
-                       C 162,400 166,460 172,510
-                       C 176,545 182,590 186,630
-                       L 214,630
-                       C 216,590 220,545 224,510
-                       C 228,470 234,420 240,392
-                       C 246,420 252,470 256,510
-                       C 260,545 264,590 266,630
-                       L 294,630
-                       C 298,590 304,545 308,510
-                       C 314,460 318,400 318,380
-                       C 318,360 318,335 318,310
-                       C 320,280 322,245 322,220
-                       C 322,204 320,190 312,184
-                       C 298,176 280,172 262,170
-                       Z"
-                    fill="url(#ghostFill)"
-                    stroke="#cbd5e1"
-                    strokeWidth="1.2"
-                  />
+                  {/* Ghost Torso & Arms (Hidden when shirt or jacket is worn) */}
+                  {(!topItem && !outerItem) && (
+                    <path
+                      d="M 218,170
+                         C 200,172 182,176 168,184
+                         C 160,190 158,204 158,220
+                         C 158,245 160,280 162,310
+                         C 162,335 162,360 162,380
+                         C 180,392 210,396 240,396
+                         C 270,396 300,392 318,380
+                         C 318,360 318,335 318,310
+                         C 320,280 322,245 322,220
+                         C 322,204 320,190 312,184
+                         C 298,176 280,172 262,170
+                         Z"
+                      fill="url(#ghostFill)"
+                      stroke="#cbd5e1"
+                      strokeWidth="1.2"
+                    />
+                  )}
+
+                  {/* Ghost Legs (Hidden when pants are worn) */}
+                  {!bottomItem && (
+                    <path
+                      d="M 162,380
+                         C 162,400 166,460 172,510
+                         C 176,545 182,590 186,630
+                         L 214,630
+                         C 216,590 220,545 224,510
+                         C 228,470 234,420 240,392
+                         C 246,420 252,470 256,510
+                         C 260,545 264,590 266,630
+                         L 294,630
+                         C 298,590 304,545 308,510
+                         C 314,460 318,400 318,380
+                         C 290,392 260,396 240,396
+                         C 220,396 190,392 162,380
+                         Z"
+                      fill="url(#ghostFill)"
+                      stroke="#cbd5e1"
+                      strokeWidth="1.2"
+                    />
+                  )}
                 </g>
               )}
             </svg>
@@ -1261,31 +1291,34 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {/* ======================================================== */}
           {/* 3.4 BOTTOMWEAR / PANTS (Z-Index: 20 or 35 if Tucked)     */}
           {/* ======================================================== */}
-          {bottomItem && (
-            <div
-              style={{
-                top: `${bottomOffsetY}%`,
-                zIndex: tuckMode === 'tucked' ? 35 : 20,
-                transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
-              }}
-              className="absolute left-1/2 w-[62%] sm:w-[65%] aspect-[3/5.5] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
-            >
-              <MannequinGarmentImage
-                src={bottomItem.imageUrl}
-                alt={bottomItem.title}
-                slot="slot_bottom"
-                className="w-full h-full object-contain"
-              />
-              <button
-                type="button"
-                onClick={() => onRemoveSlot('slot_bottom')}
-                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
-                title="حذف شلوار از ست"
+          {bottomItem && (() => {
+            const isCrop = bottomItem.title?.includes('کراپ') || bottomItem.title?.toLowerCase().includes('crop');
+            return (
+              <div
+                style={{
+                  top: `${bottomOffsetY}%`,
+                  zIndex: tuckMode === 'tucked' ? 35 : 20,
+                  transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
+                }}
+                className={`absolute left-1/2 w-[62%] sm:w-[65%] ${isCrop ? 'aspect-[3/4.6]' : 'aspect-[3/5.1]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]`}
               >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+                <MannequinGarmentImage
+                  src={bottomItem.imageUrl}
+                  alt={bottomItem.title}
+                  slot="slot_bottom"
+                  className="w-full h-full object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={() => onRemoveSlot('slot_bottom')}
+                  className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
+                  title="حذف شلوار از ست"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            );
+          })()}
 
           {/* ======================================================== */}
           {/* 3.5 TOPWEAR / T-SHIRT (Z-Index: 30 or 25 if Tucked)      */}
@@ -1312,11 +1345,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               />
               {/* Natural Ambient Occlusion shadow from open outerwear lapels onto inner t-shirt */}
               {outerItem && (
-                <div className="absolute inset-0 bg-gradient-to-r from-black/35 via-transparent to-black/35 pointer-events-none mix-blend-multiply opacity-80 rounded-2xl" />
-              )}
-              {/* Soft bottom hem contact shadow onto pants (untucked mode) */}
-              {tuckMode === 'untucked' && (
-                <div className="absolute -bottom-1.5 left-[10%] right-[10%] h-4 bg-gradient-to-b from-black/45 to-transparent blur-xs pointer-events-none mix-blend-multiply rounded-full" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/25 pointer-events-none mix-blend-multiply opacity-60 rounded-2xl" />
               )}
               <button
                 type="button"

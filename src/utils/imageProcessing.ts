@@ -168,8 +168,8 @@ export function removeWhiteBackground(
           const g = data[pIdx + 1];
           const b = data[pIdx + 2];
 
-          // Chroma-Key Green Detection (#00FF00, neon green void for perfect studio cutout)
-          if (g > 140 && r < 115 && b < 115 && g - Math.max(r, b) > 40) {
+          // Pure Studio Neon Green-Screen (#00FF00) strictly - never match natural greens, sage, or sea-green fabrics
+          if (g > 220 && r < 45 && b < 45 && g - Math.max(r, b) > 150) {
             return true;
           }
 
