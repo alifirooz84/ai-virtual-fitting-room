@@ -11,7 +11,7 @@ export const transparencyCache = new Map<string, string>();
 
 export interface RemoveBackgroundOptions {
   colorTolerance?: number; // Distance tolerance from average background color (default: 38)
-  luminanceThreshold?: number; // Minimum brightness to consider neutral studio background (default: 160)
+  luminanceThreshold?: number; // Minimum brightness to consider neutral studio background (default: 125)
   saturationMax?: number; // Maximum color saturation difference (default: 35)
   feather?: boolean; // Smooth anti-aliased edge softening (default: true)
   maxDimension?: number; // Max canvas dimension (default: 1024)
@@ -40,9 +40,9 @@ export function removeWhiteBackground(
     img.onload = () => {
       try {
         const {
-          colorTolerance = 38,
-          luminanceThreshold = 160,
-          saturationMax = 35,
+          colorTolerance = 40,
+          luminanceThreshold = 125,
+          saturationMax = 36,
           feather = true,
           maxDimension = 1024,
           slot = '',
@@ -174,19 +174,19 @@ export function removeWhiteBackground(
           }
 
           const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-          if (lum < 130) return false; // Fabric shadows or dark clothing
+          if (lum < 112) return false; // Fabric shadows or dark clothing
 
           const satDiff = Math.max(r, g, b) - Math.min(r, g, b);
-          // Studio white/grey cycloramas are strictly monochrome (satDiff <= 30)
+          // Studio white/grey cycloramas are strictly monochrome (satDiff <= 32)
           if (satDiff > 32) return false;
 
           // Either close to global average OR neutral bright studio backdrop
           const dr = Math.abs(r - targetR);
           const dg = Math.abs(g - targetG);
           const db = Math.abs(b - targetB);
-          if (dr <= 65 && dg <= 65 && db <= 65) return true;
+          if (dr <= 68 && dg <= 68 && db <= 68) return true;
 
-          return lum >= 140 && satDiff <= 25;
+          return lum >= 120 && satDiff <= 28;
         };
 
         // Seed ALL 4 perimeter edges (top, bottom, left, right)

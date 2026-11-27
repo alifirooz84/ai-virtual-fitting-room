@@ -46,8 +46,8 @@ const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt,
         removeWhiteBackground(targetUrl, {
           slot,
           normalizeScale: true,
-          colorTolerance: 38,
-          luminanceThreshold: 160,
+          colorTolerance: 40,
+          luminanceThreshold: 125,
         }).then((cleaned) => {
           transparencyCache.set(key, cleaned);
           if (active) setCleanSrc(cleaned);
@@ -102,7 +102,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
-  const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(true);
+  const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(false);
   const [outerVoidWidthPercent, setOuterVoidWidthPercent] = useState(18);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
 
@@ -345,11 +345,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               if (offCtx) {
                 offCtx.drawImage(img, 0, 0, w, h);
                 offCtx.globalCompositeOperation = 'destination-out';
-                const cutW = (outerVoidWidthPercent / 100) * w;
-                const cutX = (w - cutW) / 2;
-                const cutY = h * 0.14;
-                const cutH = h * 0.78;
-                offCtx.fillRect(cutX, cutY, cutW, cutH);
+                offCtx.beginPath();
+                const halfW = (outerVoidWidthPercent / 100) * w * 0.5;
+                const midX = w / 2;
+                offCtx.moveTo(midX, h * 0.25);
+                offCtx.lineTo(midX - halfW, h * 0.42);
+                offCtx.lineTo(midX - halfW, h * 0.94);
+                offCtx.lineTo(midX + halfW, h * 0.94);
+                offCtx.lineTo(midX + halfW, h * 0.42);
+                offCtx.closePath();
+                offCtx.fill();
                 ctx.drawImage(offCanvas, xPos, yPos - 50, w, h);
               } else {
                 ctx.drawImage(img, xPos, yPos - 50, w, h);
@@ -664,7 +669,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(18);
-                setIsOuterVoidMaskActive(true);
+                setIsOuterVoidMaskActive(false);
                 setOuterVoidWidthPercent(18);
                 setHasLayeredCollar(false);
               }}
@@ -1303,7 +1308,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 40,
                 transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
                 clipPath: isOuterVoidMaskActive
-                  ? `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, ${50 - outerVoidWidthPercent / 2}% 14%, ${50 + outerVoidWidthPercent / 2}% 14%, ${50 + outerVoidWidthPercent / 2}% 92%, ${50 - outerVoidWidthPercent / 2}% 92%, ${50 - outerVoidWidthPercent / 2}% 14%)`
+                  ? `polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 50% 25%, ${50 - outerVoidWidthPercent / 2}% 42%, ${50 - outerVoidWidthPercent / 2}% 94%, ${50 + outerVoidWidthPercent / 2}% 94%, ${50 + outerVoidWidthPercent / 2}% 42%, 50% 25%)`
                   : undefined,
                 transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
