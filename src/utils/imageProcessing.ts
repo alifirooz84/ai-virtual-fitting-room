@@ -391,16 +391,14 @@ export function getGarmentBoundingBox(ctx: CanvasRenderingContext2D, width: numb
 }
 
 /**
- * Normalizes garment framing onto a standardized 1024x1024 canvas.
- * Guarantees that ALL clothing items from ANY AI model have 100% uniform proportions:
- * - Tops/Hoodies: Width is ~78% of canvas, neckline starts at 10% from top.
- * - Bottoms/Pants: Height is ~84% of canvas, waistband starts at 10% from top.
- * - Outerwear: Width is ~82% of canvas, neckline starts at 10% from top.
- * - Shoes: Width is ~72% of canvas, centered horizontally and vertically.
+ * Normalizes garment framing onto a standardized, zero-margin canvas.
+ * Tightly crops the garment to its actual non-transparent fabric bounds (+ 4px anti-alias buffer).
+ * Guarantees that ALL clothing items from ANY AI model have ZERO empty margins at the top or bottom,
+ * completely eliminating any gaps, vertical shifts, or floating collars on the mannequin stage!
  */
 export function normalizeGarmentScaleAndPosition(
   canvas: HTMLCanvasElement,
-  slot: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string = 'slot_top'
+  _slot: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string = 'slot_top'
 ): HTMLCanvasElement {
   const ctx = canvas.getContext('2d');
   if (!ctx) return canvas;
@@ -408,58 +406,12 @@ export function normalizeGarmentScaleAndPosition(
   const box = getGarmentBoundingBox(ctx, canvas.width, canvas.height);
   if (!box) return canvas;
 
-  const targetSize = 1024;
+  const pad = 4;
   const outCanvas = document.createElement('canvas');
-  outCanvas.width = targetSize;
-  outCanvas.height = targetSize;
+  outCanvas.width = box.width + pad * 2;
+  outCanvas.height = box.height + pad * 2;
   const outCtx = outCanvas.getContext('2d');
   if (!outCtx) return canvas;
-
-  const aspect = box.width / box.height;
-
-  let targetW: number;
-  let targetH: number;
-  let targetX: number;
-  let targetY: number;
-
-  if (slot === 'slot_bottom') {
-    targetH = Math.round(targetSize * 0.88);
-    targetW = Math.round(targetH * aspect);
-    targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.06);
-  } else if (slot === 'slot_shoes') {
-    targetW = Math.round(targetSize * 0.58);
-    targetH = Math.round(targetW / aspect);
-    targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.76);
-  } else if (slot === 'slot_outer') {
-    const isLongCoat = box.height / box.width > 1.22;
-    if (isLongCoat) {
-      targetH = Math.round(targetSize * 0.78);
-      targetW = Math.round(targetH * aspect);
-      targetX = Math.round((targetSize - targetW) / 2);
-      targetY = Math.round(targetSize * 0.06);
-    } else {
-      targetW = Math.round(targetSize * 0.74);
-      targetH = Math.round(targetW / aspect);
-      if (targetH > targetSize * 0.60) {
-        targetH = Math.round(targetSize * 0.60);
-        targetW = Math.round(targetH * aspect);
-      }
-      targetX = Math.round((targetSize - targetW) / 2);
-      targetY = Math.round(targetSize * 0.08);
-    }
-  } else {
-    // slot_top
-    targetW = Math.round(targetSize * 0.60);
-    targetH = Math.round(targetW / aspect);
-    if (targetH > targetSize * 0.58) {
-      targetH = Math.round(targetSize * 0.58);
-      targetW = Math.round(targetH * aspect);
-    }
-    targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.10);
-  }
 
   outCtx.drawImage(
     canvas,
@@ -467,10 +419,10 @@ export function normalizeGarmentScaleAndPosition(
     box.minY,
     box.width,
     box.height,
-    targetX,
-    targetY,
-    targetW,
-    targetH
+    pad,
+    pad,
+    box.width,
+    box.height
   );
 
   return outCanvas;

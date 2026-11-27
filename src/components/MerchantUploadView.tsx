@@ -54,8 +54,8 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const [jsonError, setJsonError] = useState<string | null>(null);
 
   // 3. Real-time Calibration Adjustments (Auto-Snap Standard Coordinates)
-  const [offsetY, setOffsetY] = useState<number>(30);
-  const [scale, setScale] = useState<number>(1.0);
+  const [offsetY, setOffsetY] = useState<number>(31.0);
+  const [scale, setScale] = useState<number>(0.96);
   const [customTitle, setCustomTitle] = useState<string>('');
   const [customPrice, setCustomPrice] = useState<number>(850000);
   const [selectedSlotManual, setSelectedSlotManual] = useState<GarmentSlot | null>(null);
@@ -152,17 +152,17 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const applySlotSelection = (slot: GarmentSlot) => {
     setSelectedSlotManual(slot);
     if (slot === 'slot_bottom') {
-      setOffsetY(64);
-      setScale(1.0);
+      setOffsetY(67.0);
+      setScale(1.00);
     } else if (slot === 'slot_outer') {
-      setOffsetY(37);
-      setScale(1.02);
+      setOffsetY(44.5);
+      setScale(1.00);
     } else if (slot === 'slot_shoes') {
-      setOffsetY(86.5);
+      setOffsetY(92.0);
       setScale(0.90);
     } else {
-      setOffsetY(36.5);
-      setScale(0.92);
+      setOffsetY(31.0);
+      setScale(0.96);
     }
   };
 
@@ -245,17 +245,17 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
 
       // Canonical Auto-Snap Anchors adhering to 40/60 Golden Anatomy Ratio
       if (normalized.slot === 'slot_bottom') {
-        setOffsetY(60);
-        setScale(1.20);
+        setOffsetY(67.0);
+        setScale(1.00);
       } else if (normalized.slot === 'slot_outer') {
-        setOffsetY(27);
-        setScale(0.92);
+        setOffsetY(44.5);
+        setScale(1.00);
       } else if (normalized.slot === 'slot_shoes') {
-        setOffsetY(84);
-        setScale(0.82);
+        setOffsetY(92.0);
+        setScale(0.90);
       } else {
-        setOffsetY(27);
-        setScale(0.85);
+        setOffsetY(31.0);
+        setScale(0.96);
       }
     } catch (e: any) {
       setJsonError('فرمت فایل JSON نامعتبر است. لطفاً ساختار استاندارد را کپی کنید.');

@@ -249,10 +249,10 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = 'Ù
 
   // Exact Canonical Golden Ratio Anchors: Sleek 40% Torso + 60% Leg Silhouette
   const defaultPlacement = {
-    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 33.5, scale: 0.90, z_index: 30 },
-    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 69.0, scale: 1.04, z_index: 20 },
-    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 37.0, scale: 1.04, z_index: 40 },
-    slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 88.0, scale: 0.90, z_index: 22 },
+    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 31.0, scale: 0.96, z_index: 30 },
+    slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 67.0, scale: 1.00, z_index: 20 },
+    slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 44.5, scale: 1.00, z_index: 40 },
+    slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 92.0, scale: 0.90, z_index: 22 },
     slot_accessory: { anchor: 'head' as const, offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 },
   }[slot];
 
@@ -264,16 +264,16 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = 'Ù
   let customScale = defaultPlacement.scale;
 
   if (slot === 'slot_bottom') {
-    targetOffsetY = isCropped ? 64.0 : 69.0;
-    customScale = isCropped ? 1.00 : 1.04;
+    targetOffsetY = isCropped ? 65.5 : 67.0;
+    customScale = 1.00;
   } else if (slot === 'slot_outer') {
-    targetOffsetY = isLongCoat ? 37.0 : 34.0;
-    customScale = isLongCoat ? 1.04 : 1.02;
+    targetOffsetY = isLongCoat ? 44.5 : 31.5;
+    customScale = 1.00;
   } else if (slot === 'slot_top') {
-    targetOffsetY = 33.5;
-    customScale = 0.90;
+    targetOffsetY = 31.0;
+    customScale = 0.96;
   } else if (slot === 'slot_shoes') {
-    targetOffsetY = 88.0;
+    targetOffsetY = 92.0;
     customScale = 0.90;
   }
 

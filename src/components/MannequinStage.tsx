@@ -92,17 +92,17 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Calibrated Golden Proportion Standards)
-  const [topOffsetY, setTopOffsetY] = useState(33.5);
-  const [topScale, setTopScale] = useState(0.90);
-  const [bottomOffsetY, setBottomOffsetY] = useState(69.0);
-  const [bottomScale, setBottomScale] = useState(1.04);
-  const [outerOffsetY, setOuterOffsetY] = useState(37.0);
-  const [outerScale, setOuterScale] = useState(1.04);
-  const [shoesOffsetY, setShoesOffsetY] = useState(88.0);
+  const [topOffsetY, setTopOffsetY] = useState(31.0);
+  const [topScale, setTopScale] = useState(0.96);
+  const [bottomOffsetY, setBottomOffsetY] = useState(67.0);
+  const [bottomScale, setBottomScale] = useState(1.00);
+  const [outerOffsetY, setOuterOffsetY] = useState(44.5);
+  const [outerScale, setOuterScale] = useState(1.00);
+  const [shoesOffsetY, setShoesOffsetY] = useState(92.0);
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
-  const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(true);
+  const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(false);
   const [outerVoidWidthPercent, setOuterVoidWidthPercent] = useState(24);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
 
@@ -134,8 +134,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   // Auto-Snap Waistline: Seamless overlap between topwear and pants
   useEffect(() => {
     // If outerwear is present, t-shirt fits snugly inside coat collar & lapels
-    setTopOffsetY(outerItem ? 33.5 : 36.0);
-    setTopScale(outerItem ? 0.90 : 0.92);
+    setTopOffsetY(outerItem ? 31.0 : 32.5);
+    setTopScale(outerItem ? 0.94 : 0.96);
   }, [topItem?.id, !!outerItem]);
 
   useEffect(() => {
@@ -143,8 +143,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       bottomItem?.title?.includes('کراپ') ||
       bottomItem?.title?.toLowerCase().includes('crop');
 
-    setBottomOffsetY(isCropped ? 64.0 : 69.0);
-    setBottomScale(isCropped ? 1.00 : 1.04);
+    setBottomOffsetY(isCropped ? 65.5 : 67.0);
+    setBottomScale(1.00);
   }, [bottomItem?.id, bottomItem?.title]);
 
   useEffect(() => {
@@ -155,20 +155,20 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       outerItem?.title?.toLowerCase().includes('coat') ||
       outerItem?.title?.toLowerCase().includes('trench');
 
-    setOuterOffsetY(isLongCoat ? 37.0 : 34.0);
-    setOuterScale(isLongCoat ? 1.04 : 1.02);
+    setOuterOffsetY(isLongCoat ? 44.5 : 31.5);
+    setOuterScale(1.00);
 
-    // Auto-harmonize layering behavior: trim inner sleeves and reveal chest void
+    // Auto-harmonize layering behavior: trim inner sleeves
     if (outerItem) {
       setIsSleeveTrimActive(true);
       setSleeveTrimPercent(18);
-      setIsOuterVoidMaskActive(true);
+      setIsOuterVoidMaskActive(false);
       setOuterVoidWidthPercent(24);
     }
   }, [outerItem?.id, outerItem?.title, outerItem?.category]);
 
   useEffect(() => {
-    setShoesOffsetY(88.0);
+    setShoesOffsetY(92.0);
     setShoesScale(0.90);
   }, [shoesItem?.id]);
 
@@ -304,9 +304,24 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               : topOffsetY;
 
             const yPos = (effectiveY / 100) * 1420;
-            const baseW = garment.slot === 'slot_bottom' ? 590 : garment.slot === 'slot_shoes' ? 500 : garment.slot === 'slot_outer' ? 620 : 500;
-            const w = baseW * slotScale;
-            const h = baseW * slotScale;
+            const stageH = 1420;
+            const isLongCoat = garment.category === 'coat' || garment.title?.includes('پالتو') || garment.title?.includes('بارانی') || garment.title?.toLowerCase().includes('coat');
+            
+            let slotH = stageH * 0.28;
+            let slotW = 590;
+            if (garment.slot === 'slot_bottom') {
+              slotH = stageH * 0.51;
+              slotW = 570;
+            } else if (garment.slot === 'slot_shoes') {
+              slotH = stageH * 0.12;
+              slotW = 530;
+            } else if (garment.slot === 'slot_outer') {
+              slotH = isLongCoat ? stageH * 0.62 : stageH * 0.36;
+              slotW = 760;
+            }
+
+            const w = slotW * slotScale;
+            const h = slotH * slotScale;
             const xPos = 512 - w / 2;
 
             if (garment.slot === 'slot_outer' && isOuterVoidMaskActive) {
@@ -633,17 +648,17 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               onClick={() => {
                 const isCrop = bottomItem?.title?.includes('کراپ') || bottomItem?.title?.toLowerCase().includes('crop');
                 const isCoat = outerItem?.category === 'coat' || outerItem?.title?.includes('پالتو') || outerItem?.title?.includes('بارانی') || outerItem?.title?.toLowerCase().includes('coat');
-                setTopOffsetY(outerItem ? 33.5 : 36.0);
-                setTopScale(outerItem ? 0.90 : 0.92);
-                setBottomOffsetY(isCrop ? 64.0 : 69.0);
-                setBottomScale(isCrop ? 1.00 : 1.04);
-                setOuterOffsetY(isCoat ? 37.0 : 34.0);
-                setOuterScale(isCoat ? 1.04 : 1.02);
-                setShoesOffsetY(88.0);
+                setTopOffsetY(outerItem ? 31.0 : 32.5);
+                setTopScale(outerItem ? 0.94 : 0.96);
+                setBottomOffsetY(isCrop ? 65.5 : 67.0);
+                setBottomScale(1.00);
+                setOuterOffsetY(isCoat ? 44.5 : 31.5);
+                setOuterScale(1.00);
+                setShoesOffsetY(92.0);
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(18);
-                setIsOuterVoidMaskActive(true);
+                setIsOuterVoidMaskActive(false);
                 setOuterVoidWidthPercent(24);
                 setHasLayeredCollar(false);
               }}
@@ -667,8 +682,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
                   <input
                     type="range"
-                    min="26"
-                    max="46"
+                    min="20"
+                    max="44"
                     step="0.5"
                     value={topOffsetY}
                     onChange={(e) => setTopOffsetY(Number(e.target.value))}
@@ -704,7 +719,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <input
                     type="range"
                     min="55"
-                    max="75"
+                    max="78"
                     step="0.5"
                     value={bottomOffsetY}
                     onChange={(e) => setBottomOffsetY(Number(e.target.value))}
@@ -739,8 +754,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
                   <input
                     type="range"
-                    min="25"
-                    max="45"
+                    min="24"
+                    max="55"
                     step="0.5"
                     value={outerOffsetY}
                     onChange={(e) => setOuterOffsetY(Number(e.target.value))}
@@ -1219,13 +1234,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 22,
                 transform: `translate(-50%, -50%) translateZ(22px) scale(${shoesScale})`,
               }}
-              className="absolute left-1/2 w-[54%] sm:w-[56%] aspect-[1.15/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.32)]"
+              className="absolute left-1/2 w-[52%] sm:w-[54%] h-[12%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.32)]"
             >
               <MannequinGarmentImage
                 src={shoesItem.imageUrl}
                 alt={shoesItem.title}
                 slot="slot_shoes"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain object-bottom"
               />
               {/* Floor Contact Ground Shadow */}
               <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-[85%] h-5 bg-black/45 blur-md rounded-full pointer-events-none" />
@@ -1243,34 +1258,31 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
           {/* ======================================================== */}
           {/* 3.4 BOTTOMWEAR / PANTS (Z-Index: 20 or 35 if Tucked)     */}
           {/* ======================================================== */}
-          {bottomItem && (() => {
-            const isCrop = bottomItem.title?.includes('کراپ') || bottomItem.title?.toLowerCase().includes('crop');
-            return (
-              <div
-                style={{
-                  top: `${bottomOffsetY}%`,
-                  zIndex: tuckMode === 'tucked' ? 35 : 20,
-                  transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
-                }}
-                className={`absolute left-1/2 w-[62%] sm:w-[65%] ${isCrop ? 'aspect-[3/4.4]' : 'aspect-[3/4.8]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]`}
+          {bottomItem && (
+            <div
+              style={{
+                top: `${bottomOffsetY}%`,
+                zIndex: tuckMode === 'tucked' ? 35 : 20,
+                transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
+              }}
+              className="absolute left-1/2 w-[56%] sm:w-[58%] h-[51%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_18px_26px_rgba(0,0,0,0.30)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
+            >
+              <MannequinGarmentImage
+                src={bottomItem.imageUrl}
+                alt={bottomItem.title}
+                slot="slot_bottom"
+                className="w-full h-full object-contain object-top"
+              />
+              <button
+                type="button"
+                onClick={() => onRemoveSlot('slot_bottom')}
+                className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
+                title="حذف شلوار از ست"
               >
-                <MannequinGarmentImage
-                  src={bottomItem.imageUrl}
-                  alt={bottomItem.title}
-                  slot="slot_bottom"
-                  className="w-full h-full object-contain"
-                />
-                <button
-                  type="button"
-                  onClick={() => onRemoveSlot('slot_bottom')}
-                  className="absolute top-4 -right-2 w-6 h-6 rounded-full bg-white border border-rose-300 text-rose-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-md cursor-pointer z-40"
-                  title="حذف شلوار از ست"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            );
-          })()}
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
 
           {/* ======================================================== */}
           {/* 3.5 TOPWEAR / T-SHIRT (Z-Index: 30 or 25 if Tucked)      */}
@@ -1287,13 +1299,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                 transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
-              className="absolute left-1/2 w-[60%] sm:w-[62%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
+              className="absolute left-1/2 w-[58%] sm:w-[60%] h-[28%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
                 alt={topItem.title}
                 slot="slot_top"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain object-center"
               />
               {/* Natural Ambient Occlusion shadow from open outerwear lapels onto inner t-shirt */}
               {outerItem && (
@@ -1332,13 +1344,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                   transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
                 }}
-                className={`absolute left-1/2 w-[82%] sm:w-[84%] ${isLongCoat ? 'aspect-[3/3.9]' : 'aspect-[3/3.3]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]`}
+                className={`absolute left-1/2 w-[76%] sm:w-[78%] ${isLongCoat ? 'h-[62%]' : 'h-[36%]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]`}
               >
                 <MannequinGarmentImage
                   src={outerItem.imageUrl}
                   alt={outerItem.title}
                   slot="slot_outer"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain object-top"
                 />
                 <button
                   type="button"
