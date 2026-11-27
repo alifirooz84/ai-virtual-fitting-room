@@ -24492,24 +24492,26 @@ Autonomously identify the garment in the photo:
 
 [STEP 2: PHOTOGRAPHIC RENDERING RULES PER CLASSIFIED CATEGORY]
 
-CASE A: IF OUTERWEAR (Coat, Jacket, Windbreaker, Cardigan, Blazer):
+CASE A: IF OUTERWEAR (Coat, Overcoat, Trench, Jacket, Windbreaker, Cardigan, Blazer, Puffer):
 - CONTINUOUS INTACT COLLAR: The high neck collar and shoulder yoke MUST BE 100% INTACT, seamless, and wrapped continuously behind the invisible ghost neck (NEVER sever, split, or disconnect the collar).
-- WIDE-OPEN DRAPE: The garment is completely UNZIPPED and UNBUTTONED, draped wide open to the sides in a natural 35-degree winged angle from the collarbone down to the hem, revealing a generous 40% chest-to-waist open gap.
+- WIDE-OPEN DRAPE: The garment is completely UNZIPPED and UNBUTTONED, draped wide open to the sides in a natural 35-degree winged angle from the collarbone down to the hem, revealing a generous 35% chest-to-waist open gap (centered between X: 330px and X: 690px).
 - MANDATORY HOLLOW CHEST VOID: The central gap between the open front panels MUST be a 100% EMPTY, HOLLOW, SEE-THROUGH VOID revealing ONLY the pure seamless solid white studio background behind it. STRICT PROHIBITION: ZERO inner back fabric, ZERO yellow or colored lining, ZERO interior back wall, and ZERO cloth filling the chest gap so an underlying t-shirt can be worn beneath it.
-- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally envelops any inner top).
+- BROAD TAILORED SHOULDERS: Shoulder seam width strictly occupies 74% to 76% of canvas width (X: 130px to 890px, perfectly centered at X: 512px).
+- COLLAR & LENGTH ANCHORS: Collar starts at Y: 6% (60px); long coats terminate at Y: 76% (780px); short jackets/puffers terminate at Y: 50% (510px).
 
-CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt):
+CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
 - Centered on an invisible 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and brand label.
-- Torso width strictly occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
-- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at waistband line, 100% level and horizontal).
+- Torso width strictly occupies 60% of canvas width (X: 205px to 819px, centered at X: 512px) to sit harmoniously inside the 76% outerwear without sticking out.
+- COLLAR & HEM ANCHORS: Collar top starts at Y: 10% (102px); chest graphic centers around Y: 24% to 32%; bottom hem terminates strictly at Y: 52% (530px), 100% level and horizontal, matching the waistline anchor.
 
-CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants):
-- Waistband starts at 12% from top canvas border (strictly 100% horizontal, 0\xB0 slope).
-- Waistband width: 46% of canvas; hips/thighs: 56% of canvas; leg cuffs terminate at 92% canvas height with identical bilateral symmetry.
+CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
+- Waistband starts at Y: 6% (60px) from top canvas border (strictly 100% level and horizontal, 0\xB0 slope).
+- Waistband width: 47% of canvas (X: 270px to 750px, centered at X: 512px); hips/thighs width: 56% of canvas.
+- LEG CUFF ANCHORS: Full-length pants cuffs terminate at Y: 94% (960px); cropped pants cuffs terminate at Y: 80% (820px) with identical bilateral symmetry.
 
 CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
 - Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
-- Soles rest at 88% from top canvas border; pair occupies 56% of canvas width with soft contact shadow underneath.
+- Soles rest at Y: 88% (900px) from top canvas border; pair occupies 56% to 58% of canvas width with soft contact ground shadow underneath.
 
 GLOBAL MANDATORY CAMERA & LIGHTING (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).

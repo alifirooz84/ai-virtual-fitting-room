@@ -423,42 +423,42 @@ export function normalizeGarmentScaleAndPosition(
   let targetY: number;
 
   if (slot === 'slot_bottom') {
-    targetH = Math.round(targetSize * 0.84);
+    targetH = Math.round(targetSize * 0.88);
     targetW = Math.round(targetH * aspect);
     targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.08);
+    targetY = Math.round(targetSize * 0.06);
   } else if (slot === 'slot_shoes') {
     targetW = Math.round(targetSize * 0.58);
     targetH = Math.round(targetW / aspect);
     targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round((targetSize - targetH) / 2);
+    targetY = Math.round(targetSize * 0.76);
   } else if (slot === 'slot_outer') {
     const isLongCoat = box.height / box.width > 1.22;
     if (isLongCoat) {
-      targetH = Math.round(targetSize * 0.74);
+      targetH = Math.round(targetSize * 0.78);
       targetW = Math.round(targetH * aspect);
       targetX = Math.round((targetSize - targetW) / 2);
-      targetY = Math.round(targetSize * 0.10);
+      targetY = Math.round(targetSize * 0.06);
     } else {
-      targetW = Math.round(targetSize * 0.72);
+      targetW = Math.round(targetSize * 0.74);
       targetH = Math.round(targetW / aspect);
-      if (targetH > targetSize * 0.58) {
-        targetH = Math.round(targetSize * 0.58);
+      if (targetH > targetSize * 0.60) {
+        targetH = Math.round(targetSize * 0.60);
         targetW = Math.round(targetH * aspect);
       }
       targetX = Math.round((targetSize - targetW) / 2);
-      targetY = Math.round(targetSize * 0.12);
+      targetY = Math.round(targetSize * 0.08);
     }
   } else {
     // slot_top
-    targetW = Math.round(targetSize * 0.62);
+    targetW = Math.round(targetSize * 0.60);
     targetH = Math.round(targetW / aspect);
-    if (targetH > targetSize * 0.62) {
-      targetH = Math.round(targetSize * 0.62);
+    if (targetH > targetSize * 0.58) {
+      targetH = Math.round(targetSize * 0.58);
       targetW = Math.round(targetH * aspect);
     }
     targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.12);
+    targetY = Math.round(targetSize * 0.10);
   }
 
   outCtx.drawImage(
