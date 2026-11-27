@@ -10,10 +10,10 @@
 export const transparencyCache = new Map<string, string>();
 
 export interface RemoveBackgroundOptions {
-  colorTolerance?: number; // Distance tolerance from average corner color (default: 28)
-  luminanceThreshold?: number; // Minimum brightness to consider background (default: 212)
-  saturationMax?: number; // Maximum color saturation difference (default: 30)
-  feather?: boolean; // Smooth 1px anti-aliased edge softening (default: true)
+  colorTolerance?: number; // Distance tolerance from average background color (default: 38)
+  luminanceThreshold?: number; // Minimum brightness to consider neutral studio background (default: 160)
+  saturationMax?: number; // Maximum color saturation difference (default: 35)
+  feather?: boolean; // Smooth anti-aliased edge softening (default: true)
   maxDimension?: number; // Max canvas dimension (default: 1024)
   normalizeScale?: boolean; // Automatically scales & centers garment into canonical fashion grid
   slot?: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string;
@@ -40,11 +40,12 @@ export function removeWhiteBackground(
     img.onload = () => {
       try {
         const {
-          colorTolerance = 28,
-          luminanceThreshold = 212,
-          saturationMax = 30,
+          colorTolerance = 38,
+          luminanceThreshold = 160,
+          saturationMax = 35,
           feather = true,
           maxDimension = 1024,
+          slot = '',
         } = options;
 
         let w = img.width;
@@ -73,57 +74,85 @@ export function removeWhiteBackground(
         const imgData = ctx.getImageData(0, 0, w, h);
         const data = imgData.data;
 
-        // 1. Inspect corner pixels: (0,0), (w-1,0), (0,h-1), (w-1,h-1)
-        const corners = [
-          0,
-          (w - 1) * 4,
-          ((h - 1) * w) * 4,
-          ((h - 1) * w + (w - 1)) * 4,
-        ];
-
-        let transparentCornerCount = 0;
-        let whiteCornerCount = 0;
+        // 1. Multi-Sample Perimeter Border Inspection
+        // Sample corners (5x5 zones) and border samples to adaptively identify studio backdrops (white or light grey)
+        let transparentBorderCount = 0;
+        let borderSampleCount = 0;
+        let neutralBorderCount = 0;
         let rSum = 0;
         let gSum = 0;
         let bSum = 0;
 
-        for (const idx of corners) {
+        const samplePixel = (px: number, py: number) => {
+          if (px < 0 || px >= w || py < 0 || py >= h) return;
+          const idx = (py * w + px) * 4;
           const a = data[idx + 3];
-          if (a < 15) {
-            transparentCornerCount++;
+          borderSampleCount++;
+          if (a < 20) {
+            transparentBorderCount++;
           } else {
             const r = data[idx];
             const g = data[idx + 1];
             const b = data[idx + 2];
             const satDiff = Math.max(r, g, b) - Math.min(r, g, b);
-            if (r >= luminanceThreshold && g >= luminanceThreshold && b >= luminanceThreshold && satDiff <= saturationMax) {
-              whiteCornerCount++;
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+            if (lum >= luminanceThreshold && satDiff <= saturationMax) {
+              neutralBorderCount++;
               rSum += r;
               gSum += g;
               bSum += b;
             }
           }
+        };
+
+        // Sample 5x5 corner zones
+        for (let dy = 0; dy < 5; dy++) {
+          for (let dx = 0; dx < 5; dx++) {
+            samplePixel(dx, dy); // Top-Left
+            samplePixel(w - 1 - dx, dy); // Top-Right
+            samplePixel(dx, h - 1 - dy); // Bottom-Left
+            samplePixel(w - 1 - dx, h - 1 - dy); // Bottom-Right
+          }
         }
 
-        // Case A: Image already has transparent alpha corners -> clean PNG, do not modify
-        if (transparentCornerCount >= 2 && whiteCornerCount === 0) {
-          transparencyCache.set(imageSource, imageSource);
-          return resolve(imageSource);
+        // Sample outer perimeter edges every 8 pixels
+        for (let x = 5; x < w - 5; x += 8) {
+          samplePixel(x, 0);
+          samplePixel(x, h - 1);
+        }
+        for (let y = 5; y < h - 5; y += 8) {
+          samplePixel(0, y);
+          samplePixel(w - 1, y);
         }
 
-        // Case B: No white/light corners detected -> Not a white box image, preserve as is
-        if (whiteCornerCount < 2) {
-          transparencyCache.set(imageSource, imageSource);
-          return resolve(imageSource);
+        // If borders are already > 75% transparent alpha, image is already cleanly cut out!
+        const isAlreadyTransparent = transparentBorderCount > borderSampleCount * 0.75;
+        if (isAlreadyTransparent && neutralBorderCount === 0) {
+          let finalCanvas: HTMLCanvasElement = canvas;
+          if (options.normalizeScale) {
+            finalCanvas = normalizeGarmentScaleAndPosition(canvas, options.slot);
+          }
+          const res = finalCanvas.toDataURL('image/png');
+          transparencyCache.set(imageSource, res);
+          return resolve(res);
         }
 
-        // Target background reference color (average of white corners)
-        const targetR = rSum / whiteCornerCount;
-        const targetG = gSum / whiteCornerCount;
-        const targetB = bSum / whiteCornerCount;
+        // Calculate target backdrop reference color (average of neutral border pixels)
+        let targetR = 248;
+        let targetG = 248;
+        let targetB = 248;
+        let effectiveLumThreshold = luminanceThreshold;
+
+        if (neutralBorderCount > 4) {
+          targetR = rSum / neutralBorderCount;
+          targetG = gSum / neutralBorderCount;
+          targetB = bSum / neutralBorderCount;
+          const avgLum = 0.299 * targetR + 0.587 * targetG + 0.114 * targetB;
+          // Dynamically adapt threshold to accommodate studio cycloramas down to light grey
+          effectiveLumThreshold = Math.max(140, Math.floor(avgLum - colorTolerance - 10));
+        }
 
         // 2. BFS Flood-Fill from image boundaries inwards
-        // Only contiguous border pixels matching white background are keyed out
         const totalPixels = w * h;
         const visited = new Uint8Array(totalPixels);
         const queue = new Int32Array(totalPixels);
@@ -138,14 +167,11 @@ export function removeWhiteBackground(
           const g = data[pIdx + 1];
           const b = data[pIdx + 2];
 
-          // Check brightness and low saturation
-          if (r < luminanceThreshold || g < luminanceThreshold || b < luminanceThreshold) {
-            return false;
-          }
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum < effectiveLumThreshold) return false;
+
           const satDiff = Math.max(r, g, b) - Math.min(r, g, b);
-          if (satDiff > saturationMax) {
-            return false;
-          }
+          if (satDiff > saturationMax) return false;
 
           const dr = Math.abs(r - targetR);
           const dg = Math.abs(g - targetG);
@@ -182,6 +208,24 @@ export function removeWhiteBackground(
           }
         }
 
+        // Hollow Chest Void Auto-Seeding (for open outerwear / coats / jackets)
+        // Eliminates ghost mannequin white/grey neck or un-keyed background between lapels
+        if (slot === 'slot_outer' || slot === 'slot_outerwear') {
+          const midXMin = Math.floor(w * 0.40);
+          const midXMax = Math.floor(w * 0.60);
+          const midYMin = Math.floor(h * 0.08);
+          const midYMax = Math.floor(h * 0.32);
+          for (let y = midYMin; y <= midYMax; y += 4) {
+            for (let x = midXMin; x <= midXMax; x += 4) {
+              const p = y * w + x;
+              if (!visited[p] && isMatchingBg(p * 4)) {
+                visited[p] = 1;
+                queue[tail++] = p;
+              }
+            }
+          }
+        }
+
         // Execute BFS queue
         while (head < tail) {
           const curr = queue[head++];
@@ -189,7 +233,6 @@ export function removeWhiteBackground(
           const cy = Math.floor(curr / w);
 
           // 4-directional expansion
-          // Right
           if (cx + 1 < w) {
             const next = curr + 1;
             if (!visited[next] && isMatchingBg(next * 4)) {
@@ -197,7 +240,6 @@ export function removeWhiteBackground(
               queue[tail++] = next;
             }
           }
-          // Left
           if (cx - 1 >= 0) {
             const next = curr - 1;
             if (!visited[next] && isMatchingBg(next * 4)) {
@@ -205,7 +247,6 @@ export function removeWhiteBackground(
               queue[tail++] = next;
             }
           }
-          // Down
           if (cy + 1 < h) {
             const next = curr + w;
             if (!visited[next] && isMatchingBg(next * 4)) {
@@ -213,7 +254,6 @@ export function removeWhiteBackground(
               queue[tail++] = next;
             }
           }
-          // Up
           if (cy - 1 >= 0) {
             const next = curr - w;
             if (!visited[next] && isMatchingBg(next * 4)) {
@@ -249,9 +289,8 @@ export function removeWhiteBackground(
                 const g = data[pIdx + 1];
                 const b = data[pIdx + 2];
                 const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-                // If it's a light fringe pixel, soften alpha smoothly
-                if (lum > 200) {
-                  const factor = Math.max(0, Math.min(1, (248 - lum) / 48));
+                if (lum > 175) {
+                  const factor = Math.max(0, Math.min(1, (245 - lum) / 70));
                   data[pIdx + 3] = Math.round(data[pIdx + 3] * factor);
                 }
               }
@@ -261,15 +300,15 @@ export function removeWhiteBackground(
 
         ctx.putImageData(imgData, 0, 0);
 
-        // Optional Bounding-Box Normalization into canonical 1024x1024 fashion grid
+        // Optional Bounding-Box Normalization into canonical fashion grid
         let finalCanvas: HTMLCanvasElement = canvas;
         if (options.normalizeScale) {
           finalCanvas = normalizeGarmentScaleAndPosition(canvas, options.slot);
         }
 
-        // Convert to lightweight WebP with full alpha transparency support
+        // Convert to lightweight WebP or PNG with full alpha transparency
         try {
-          const webpData = finalCanvas.toDataURL('image/webp', 0.9);
+          const webpData = finalCanvas.toDataURL('image/webp', 0.92);
           if (webpData && webpData.startsWith('data:image/webp')) {
             transparencyCache.set(imageSource, webpData);
             return resolve(webpData);
@@ -374,30 +413,38 @@ export function normalizeGarmentScaleAndPosition(
   let targetY: number;
 
   if (slot === 'slot_bottom') {
-    targetH = Math.round(targetSize * 0.86);
+    targetH = Math.round(targetSize * 0.80);
     targetW = Math.round(targetH * aspect);
     targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.08);
+    targetY = Math.round(targetSize * 0.10);
   } else if (slot === 'slot_shoes') {
-    targetW = Math.round(targetSize * 0.62);
+    targetW = Math.round(targetSize * 0.58);
     targetH = Math.round(targetW / aspect);
     targetX = Math.round((targetSize - targetW) / 2);
     targetY = Math.round((targetSize - targetH) / 2);
   } else if (slot === 'slot_outer') {
-    targetW = Math.round(targetSize * 0.74);
-    targetH = Math.round(targetW / aspect);
-    if (targetH > targetSize * 0.70) {
-      targetH = Math.round(targetSize * 0.70);
+    const isLongCoat = box.height / box.width > 1.22;
+    if (isLongCoat) {
+      targetH = Math.round(targetSize * 0.74);
       targetW = Math.round(targetH * aspect);
+      targetX = Math.round((targetSize - targetW) / 2);
+      targetY = Math.round(targetSize * 0.10);
+    } else {
+      targetW = Math.round(targetSize * 0.72);
+      targetH = Math.round(targetW / aspect);
+      if (targetH > targetSize * 0.58) {
+        targetH = Math.round(targetSize * 0.58);
+        targetW = Math.round(targetH * aspect);
+      }
+      targetX = Math.round((targetSize - targetW) / 2);
+      targetY = Math.round(targetSize * 0.12);
     }
-    targetX = Math.round((targetSize - targetW) / 2);
-    targetY = Math.round(targetSize * 0.12);
   } else {
     // slot_top
-    targetW = Math.round(targetSize * 0.70);
+    targetW = Math.round(targetSize * 0.62);
     targetH = Math.round(targetW / aspect);
-    if (targetH > targetSize * 0.68) {
-      targetH = Math.round(targetSize * 0.68);
+    if (targetH > targetSize * 0.62) {
+      targetH = Math.round(targetSize * 0.62);
       targetW = Math.round(targetH * aspect);
     }
     targetX = Math.round((targetSize - targetW) / 2);

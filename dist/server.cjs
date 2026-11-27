@@ -24494,25 +24494,25 @@ EXECUTION RULES PER CLASSIFIED CATEGORY:
 
 CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber):
 - The garment MUST be completely UNBUTTONED and WIDE OPEN in the front, hanging symmetrically straight down.
-- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 84% of canvas width (broader than any inner t-shirt).
+- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally wraps over any inner t-shirt).
 - MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
 - STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the chest gap.
-- Top collar starts at 8% from top canvas border; bottom hem terminates at 88% (long coat) or 74% (jacket).
+- Top collar starts at 10% from top canvas border; bottom hem terminates at 74% (long coat) or 56% (jacket) so pants legs remain clearly visible.
 
 CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
 - Centered 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and label.
-- Torso width occupies 64% of canvas width (perfect proportion to sit inside the 84% outerwear without sticking out).
-- Collar starts at 10% from top canvas border; bottom hem terminates at 68% from top border.
+- Torso width occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
+- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at the waistband line).
 - Bottom hem is strictly 100% horizontal and level with the ground plane (0\xB0 slope).
 
 CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
-- Waistband starts at exactly 10% from top canvas border and is strictly 100% horizontal and level (0\xB0 slope).
-- Waistband width occupies 48% of canvas width; hip and thigh width occupies 58% of canvas width.
+- Waistband starts at exactly 12% from top canvas border and is strictly 100% horizontal and level (0\xB0 slope).
+- Waistband width occupies 46% of canvas width; hip and thigh width occupies 56% of canvas width.
 - Leg cuffs terminate at 92% from top canvas border, hanging straight and level with identical bilateral symmetry.
 
 CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
 - Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
-- Soles rest at 88% from top canvas border; pair occupies 66% of canvas width with soft contact shadow underneath.
+- Soles rest at 88% from top canvas border; pair occupies 56% of canvas width with soft contact shadow underneath.
 
 GLOBAL MANDATORY RULES (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
@@ -24579,20 +24579,20 @@ var AI_COMPANION_SPEC_PROMPT_FA = `
 \u0642\u0648\u0627\u0646\u06CC\u0646 \u06A9\u0627\u0644\u06CC\u0628\u0631\u0627\u0633\u06CC\u0648\u0646 \u0648 \u062A\u0646\u0627\u0633\u0628\u0627\u062A \u0637\u0644\u0627\u06CC\u06CC \u0628\u0631\u0627\u06CC \u0647\u0631 \u062F\u0633\u062A\u0647:
 \u06F1. \u0627\u06AF\u0631 \u0644\u0628\u0627\u0633\u200C\u0631\u0648 (\u067E\u0627\u0644\u062A\u0648\u060C \u06A9\u062A\u060C \u06A9\u0627\u067E\u0634\u0646) \u0627\u0633\u062A:
    - "slot": "slot_outer" | "layer_level": "outerwear"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 32, "scale": 1.24, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 37, "scale": 1.02, "z_index": 40 }
    - "layering_behavior": { "is_open_front": true, "reveals_inner_top": true, "inner_top_sleeve_trim_percent": 8 }
 
 \u06F2. \u0627\u06AF\u0631 \u0628\u0627\u0644\u0627\u062A\u0646\u0647 (\u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u0647\u0648\u062F\u06CC\u060C \u067E\u06CC\u0631\u0627\u0647\u0646\u060C \u062F\u0648\u0631\u0633) \u0627\u0633\u062A:
    - "slot": "slot_top" | "layer_level": "mid_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 35, "scale": 0.90, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 36.5, "scale": 0.92, "z_index": 30 }
 
 \u06F3. \u0627\u06AF\u0631 \u067E\u0627\u06CC\u06CC\u0646\u200C\u062A\u0646\u0647 (\u0634\u0644\u0648\u0627\u0631 \u062C\u06CC\u0646\u060C \u06A9\u062A\u0627\u0646\u060C \u0627\u0633\u0644\u0634\u060C \u0628\u06AF\u060C \u06A9\u0627\u0631\u06AF\u0648) \u0627\u0633\u062A:
    - "slot": "slot_bottom" | "layer_level": "bottom"
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 58.5, "scale": 1.15, "z_index": 20 }
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
 
 \u06F4. \u0627\u06AF\u0631 \u06A9\u0641\u0634 \u06CC\u0627 \u06A9\u062A\u0627\u0646\u06CC \u0627\u0633\u062A:
    - "slot": "slot_shoes" | "layer_level": "shoes"
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 90.5, "scale": 0.95, "z_index": 22 }
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 86.5, "scale": 0.90, "z_index": 22 }
 
 \u0633\u0627\u062E\u062A\u0627\u0631 \u062E\u0631\u0648\u062C\u06CC JSON \u06A9\u0647 \u0628\u0627\u06CC\u062F \u0628\u0627\u0632\u06AF\u0631\u062F\u0627\u0646\u06CC\u062F:
 \`\`\`json
@@ -24978,14 +24978,14 @@ var INITIAL_PRODUCTS = [
     category: "tshirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.whiteCrewTee,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-TSH-001",
       name_fa: "\u062A\u06CC\u200C\u0634\u0631\u062A \u0646\u062E\u06CC \u0628\u06CC\u0633\u06CC\u06A9 \u0633\u0641\u06CC\u062F",
       name_en: "Basic Cotton Crewneck White Tee",
       slot: "slot_top",
       category: "tshirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
       style_details: { primary_color_fa: "\u0633\u0641\u06CC\u062F \u0635\u062F\u0641\u06CC", primary_color_en: "Optic White", color_hex: "#ffffff", fabric_type: "\u06F1\u06F0\u06F0\u066A \u0646\u062E \u067E\u0646\u0628\u0647 \u0627\u0631\u06AF\u0627\u0646\u06CC\u06A9", estimated_price_toman: 68e4 }
     }),
     createdAt: "2026-01-11T12:00:00Z"
@@ -25020,14 +25020,14 @@ var INITIAL_PRODUCTS = [
     category: "jacket",
     slot: "slot_outer",
     imageUrl: SVG_ASSETS.blackDenimJacket,
-    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
+    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 34, scale: 1, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-JKT-003",
       name_fa: "\u06A9\u062A \u062F\u0646\u06CC\u0645 \u0633\u0646\u06AF\u0634\u0648\u0631 \u0645\u0634\u06A9\u06CC",
       name_en: "Washed Black Denim Trucker Jacket",
       slot: "slot_outer",
       category: "jacket",
-      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
+      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 34, scale: 1, z_index: 40 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0632\u063A\u0627\u0644\u06CC", primary_color_en: "Washed Charcoal", color_hex: "#1f2937", fabric_type: "\u062C\u06CC\u0646 \u0633\u0646\u06AF\u0634\u0648\u0631 \u0636\u062E\u06CC\u0645", estimated_price_toman: 215e4 }
     }),
     createdAt: "2026-01-11T12:10:00Z"
@@ -25041,14 +25041,14 @@ var INITIAL_PRODUCTS = [
     category: "shoes",
     slot: "slot_shoes",
     imageUrl: realSneakersUrl,
-    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
+    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 86.5, scale: 0.9, z_index: 22 },
     spec: normalizeGarmentAiSpec({
       garment_id: "ZAR-SHS-004",
       name_fa: "\u06A9\u062A\u0627\u0646\u06CC \u0644\u0698\u062F\u0627\u0631 \u0686\u0631\u0645 \u0633\u0641\u06CC\u062F",
       name_en: "White Platform Minimalist Leather Sneakers",
       slot: "slot_shoes",
       category: "shoes",
-      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 91, scale: 0.95, z_index: 22 },
+      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 86.5, scale: 0.9, z_index: 22 },
       style_details: { primary_color_fa: "\u0633\u0641\u06CC\u062F \u062E\u0627\u0644\u0635", primary_color_en: "Pure White", color_hex: "#f8fafc", fabric_type: "\u0686\u0631\u0645 \u0645\u0635\u0646\u0648\u0639\u06CC \u0648 \u06A9\u0641\u06CC EVA", estimated_price_toman: 185e4 }
     }),
     createdAt: "2026-01-11T12:15:00Z"
@@ -25063,14 +25063,14 @@ var INITIAL_PRODUCTS = [
     category: "tshirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.blackOversizedTee,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "HRJ-TSH-010",
       name_fa: "\u062A\u06CC\u200C\u0634\u0631\u062A \u0644\u0634 \u0627\u0648\u0631\u0633\u0627\u06CC\u0632 \u0645\u0634\u06A9\u06CC \u0645\u0627\u062A",
       name_en: "Boxy Heavyweight Matte Black Tee",
       slot: "slot_top",
       category: "tshirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0645\u0627\u062A", primary_color_en: "Matte Black", color_hex: "#18181b", fabric_type: "\u0646\u062E \u06F2\u06F8\u06F0 \u06AF\u0631\u0645\u06CC \u067E\u0646\u0628\u0647", estimated_price_toman: 79e4 }
     }),
     createdAt: "2026-02-16T10:00:00Z"
@@ -25106,14 +25106,14 @@ var INITIAL_PRODUCTS = [
     category: "shirt",
     slot: "slot_top",
     imageUrl: SVG_ASSETS.blueOxfordShirt,
-    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+    placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-SHR-020",
       name_fa: "\u067E\u06CC\u0631\u0627\u0647\u0646 \u0631\u0633\u0645\u06CC \u0622\u06A9\u0633\u0641\u0648\u0631\u062F \u0622\u0628\u06CC \u0622\u0633\u0645\u0627\u0646\u06CC",
       name_en: "Classic Sky Blue Two-Ply Oxford Shirt",
       slot: "slot_top",
       category: "shirt",
-      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 30, scale: 1, z_index: 30 },
+      placement: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 36.5, scale: 0.92, z_index: 30 },
       style_details: { primary_color_fa: "\u0622\u0628\u06CC \u0631\u0648\u0634\u0646", primary_color_en: "Sky Blue", color_hex: "#60a5fa", fabric_type: "\u0622\u06A9\u0633\u0641\u0648\u0631\u062F \u062F\u0648\u0644\u0627\u06CC \u067E\u0646\u0628\u0647 \u0645\u0635\u0631\u06CC", estimated_price_toman: 125e4 }
     }),
     createdAt: "2026-03-02T09:00:00Z"
@@ -25148,14 +25148,14 @@ var INITIAL_PRODUCTS = [
     category: "coat",
     slot: "slot_outer",
     imageUrl: SVG_ASSETS.camelOvercoat,
-    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
+    placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 37, scale: 1.02, z_index: 40 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-COT-022",
       name_fa: "\u067E\u0627\u0644\u062A\u0648 \u067E\u0634\u0645\u06CC \u0634\u062A\u0631\u06CC \u06A9\u0644\u0627\u0633\u06CC\u06A9",
       name_en: "Classic Camel Wool Hand-Tailored Overcoat",
       slot: "slot_outer",
       category: "coat",
-      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 30, scale: 1.05, z_index: 40 },
+      placement: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 37, scale: 1.02, z_index: 40 },
       style_details: { primary_color_fa: "\u0634\u062A\u0631\u06CC \u0627\u0639\u0644\u0627", primary_color_en: "Camel Tan", color_hex: "#9a6933", fabric_type: "\u067E\u0634\u0645 \u0648 \u06A9\u0634\u0645\u06CC\u0631 \u06F9\u06F0/\u06F1\u06F0", estimated_price_toman: 385e4 }
     }),
     createdAt: "2026-03-02T09:15:00Z"
@@ -25169,14 +25169,14 @@ var INITIAL_PRODUCTS = [
     category: "shoes",
     slot: "slot_shoes",
     imageUrl: SVG_ASSETS.blackLoafers,
-    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+    placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 86.5, scale: 0.9, z_index: 22 },
     spec: normalizeGarmentAiSpec({
       garment_id: "NLF-LFR-023",
       name_fa: "\u06A9\u0641\u0634 \u0644\u0648\u0641\u0631 \u0686\u0631\u0645 \u0637\u0628\u06CC\u0639\u06CC \u0645\u0634\u06A9\u06CC",
       name_en: "Handmade Black Calfskin Leather Loafers",
       slot: "slot_shoes",
       category: "shoes",
-      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 88, scale: 0.85, z_index: 10 },
+      placement: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 86.5, scale: 0.9, z_index: 22 },
       style_details: { primary_color_fa: "\u0645\u0634\u06A9\u06CC \u0628\u0631\u0627\u0642", primary_color_en: "Black Polish", color_hex: "#18181b", fabric_type: "\u0686\u0631\u0645 \u0637\u0628\u06CC\u0639\u06CC \u06AF\u0648\u0633\u0627\u0644\u0647 \u0648 \u0633\u06AF\u06A9 \u0627\u0633\u062A\u06CC\u0644", estimated_price_toman: 245e4 }
     }),
     createdAt: "2026-03-02T09:20:00Z"

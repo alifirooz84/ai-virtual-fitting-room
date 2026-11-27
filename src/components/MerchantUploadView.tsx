@@ -111,7 +111,13 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
       if (autoRemoveBg) {
         setIsProcessingBg(true);
         try {
-          const cleaned = await removeWhiteBackground(dataUrl);
+          const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
+          const cleaned = await removeWhiteBackground(dataUrl, {
+            colorTolerance: 38,
+            luminanceThreshold: 160,
+            normalizeScale: true,
+            slot: activeSlot,
+          });
           setImagePreview(cleaned);
         } catch {
           setImagePreview(dataUrl);
@@ -130,8 +136,8 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
     const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
     try {
       const cleaned = await removeWhiteBackground(imagePreview, {
-        colorTolerance: 35,
-        luminanceThreshold: 205,
+        colorTolerance: 38,
+        luminanceThreshold: 160,
         normalizeScale: true,
         slot: activeSlot,
       });
@@ -146,17 +152,17 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const applySlotSelection = (slot: GarmentSlot) => {
     setSelectedSlotManual(slot);
     if (slot === 'slot_bottom') {
-      setOffsetY(60);
-      setScale(1.20);
+      setOffsetY(64);
+      setScale(1.0);
     } else if (slot === 'slot_outer') {
-      setOffsetY(27);
-      setScale(0.92);
+      setOffsetY(37);
+      setScale(1.02);
     } else if (slot === 'slot_shoes') {
-      setOffsetY(84);
-      setScale(0.82);
+      setOffsetY(86.5);
+      setScale(0.90);
     } else {
-      setOffsetY(27);
-      setScale(0.85);
+      setOffsetY(36.5);
+      setScale(0.92);
     }
   };
 
@@ -169,7 +175,13 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         if (autoRemoveBg) {
           setIsProcessingBg(true);
           try {
-            const cleaned = await removeWhiteBackground(rawData);
+            const activeSlot = selectedSlotManual || parsedSpec?.slot || 'slot_top';
+            const cleaned = await removeWhiteBackground(rawData, {
+              colorTolerance: 38,
+              luminanceThreshold: 160,
+              normalizeScale: true,
+              slot: activeSlot,
+            });
             setImagePreview(cleaned);
           } catch {
             setImagePreview(rawData);

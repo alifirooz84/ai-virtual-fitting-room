@@ -27,20 +27,29 @@ interface MannequinGarmentImageProps {
   src: string;
   alt: string;
   className?: string;
+  slot?: 'slot_top' | 'slot_bottom' | 'slot_outer' | 'slot_shoes' | string;
 }
 
-const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt, className }) => {
+const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt, className, slot }) => {
   const resolved = resolveGarmentImageUrl(src);
-  const [cleanSrc, setCleanSrc] = useState<string>(() => transparencyCache.get(resolved) || resolved);
+  const cacheKey = slot ? `${resolved}_${slot}` : resolved;
+  const [cleanSrc, setCleanSrc] = useState<string>(() => transparencyCache.get(cacheKey) || resolved);
 
   useEffect(() => {
     let active = true;
     const targetUrl = resolveGarmentImageUrl(src);
     if (targetUrl && !targetUrl.startsWith('data:image/svg')) {
-      if (transparencyCache.has(targetUrl)) {
-        setCleanSrc(transparencyCache.get(targetUrl)!);
+      const key = slot ? `${targetUrl}_${slot}` : targetUrl;
+      if (transparencyCache.has(key)) {
+        setCleanSrc(transparencyCache.get(key)!);
       } else {
-        removeWhiteBackground(targetUrl).then((cleaned) => {
+        removeWhiteBackground(targetUrl, {
+          slot,
+          normalizeScale: true,
+          colorTolerance: 38,
+          luminanceThreshold: 160,
+        }).then((cleaned) => {
+          transparencyCache.set(key, cleaned);
           if (active) setCleanSrc(cleaned);
         });
       }
@@ -50,7 +59,7 @@ const MannequinGarmentImage: React.FC<MannequinGarmentImageProps> = ({ src, alt,
     return () => {
       active = false;
     };
-  }, [src]);
+  }, [src, slot]);
 
   return <img src={cleanSrc} alt={alt} className={className} crossOrigin="anonymous" />;
 };
@@ -83,14 +92,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Auto-Snap Waistline & Golden Proportion Defaults)
-  const [topOffsetY, setTopOffsetY] = useState(35);
-  const [topScale, setTopScale] = useState(0.90);
-  const [bottomOffsetY, setBottomOffsetY] = useState(58.5);
-  const [bottomScale, setBottomScale] = useState(1.15);
-  const [outerOffsetY, setOuterOffsetY] = useState(32);
-  const [outerScale, setOuterScale] = useState(1.24);
-  const [shoesOffsetY, setShoesOffsetY] = useState(90.5);
-  const [shoesScale, setShoesScale] = useState(0.95);
+  const [topOffsetY, setTopOffsetY] = useState(36.5);
+  const [topScale, setTopScale] = useState(0.92);
+  const [bottomOffsetY, setBottomOffsetY] = useState(64.0);
+  const [bottomScale, setBottomScale] = useState(1.0);
+  const [outerOffsetY, setOuterOffsetY] = useState(37.0);
+  const [outerScale, setOuterScale] = useState(1.02);
+  const [shoesOffsetY, setShoesOffsetY] = useState(86.5);
+  const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
   const [sleeveTrimPercent, setSleeveTrimPercent] = useState(8);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
@@ -120,69 +129,72 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
-  // Auto-Snap Waistline: Eliminates gap between tops and pants seamlessly
+  // Auto-Snap Waistline: Seamless overlap between topwear and pants
   useEffect(() => {
     const rawY = topItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number') {
-      // Clamp any top Y to canonical 34-36% so the hem overlaps waistband
-      setTopOffsetY(rawY < 32 ? 35 : rawY > 38 ? 36 : rawY);
+    if (typeof rawY === 'number' && rawY >= 28 && rawY <= 42) {
+      setTopOffsetY(rawY);
     } else {
-      setTopOffsetY(35);
+      setTopOffsetY(36.5);
     }
     const rawScale = topItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.8 && rawScale <= 1.05) {
+    if (typeof rawScale === 'number' && rawScale >= 0.82 && rawScale <= 1.08) {
       setTopScale(rawScale);
     } else {
-      setTopScale(0.90);
+      setTopScale(0.92);
     }
   }, [topItem?.id]);
 
   useEffect(() => {
     const rawY = bottomItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number') {
-      // Snap waistband to meet top hem with zero gap (canonical 58% - 59%)
-      setBottomOffsetY(rawY > 62 ? 58.5 : rawY < 55 ? 58.5 : rawY);
+    if (typeof rawY === 'number' && rawY >= 58 && rawY <= 70) {
+      setBottomOffsetY(rawY);
     } else {
-      setBottomOffsetY(58.5);
+      setBottomOffsetY(64.0);
     }
     const rawScale = bottomItem?.placement?.scale;
-    // Upgrade legacy scale to natural tailored proportion (1.15)
-    if (typeof rawScale === 'number' && rawScale >= 1.12 && rawScale <= 1.25) {
+    if (typeof rawScale === 'number' && rawScale >= 0.88 && rawScale <= 1.12) {
       setBottomScale(rawScale);
     } else {
-      setBottomScale(1.15);
+      setBottomScale(1.0);
     }
   }, [bottomItem?.id]);
 
   useEffect(() => {
+    const isLongCoat =
+      outerItem?.category === 'coat' ||
+      outerItem?.title?.includes('پالتو') ||
+      outerItem?.title?.includes('بارانی') ||
+      outerItem?.title?.toLowerCase().includes('coat') ||
+      outerItem?.title?.toLowerCase().includes('trench');
+
     const rawY = outerItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number') {
-      // Coat collar locked comfortably to shoulders (31% - 33%)
-      setOuterOffsetY(rawY < 28 ? 32 : rawY > 36 ? 32 : rawY);
+    if (typeof rawY === 'number' && rawY >= 28 && rawY <= 44) {
+      setOuterOffsetY(rawY);
     } else {
-      setOuterOffsetY(32);
+      setOuterOffsetY(isLongCoat ? 37.0 : 34.0);
     }
+
     const rawScale = outerItem?.placement?.scale;
-    // Outerwear must be imposing, broad, and significantly wider than innerwear (1.24x)
-    if (typeof rawScale === 'number' && rawScale >= 1.20) {
+    if (typeof rawScale === 'number' && rawScale >= 0.92 && rawScale <= 1.15) {
       setOuterScale(rawScale);
     } else {
-      setOuterScale(1.24);
+      setOuterScale(isLongCoat ? 1.02 : 1.0);
     }
   }, [outerItem?.id]);
 
   useEffect(() => {
     const rawY = shoesItem?.placement?.offset_y_percent;
-    if (typeof rawY === 'number') {
-      setShoesOffsetY(rawY < 86 ? 90.5 : rawY > 93 ? 91 : rawY);
+    if (typeof rawY === 'number' && rawY >= 82 && rawY <= 92) {
+      setShoesOffsetY(rawY);
     } else {
-      setShoesOffsetY(90.5);
+      setShoesOffsetY(86.5);
     }
     const rawScale = shoesItem?.placement?.scale;
-    if (typeof rawScale === 'number' && rawScale >= 0.8) {
+    if (typeof rawScale === 'number' && rawScale >= 0.80 && rawScale <= 1.05) {
       setShoesScale(rawScale);
     } else {
-      setShoesScale(0.95);
+      setShoesScale(0.90);
     }
   }, [shoesItem?.id]);
 
@@ -601,25 +613,25 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             <button
               type="button"
               onClick={() => {
-                setTopOffsetY(35);
-                setTopScale(0.90);
-                setBottomOffsetY(58.5);
-                setBottomScale(1.15);
-                setOuterOffsetY(32);
-                setOuterScale(1.24);
-                setShoesOffsetY(90.5);
-                setShoesScale(0.95);
+                setTopOffsetY(36.5);
+                setTopScale(0.92);
+                setBottomOffsetY(64.0);
+                setBottomScale(1.0);
+                setOuterOffsetY(37.0);
+                setOuterScale(1.02);
+                setShoesOffsetY(86.5);
+                setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
                 setSleeveTrimPercent(8);
                 setHasLayeredCollar(false);
               }}
               className="text-[10px] text-amber-400 hover:underline cursor-pointer"
             >
-              بازنشانی به حالت استاندارد
+              بازنشانی به تناسبات طلایی استودیویی
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
             {/* Topwear Control */}
             <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
               <div className="flex items-center justify-between font-bold text-slate-200">
@@ -633,9 +645,9 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
                   <input
                     type="range"
-                    min="24"
-                    max="44"
-                    step="1"
+                    min="26"
+                    max="46"
+                    step="0.5"
                     value={topOffsetY}
                     onChange={(e) => setTopOffsetY(Number(e.target.value))}
                     className="flex-1 accent-amber-500 cursor-pointer"
@@ -646,7 +658,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <input
                     type="range"
                     min="0.75"
-                    max="1.05"
+                    max="1.10"
                     step="0.02"
                     value={topScale}
                     onChange={(e) => setTopScale(Number(e.target.value))}
@@ -669,9 +681,9 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
                   <input
                     type="range"
-                    min="54"
-                    max="74"
-                    step="1"
+                    min="55"
+                    max="75"
+                    step="0.5"
                     value={bottomOffsetY}
                     onChange={(e) => setBottomOffsetY(Number(e.target.value))}
                     className="flex-1 accent-amber-500 cursor-pointer"
@@ -681,8 +693,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
                   <input
                     type="range"
-                    min="1.05"
-                    max="1.35"
+                    min="0.85"
+                    max="1.25"
                     step="0.02"
                     value={bottomScale}
                     onChange={(e) => setBottomScale(Number(e.target.value))}
@@ -705,9 +717,9 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
                   <input
                     type="range"
-                    min="22"
-                    max="40"
-                    step="1"
+                    min="25"
+                    max="45"
+                    step="0.5"
                     value={outerOffsetY}
                     onChange={(e) => setOuterOffsetY(Number(e.target.value))}
                     className="flex-1 accent-amber-500 cursor-pointer"
@@ -717,8 +729,8 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                   <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
                   <input
                     type="range"
-                    min="1.0"
-                    max="1.50"
+                    min="0.88"
+                    max="1.25"
                     step="0.02"
                     value={outerScale}
                     onChange={(e) => setOuterScale(Number(e.target.value))}
@@ -739,20 +751,42 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     {isSleeveTrimActive ? `${sleeveTrimPercent}%` : 'خاموش'}
                   </span>
                 </div>
-                {isSleeveTrimActive && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-slate-400 w-12">برش پهلو:</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="28"
-                      step="1"
-                      value={sleeveTrimPercent}
-                      onChange={(e) => setSleeveTrimPercent(Number(e.target.value))}
-                      className="flex-1 accent-amber-500 cursor-pointer"
-                    />
-                  </div>
-                )}
+              </div>
+            </div>
+
+            {/* Footwear Control */}
+            <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700/80 space-y-2">
+              <div className="flex items-center justify-between font-bold text-slate-200">
+                <span>کفش و کتانی:</span>
+                <span className="text-[11px] text-amber-400 font-mono">
+                  Y: {shoesOffsetY}% | {shoesScale.toFixed(2)}x
+                </span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">ارتفاع Y:</span>
+                  <input
+                    type="range"
+                    min="78"
+                    max="94"
+                    step="0.5"
+                    value={shoesOffsetY}
+                    onChange={(e) => setShoesOffsetY(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-slate-400 w-12">مقیاس:</span>
+                  <input
+                    type="range"
+                    min="0.75"
+                    max="1.15"
+                    step="0.02"
+                    value={shoesScale}
+                    onChange={(e) => setShoesScale(Number(e.target.value))}
+                    className="flex-1 accent-amber-500 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -1071,7 +1105,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 22,
                 transform: `translate(-50%, -50%) translateZ(22px) scale(${shoesScale})`,
               }}
-              className="absolute left-1/2 w-[62%] sm:w-[64%] aspect-[1.15/1] pointer-events-none opacity-85 filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.22)]"
+              className="absolute left-1/2 w-[54%] sm:w-[56%] aspect-[1.15/1] pointer-events-none opacity-85 filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.22)]"
             >
               <svg viewBox="0 0 300 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                 {/* Left Minimalist Studio White Sneaker */}
@@ -1094,11 +1128,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 22,
                 transform: `translate(-50%, -50%) translateZ(22px) scale(${shoesScale})`,
               }}
-              className="absolute left-1/2 w-[62%] sm:w-[64%] aspect-[1.15/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.32)]"
+              className="absolute left-1/2 w-[54%] sm:w-[56%] aspect-[1.15/1] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.32)]"
             >
               <MannequinGarmentImage
                 src={shoesItem.imageUrl}
                 alt={shoesItem.title}
+                slot="slot_shoes"
                 className="w-full h-full object-contain"
               />
               {/* Floor Contact Ground Shadow */}
@@ -1124,11 +1159,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: tuckMode === 'tucked' ? 35 : 20,
                 transform: `translate(-50%, -50%) translateZ(20px) scale(${bottomScale})`,
               }}
-              className="absolute left-1/2 w-[72%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.25)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.12)]"
+              className="absolute left-1/2 w-[56%] sm:w-[58%] aspect-[3/4.2] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_22px_rgba(0,0,0,0.25)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.12)]"
             >
               <MannequinGarmentImage
                 src={bottomItem.imageUrl}
                 alt={bottomItem.title}
+                slot="slot_bottom"
                 className="w-full h-full object-contain"
               />
               <button
@@ -1157,11 +1193,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                 transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
-              className="absolute left-1/2 w-[68%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
+              className="absolute left-1/2 w-[60%] sm:w-[62%] aspect-square transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
                 alt={topItem.title}
+                slot="slot_top"
                 className="w-full h-full object-contain"
               />
               {/* Natural Ambient Occlusion shadow from open outerwear lapels onto inner t-shirt */}
@@ -1189,11 +1226,12 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 zIndex: 40,
                 transform: `translate(-50%, -50%) translateZ(52px) scale(${outerScale})`,
               }}
-              className="absolute left-1/2 w-[86%] sm:w-[88%] aspect-[3/4.2] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_24px_38px_rgba(0,0,0,0.40)] drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)]"
+              className="absolute left-1/2 w-[76%] sm:w-[78%] aspect-[3/4] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_24px_38px_rgba(0,0,0,0.40)] drop-shadow-[0_8px_16px_rgba(0,0,0,0.25)]"
             >
               <MannequinGarmentImage
                 src={outerItem.imageUrl}
                 alt={outerItem.title}
+                slot="slot_outer"
                 className="w-full h-full object-contain"
               />
               <button

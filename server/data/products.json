@@ -11,8 +11,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 22,
-      "scale": 1,
+      "offset_y_percent": 36.5,
+      "scale": 0.92,
       "z_index": 30
     },
     "spec": {
@@ -24,8 +24,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 22,
-        "scale": 1,
+        "offset_y_percent": 36.5,
+        "scale": 0.92,
         "z_index": 30
       },
       "replacement_rules": {
@@ -60,7 +60,7 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 53,
+      "offset_y_percent": 64,
       "scale": 1,
       "z_index": 20
     },
@@ -73,7 +73,7 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 53,
+        "offset_y_percent": 64,
         "scale": 1,
         "z_index": 20
       },
@@ -109,8 +109,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 20,
-      "scale": 1.05,
+      "offset_y_percent": 34,
+      "scale": 1,
       "z_index": 40
     },
     "spec": {
@@ -122,8 +122,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 20,
-        "scale": 1.05,
+        "offset_y_percent": 34,
+        "scale": 1,
         "z_index": 40
       },
       "replacement_rules": {
@@ -158,8 +158,8 @@
     "placement": {
       "anchor": "feet",
       "offset_x_percent": 0,
-      "offset_y_percent": 91,
-      "scale": 0.95,
+      "offset_y_percent": 86.5,
+      "scale": 0.9,
       "z_index": 22
     },
     "spec": {
@@ -171,8 +171,8 @@
       "placement": {
         "anchor": "feet",
         "offset_x_percent": 0,
-        "offset_y_percent": 91,
-        "scale": 0.95,
+        "offset_y_percent": 86.5,
+        "scale": 0.9,
         "z_index": 22
       },
       "replacement_rules": {
@@ -207,8 +207,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 22,
-      "scale": 1.02,
+      "offset_y_percent": 36.5,
+      "scale": 0.92,
       "z_index": 30
     },
     "spec": {
@@ -220,8 +220,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 22,
-        "scale": 1.02,
+        "offset_y_percent": 36.5,
+        "scale": 0.92,
         "z_index": 30
       },
       "replacement_rules": {
@@ -256,7 +256,7 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 53,
+      "offset_y_percent": 64,
       "scale": 1,
       "z_index": 20
     },
@@ -269,7 +269,7 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 53,
+        "offset_y_percent": 64,
         "scale": 1,
         "z_index": 20
       },
@@ -305,8 +305,8 @@
     "placement": {
       "anchor": "torso",
       "offset_x_percent": 0,
-      "offset_y_percent": 22,
-      "scale": 1,
+      "offset_y_percent": 36.5,
+      "scale": 0.92,
       "z_index": 30
     },
     "spec": {
@@ -318,8 +318,8 @@
       "placement": {
         "anchor": "torso",
         "offset_x_percent": 0,
-        "offset_y_percent": 22,
-        "scale": 1,
+        "offset_y_percent": 36.5,
+        "scale": 0.92,
         "z_index": 30
       },
       "replacement_rules": {
@@ -354,7 +354,7 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 53,
+      "offset_y_percent": 64,
       "scale": 1,
       "z_index": 20
     },
@@ -367,7 +367,7 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 53,
+        "offset_y_percent": 64,
         "scale": 1,
         "z_index": 20
       },
@@ -403,8 +403,8 @@
     "placement": {
       "anchor": "shoulders",
       "offset_x_percent": 0,
-      "offset_y_percent": 19,
-      "scale": 1.06,
+      "offset_y_percent": 37,
+      "scale": 1.02,
       "z_index": 40
     },
     "spec": {
@@ -416,8 +416,8 @@
       "placement": {
         "anchor": "shoulders",
         "offset_x_percent": 0,
-        "offset_y_percent": 19,
-        "scale": 1.06,
+        "offset_y_percent": 37,
+        "scale": 1.02,
         "z_index": 40
       },
       "replacement_rules": {
@@ -452,9 +452,9 @@
     "placement": {
       "anchor": "feet",
       "offset_x_percent": 0,
-      "offset_y_percent": 84,
-      "scale": 0.85,
-      "z_index": 10
+      "offset_y_percent": 86.5,
+      "scale": 0.9,
+      "z_index": 22
     },
     "spec": {
       "garment_id": "NLF-LFR-023",
@@ -465,9 +465,9 @@
       "placement": {
         "anchor": "feet",
         "offset_x_percent": 0,
-        "offset_y_percent": 84,
-        "scale": 0.85,
-        "z_index": 10
+        "offset_y_percent": 86.5,
+        "scale": 0.9,
+        "z_index": 22
       },
       "replacement_rules": {
         "replaces_slot": "slot_shoes",
@@ -501,7 +501,7 @@
     "placement": {
       "anchor": "waist",
       "offset_x_percent": 0,
-      "offset_y_percent": 53,
+      "offset_y_percent": 64,
       "scale": 1,
       "z_index": 20
     },
@@ -514,7 +514,7 @@
       "placement": {
         "anchor": "waist",
         "offset_x_percent": 0,
-        "offset_y_percent": 53,
+        "offset_y_percent": 64,
         "scale": 1,
         "z_index": 20
       },

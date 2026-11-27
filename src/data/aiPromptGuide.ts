@@ -18,25 +18,25 @@ EXECUTION RULES PER CLASSIFIED CATEGORY:
 
 CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber):
 - The garment MUST be completely UNBUTTONED and WIDE OPEN in the front, hanging symmetrically straight down.
-- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 84% of canvas width (broader than any inner t-shirt).
+- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally wraps over any inner t-shirt).
 - MANDATORY HOLLOW CHEST VOID: The central opening area between the lapels MUST be 100% EMPTY, HOLLOW, and PURE TRANSPARENT ALPHA (RGBA = 0).
 - STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, and ZERO inner back collar visible through the chest gap.
-- Top collar starts at 8% from top canvas border; bottom hem terminates at 88% (long coat) or 74% (jacket).
+- Top collar starts at 10% from top canvas border; bottom hem terminates at 74% (long coat) or 56% (jacket) so pants legs remain clearly visible.
 
 CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
 - Centered 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and label.
-- Torso width occupies 64% of canvas width (perfect proportion to sit inside the 84% outerwear without sticking out).
-- Collar starts at 10% from top canvas border; bottom hem terminates at 68% from top border.
+- Torso width occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
+- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at the waistband line).
 - Bottom hem is strictly 100% horizontal and level with the ground plane (0° slope).
 
 CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
-- Waistband starts at exactly 10% from top canvas border and is strictly 100% horizontal and level (0° slope).
-- Waistband width occupies 48% of canvas width; hip and thigh width occupies 58% of canvas width.
+- Waistband starts at exactly 12% from top canvas border and is strictly 100% horizontal and level (0° slope).
+- Waistband width occupies 46% of canvas width; hip and thigh width occupies 56% of canvas width.
 - Leg cuffs terminate at 92% from top canvas border, hanging straight and level with identical bilateral symmetry.
 
 CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
 - Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
-- Soles rest at 88% from top canvas border; pair occupies 66% of canvas width with soft contact shadow underneath.
+- Soles rest at 88% from top canvas border; pair occupies 56% of canvas width with soft contact shadow underneath.
 
 GLOBAL MANDATORY RULES (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
@@ -115,20 +115,20 @@ export const AI_COMPANION_SPEC_PROMPT_FA = `
 قوانین کالیبراسیون و تناسبات طلایی برای هر دسته:
 ۱. اگر لباس‌رو (پالتو، کت، کاپشن) است:
    - "slot": "slot_outer" | "layer_level": "outerwear"
-   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 32, "scale": 1.24, "z_index": 40 }
+   - "placement": { "anchor": "shoulders", "offset_x_percent": 0, "offset_y_percent": 37, "scale": 1.02, "z_index": 40 }
    - "layering_behavior": { "is_open_front": true, "reveals_inner_top": true, "inner_top_sleeve_trim_percent": 8 }
 
 ۲. اگر بالاتنه (تی‌شرت، هودی، پیراهن، دورس) است:
    - "slot": "slot_top" | "layer_level": "mid_top"
-   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 35, "scale": 0.90, "z_index": 30 }
+   - "placement": { "anchor": "torso", "offset_x_percent": 0, "offset_y_percent": 36.5, "scale": 0.92, "z_index": 30 }
 
 ۳. اگر پایین‌تنه (شلوار جین، کتان، اسلش، بگ، کارگو) است:
    - "slot": "slot_bottom" | "layer_level": "bottom"
-   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 58.5, "scale": 1.15, "z_index": 20 }
+   - "placement": { "anchor": "waist", "offset_x_percent": 0, "offset_y_percent": 64, "scale": 1.0, "z_index": 20 }
 
 ۴. اگر کفش یا کتانی است:
    - "slot": "slot_shoes" | "layer_level": "shoes"
-   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 90.5, "scale": 0.95, "z_index": 22 }
+   - "placement": { "anchor": "feet", "offset_x_percent": 0, "offset_y_percent": 86.5, "scale": 0.90, "z_index": 22 }
 
 ساختار خروجی JSON که باید بازگردانید:
 \`\`\`json
