@@ -24481,67 +24481,53 @@ var import_path = __toESM(require("path"), 1);
 
 // src/data/aiPromptGuide.ts
 var GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
-[PRIMARY DIRECTIVE - STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
-Analyze the input text [EXACT_CLOTHING_NAME_AND_COLOR] and autonomously classify its garment category:
-- Category 1: OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker) -> Execute CASE A.
-- Category 2: TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear) -> Execute CASE B.
-- Category 3: BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt) -> Execute CASE C.
-- Category 4: FOOTWEAR (Sneakers, Shoes, Boots, Loafers) -> Execute CASE D.
+GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described). DO NOT output text, code, or analysis \u2014 IMMEDIATELY GENERATE THE IMAGE following these autonomous rules:
 
-Professional commercial fashion studio catalog photography of [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and crisp structural drape.
+[STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
+Autonomously identify the garment in the photo:
+- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker): Execute CASE A.
+- If TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear): Execute CASE B.
+- If BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt): Execute CASE C.
+- If FOOTWEAR (Sneakers, Shoes, Boots, Loafers): Execute CASE D.
 
-EXECUTION RULES PER CLASSIFIED CATEGORY:
+[STEP 2: PHOTOGRAPHIC RENDERING RULES PER CLASSIFIED CATEGORY]
 
-CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker):
-- WINGED WIDE-OPEN DRAPE: The jacket/coat MUST be completely UNZIPPED and UNBUTTONED, draped wide open to the sides at 35-degree winged angles, exposing a generous 40% chest-to-waist open gap in the center.
-- MANDATORY HOLLOW SEE-THROUGH VOID (NO BACK FABRIC): The entire central opening gap between the left and right front panels MUST be a completely HOLLOW, SEE-THROUGH VOID looking straight through to the solid seamless studio background behind the mannequin.
-- ABSOLUTELY STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, ZERO colored interior fabric, ZERO interior back wall, and ZERO inner collar behind the zipper gap. The gap must be 100% empty space so an underlying t-shirt can be worn beneath it.
-- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally wraps over any inner t-shirt).
-- Top collar starts at 10% from top canvas border; bottom hem terminates at 74% (long coat) or 56% (jacket) so pants legs remain clearly visible.
+CASE A: IF OUTERWEAR (Coat, Jacket, Windbreaker, Cardigan, Blazer):
+- CONTINUOUS INTACT COLLAR: The high neck collar and shoulder yoke MUST BE 100% INTACT, seamless, and wrapped continuously behind the invisible ghost neck (NEVER sever, split, or disconnect the collar).
+- WIDE-OPEN DRAPE: The garment is completely UNZIPPED and UNBUTTONED, draped wide open to the sides in a natural 35-degree winged angle from the collarbone down to the hem, revealing a generous 40% chest-to-waist open gap.
+- MANDATORY HOLLOW CHEST VOID: The central gap between the open front panels MUST be a 100% EMPTY, HOLLOW, SEE-THROUGH VOID revealing ONLY the pure seamless solid white studio background behind it. STRICT PROHIBITION: ZERO inner back fabric, ZERO yellow or colored lining, ZERO interior back wall, and ZERO cloth filling the chest gap so an underlying t-shirt can be worn beneath it.
+- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally envelops any inner top).
 
-CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
-- Centered 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and label.
-- Torso width occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
-- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at the waistband line).
-- Bottom hem is strictly 100% horizontal and level with the ground plane (0\xB0 slope).
+CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt):
+- Centered on an invisible 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and brand label.
+- Torso width strictly occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
+- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at waistband line, 100% level and horizontal).
 
-CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
-- Waistband starts at exactly 12% from top canvas border and is strictly 100% horizontal and level (0\xB0 slope).
-- Waistband width occupies 46% of canvas width; hip and thigh width occupies 56% of canvas width.
-- Leg cuffs terminate at 92% from top canvas border, hanging straight and level with identical bilateral symmetry.
+CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants):
+- Waistband starts at 12% from top canvas border (strictly 100% horizontal, 0\xB0 slope).
+- Waistband width: 46% of canvas; hips/thighs: 56% of canvas; leg cuffs terminate at 92% canvas height with identical bilateral symmetry.
 
 CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
 - Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
 - Soles rest at 88% from top canvas border; pair occupies 56% of canvas width with soft contact shadow underneath.
 
-GLOBAL MANDATORY RULES (ALL CATEGORIES):
+GLOBAL MANDATORY CAMERA & LIGHTING (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
 - Strict 0-degree frontal orthographic eye-level view (0\xB0 yaw, 0\xB0 pitch, 0\xB0 roll), perfectly bilateral mirror symmetry.
 - Absolutely NO 3/4 angle, NO tilted shoulders, NO skewed pose, NO human body, NO skin, NO mannequin stand.
-- MANDATORY PURE TRANSPARENCY: Isolated cutout on pure seamless white studio background or 100% transparent alpha PNG background (RGBA, zero background borders, zero white box, zero rectangular frames).
+- Isolated on pure seamless white studio background (RGB 255,255,255) with zero background borders and zero rectangular frames.
 - Soft balanced commercial studio high-key diffuse lighting, sharp authentic fabric textures and seams.
 
 NEGATIVE PROMPTS (MUST AVOID):
-solid back lining, inner back fabric, inner yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
+text, code, json, severed collar, floating split sleeves, cut neckband, solid back lining inside chest, yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
 `.trim();
 var GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-\u067E\u0631\u0627\u0645\u067E\u062A \u0648\u0627\u062D\u062F \u0648 \u0647\u0645\u0647\u200C\u06A9\u0627\u0631\u0647 \u062A\u0648\u0644\u06CC\u062F \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u0628\u0627 \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC (\u062A\u0634\u062E\u06CC\u0635 \u062E\u0648\u062F\u06A9\u0627\u0631 \u062A\u0645\u0627\u0645 \u062F\u0633\u062A\u0647\u200C\u0647\u0627):
+\u067E\u0631\u0627\u0645\u067E\u062A \u0637\u0644\u0627\u06CC\u06CC \u0648 \u0645\u0633\u062A\u0642\u0644 \u062A\u0648\u0644\u06CC\u062F \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u06F3\u0628\u0639\u062F\u06CC (\u0628\u062F\u0648\u0646 \u0646\u06CC\u0627\u0632 \u0628\u0647 \u0648\u06CC\u0631\u0627\u06CC\u0634 \u06CC\u0627 \u062A\u0627\u06CC\u067E \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC):
 
-\u0648\u06CC\u0698\u06AF\u06CC\u200C\u0647\u0627\u06CC \u0627\u06CC\u0646 \u067E\u0631\u0627\u0645\u067E\u062A \u0647\u0648\u0634\u0645\u0646\u062F:
-\u0627\u06CC\u0646 \u067E\u0631\u0627\u0645\u067E\u062A \u0628\u0647 \u0635\u0648\u0631\u062A \u062E\u0648\u062F\u06A9\u0627\u0631 \u0646\u0648\u0639 \u0644\u0628\u0627\u0633\u06CC \u06A9\u0647 \u062F\u0627\u062E\u0644 \u06A9\u0631\u0648\u0634\u0647 \u0645\u06CC\u200C\u0646\u0648\u06CC\u0633\u06CC\u062F \u0631\u0627 \u062A\u0634\u062E\u06CC\u0635 \u0645\u06CC\u200C\u062F\u0647\u062F \u0648 \u0642\u0648\u0627\u0646\u06CC\u0646 \u0627\u062E\u062A\u0635\u0627\u0635\u06CC \u0622\u0646 \u0631\u0627 \u0627\u062C\u0631\u0627 \u0645\u06CC\u200C\u06A9\u0646\u062F:
-\u06F1. \u0627\u06AF\u0631 \u067E\u0627\u0644\u062A\u0648 \u06CC\u0627 \u06A9\u062A \u06CC\u0627 \u06A9\u0627\u067E\u0634\u0646 \u0628\u0627\u0634\u062F:
-   - \u0622\u0646 \u0631\u0627 \u0632\u06CC\u067E\u200C\u0628\u0627\u0632 \u06CC\u0627 \u062F\u06A9\u0645\u0647\u200C\u0628\u0627\u0632 \u0628\u0627 \u0632\u0627\u0648\u06CC\u0647 \u0628\u0627\u0644\u200C\u0645\u0627\u0646\u0646\u062F (Winged Drape \u0628\u0627 \u0632\u0627\u0648\u06CC\u0647 \u06F3\u06F5 \u062F\u0631\u062C\u0647) \u062A\u0648\u0644\u06CC\u062F \u0645\u06CC\u200C\u06A9\u0646\u062F \u062A\u0627 \u062D\u062F\u0627\u0642\u0644 \u06F4\u06F0\u066A \u0639\u0631\u0636 \u0633\u06CC\u0646\u0647 \u06A9\u0627\u0645\u0644\u0627\u064B \u0628\u0627\u0632 \u0628\u0627\u0634\u062F.
-   - \u0641\u0636\u0627\u06CC \u062E\u0627\u0644\u06CC \u0645\u0631\u06A9\u0632\u06CC (Hollow See-Through Void): \u0647\u06CC\u0686 \u0622\u0633\u062A\u0631 \u06CC\u0627 \u067E\u0627\u0631\u0686\u0647 \u067E\u0634\u062A\u06CC \u062F\u0631 \u0628\u06CC\u0646 \u0632\u06CC\u067E\u200C\u0647\u0627 \u06A9\u0634\u06CC\u062F\u0647 \u0646\u0645\u06CC\u200C\u0634\u0648\u062F \u0648 \u067E\u0634\u062A \u0644\u0628\u0627\u0633 \u06A9\u0627\u0645\u0644\u0627\u064B \u062E\u0627\u0644\u06CC \u0648 \u0634\u0641\u0627\u0641 \u0628\u0647 \u067E\u0633\u200C\u0632\u0645\u06CC\u0646\u0647 \u0646\u06AF\u0627\u0647 \u0645\u06CC\u200C\u06A9\u0646\u062F \u062A\u0627 \u062A\u06CC\u200C\u0634\u0631\u062A \u0632\u06CC\u0631\u06CC\u0646 \u0628\u0647 \u0632\u06CC\u0628\u0627\u06CC\u06CC \u062E\u0648\u062F\u0646\u0645\u0627\u06CC\u06CC \u06A9\u0646\u062F.
-   - \u0639\u0631\u0636 \u0633\u0631\u0634\u0627\u0646\u0647 \u0628\u0631 \u0631\u0648\u06CC \u06F7\u06F6\u066A \u062A\u0646\u0638\u06CC\u0645 \u0634\u062F\u0647 \u062A\u0627 \u06A9\u0627\u0645\u0644\u0627\u064B \u0644\u0628\u0627\u0633 \u0632\u06CC\u0631\u06CC\u0646 \u0631\u0627 \u062F\u0631 \u0628\u0631 \u0628\u06AF\u06CC\u0631\u062F.
-\u06F2. \u0627\u06AF\u0631 \u062A\u06CC\u200C\u0634\u0631\u062A\u060C \u0647\u0648\u062F\u06CC \u06CC\u0627 \u067E\u06CC\u0631\u0627\u0647\u0646 \u0628\u0627\u0634\u062F:
-   - \u0622\u0646 \u0631\u0627 \u0628\u0627 \u0639\u0631\u0636 \u0645\u062A\u0646\u0627\u0633\u0628 (\u06F6\u06F0\u066A) \u0648 \u06CC\u0642\u0647 \u062E\u0627\u0644\u06CC \u06F3\u0628\u0639\u062F\u06CC \u0645\u06CC\u200C\u0633\u0627\u0632\u062F \u062A\u0627 \u062F\u0642\u06CC\u0642\u0627\u064B \u062F\u0631 \u0633\u06CC\u0646\u0647 \u067E\u0627\u0644\u062A\u0648 \u062C\u0627 \u0628\u06AF\u06CC\u0631\u062F.
-   - \u0644\u0628\u0647 \u067E\u0627\u06CC\u06CC\u0646\u06CC \u06A9\u0627\u0645\u0644\u0627\u064B \u0627\u0641\u0642\u06CC \u0648 \u062F\u0631 \u062A\u0631\u0627\u0632 \u06F5\u06F4\u066A \u062A\u0646\u0638\u06CC\u0645 \u0634\u062F\u0647 \u062A\u0627 \u0628\u0627 \u06A9\u0645\u0631 \u0634\u0644\u0648\u0627\u0631 \u0686\u0641\u062A \u0634\u0648\u062F.
-\u06F3. \u0627\u06AF\u0631 \u0634\u0644\u0648\u0627\u0631 \u0628\u0627\u0634\u062F: \u062E\u0637 \u06A9\u0645\u0631 \u0631\u0627 \u06A9\u0627\u0645\u0644\u0627\u064B \u0627\u0641\u0642\u06CC \u0645\u06CC\u200C\u0633\u0627\u0632\u062F \u062A\u0627 \u0647\u0645\u067E\u0648\u0634\u0627\u0646\u06CC \u0628\u06CC\u200C\u0646\u0642\u0635 \u0628\u0627 \u062A\u06CC\u200C\u0634\u0631\u062A \u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F.
-\u06F4. \u0627\u06AF\u0631 \u06A9\u0641\u0634 \u0628\u0627\u0634\u062F: \u062C\u0641\u062A \u0631\u0648\u0628\u0647\u200C\u0631\u0648 \u0628\u0627 \u0632\u0627\u0648\u06CC\u0647 \u06F0 \u062F\u0631\u062C\u0647 \u0627\u0633\u062A\u0648\u062F\u06CC\u0648\u06CC\u06CC \u062A\u062D\u0648\u06CC\u0644 \u0645\u06CC\u200C\u062F\u0647\u062F.
-\u06F5. \u062A\u0645\u0627\u0645 \u062E\u0631\u0648\u062C\u06CC\u200C\u0647\u0627 \u0627\u06CC\u0632\u0648\u0644\u0647 \u0648 \u0628\u062F\u0648\u0646 \u06A9\u0627\u062F\u0631 \u0632\u0627\u0626\u062F \u0647\u0633\u062A\u0646\u062F.
-
-\u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647:
-\u062A\u0646\u0647\u0627 \u06A9\u0627\u0631\u06CC \u06A9\u0647 \u0628\u0627\u06CC\u062F \u0628\u06A9\u0646\u06CC\u062F \u0627\u06CC\u0646 \u0627\u0633\u062A \u06A9\u0647 \u0639\u0628\u0627\u0631\u062A [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] \u0631\u0627 \u0628\u0627 \u0646\u0627\u0645 \u0644\u0628\u0627\u0633 \u0648 \u0631\u0646\u06AF \u0622\u0646 (\u0628\u0647 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC\u060C \u0645\u062B\u0644\u0627\u064B: Bright Yellow Softshell Windbreaker Jacket with Black Zippers) \u067E\u0631 \u06A9\u0646\u06CC\u062F \u0648 \u06A9\u0644 \u0645\u062A\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u0631\u0627 \u0628\u0647 Midjourney\u060C Flux\u060C ChatGPT \u06CC\u0627 Gemini \u0628\u062F\u0647\u06CC\u062F!
+\u0646\u062D\u0648\u0647 \u0627\u0633\u062A\u0641\u0627\u062F\u0647 \u0628\u0633\u06CC\u0627\u0631 \u0633\u0627\u062F\u0647:
+\u06F1. \u0639\u06A9\u0633 \u0644\u0628\u0627\u0633 \u062E\u0648\u062F \u0631\u0627 \u062F\u0631 ChatGPT (\u06CC\u0627 Gemini / Midjourney) \u0622\u067E\u0644\u0648\u062F \u06A9\u0646\u06CC\u062F.
+\u06F2. \u06A9\u0644 \u0645\u062A\u0646 \u0627\u0646\u06AF\u0644\u06CC\u0633\u06CC \u067E\u0631\u0627\u0645\u067E\u062A \u0631\u0627 \u0628\u062F\u0648\u0646 \u0647\u06CC\u0686 \u062A\u063A\u06CC\u06CC\u0631\u06CC \u06A9\u067E\u06CC \u0648 \u0627\u0631\u0633\u0627\u0644 \u06A9\u0646\u06CC\u062F!
+\u06F3. \u0647\u0648\u0634 \u0645\u0635\u0646\u0648\u0639\u06CC \u0639\u06A9\u0633 \u0627\u0631\u0633\u0627\u0644\u06CC \u0634\u0645\u0627 \u0631\u0627 \u0628\u0631\u0631\u0633\u06CC \u06A9\u0631\u062F\u0647\u060C \u0646\u0648\u0639 \u0644\u0628\u0627\u0633 \u0631\u0627 \u062E\u0648\u062F\u0634 \u062A\u0634\u062E\u06CC\u0635 \u0645\u06CC\u200C\u062F\u0647\u062F \u0648 \u0645\u0633\u062A\u0642\u06CC\u0645\u0627\u064B \u0639\u06A9\u0633 \u06F3\u0628\u0639\u062F\u06CC \u0627\u0633\u062A\u0648\u062F\u06CC\u0648\u06CC\u06CC \u0631\u0648\u06CC \u0645\u0627\u0646\u06A9\u0646 \u0646\u0627\u0645\u0631\u0626\u06CC \u0631\u0627 \u062A\u0648\u0644\u06CC\u062F \u0645\u06CC\u200C\u06A9\u0646\u062F (\u0628\u062F\u0648\u0646 \u062A\u0648\u0644\u06CC\u062F \u06A9\u062F \u06CC\u0627 \u0645\u062A\u0646 \u0627\u0636\u0627\u0641\u06CC).
 `.trim();
 var LAYERED_APPAREL_IMAGE_PROMPT_EN = `
 Professional commercial studio fashion catalog photography of an unbuttoned wide-open front [EXACT_CLOTHING_ITEM_NAME_AND_COLOR, e.g. CAMEL_WOOL_OVERCOAT_WITH_NOTCHED_LAPELS], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and winged open drape.

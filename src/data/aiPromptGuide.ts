@@ -5,68 +5,54 @@ import { GarmentAiSpec, GarmentSlot } from '../types/clothing';
  * First autonomously classifies the garment category, then executes the exact golden proportion rules!
  */
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_EN = `
-[PRIMARY DIRECTIVE - STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
-Analyze the input text [EXACT_CLOTHING_NAME_AND_COLOR] and autonomously classify its garment category:
-- Category 1: OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker) -> Execute CASE A.
-- Category 2: TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear) -> Execute CASE B.
-- Category 3: BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt) -> Execute CASE C.
-- Category 4: FOOTWEAR (Sneakers, Shoes, Boots, Loafers) -> Execute CASE D.
+GENERATE AN ULTRA-DETAILED 3D COMMERCIAL FASHION CATALOG IMAGE of the garment shown in the attached photo (or described). DO NOT output text, code, or analysis — IMMEDIATELY GENERATE THE IMAGE following these autonomous rules:
 
-Professional commercial fashion studio catalog photography of [EXACT_CLOTHING_ITEM_NAME_AND_COLOR], displayed on an invisible 3D ghost mannequin with realistic 3-dimensional volume and crisp structural drape.
+[STEP 1: AUTONOMOUS GARMENT CLASSIFICATION]
+Autonomously identify the garment in the photo:
+- If OUTERWEAR (Coat, Overcoat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker): Execute CASE A.
+- If TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear): Execute CASE B.
+- If BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt): Execute CASE C.
+- If FOOTWEAR (Sneakers, Shoes, Boots, Loafers): Execute CASE D.
 
-EXECUTION RULES PER CLASSIFIED CATEGORY:
+[STEP 2: PHOTOGRAPHIC RENDERING RULES PER CLASSIFIED CATEGORY]
 
-CASE A: IF OUTERWEAR (Overcoat, Coat, Trench, Jacket, Blazer, Cardigan, Bomber, Windbreaker):
-- WINGED WIDE-OPEN DRAPE: The jacket/coat MUST be completely UNZIPPED and UNBUTTONED, draped wide open to the sides at 35-degree winged angles, exposing a generous 40% chest-to-waist open gap in the center.
-- MANDATORY HOLLOW SEE-THROUGH VOID (NO BACK FABRIC): The entire central opening gap between the left and right front panels MUST be a completely HOLLOW, SEE-THROUGH VOID looking straight through to the solid seamless studio background behind the mannequin.
-- ABSOLUTELY STRICT PROHIBITION: ZERO inner back fabric, ZERO back satin lining, ZERO colored interior fabric, ZERO interior back wall, and ZERO inner collar behind the zipper gap. The gap must be 100% empty space so an underlying t-shirt can be worn beneath it.
-- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally wraps over any inner t-shirt).
-- Top collar starts at 10% from top canvas border; bottom hem terminates at 74% (long coat) or 56% (jacket) so pants legs remain clearly visible.
+CASE A: IF OUTERWEAR (Coat, Jacket, Windbreaker, Cardigan, Blazer):
+- CONTINUOUS INTACT COLLAR: The high neck collar and shoulder yoke MUST BE 100% INTACT, seamless, and wrapped continuously behind the invisible ghost neck (NEVER sever, split, or disconnect the collar).
+- WIDE-OPEN DRAPE: The garment is completely UNZIPPED and UNBUTTONED, draped wide open to the sides in a natural 35-degree winged angle from the collarbone down to the hem, revealing a generous 40% chest-to-waist open gap.
+- MANDATORY HOLLOW CHEST VOID: The central gap between the open front panels MUST be a 100% EMPTY, HOLLOW, SEE-THROUGH VOID revealing ONLY the pure seamless solid white studio background behind it. STRICT PROHIBITION: ZERO inner back fabric, ZERO yellow or colored lining, ZERO interior back wall, and ZERO cloth filling the chest gap so an underlying t-shirt can be worn beneath it.
+- BROAD TAILORED SHOULDERS: Shoulder seam width occupies 76% of canvas width (naturally envelops any inner top).
 
-CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt, Knitwear):
-- Centered 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and label.
-- Torso width occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
-- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at the waistband line).
-- Bottom hem is strictly 100% horizontal and level with the ground plane (0° slope).
+CASE B: IF TOPWEAR (T-Shirt, Shirt, Polo, Hoodie, Sweater, Sweatshirt):
+- Centered on an invisible 3D ghost mannequin with realistic hollow interior collar revealing inside neck lining and brand label.
+- Torso width strictly occupies 60% of canvas width (perfect proportion to sit inside the 76% outerwear without sticking out).
+- Collar starts at 12% from top canvas border; bottom hem terminates at 54% from top border (right at waistband line, 100% level and horizontal).
 
-CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants, Shorts, Skirt):
-- Waistband starts at exactly 12% from top canvas border and is strictly 100% horizontal and level (0° slope).
-- Waistband width occupies 46% of canvas width; hip and thigh width occupies 56% of canvas width.
-- Leg cuffs terminate at 92% from top canvas border, hanging straight and level with identical bilateral symmetry.
+CASE C: IF BOTTOMWEAR (Jeans, Pants, Trousers, Cargo, Sweatpants):
+- Waistband starts at 12% from top canvas border (strictly 100% horizontal, 0° slope).
+- Waistband width: 46% of canvas; hips/thighs: 56% of canvas; leg cuffs terminate at 92% canvas height with identical bilateral symmetry.
 
 CASE D: IF FOOTWEAR (Sneakers, Shoes, Boots, Loafers):
 - Pair of shoes positioned side-by-side facing directly forward with identical bilateral symmetry.
 - Soles rest at 88% from top canvas border; pair occupies 56% of canvas width with soft contact shadow underneath.
 
-GLOBAL MANDATORY RULES (ALL CATEGORIES):
+GLOBAL MANDATORY CAMERA & LIGHTING (ALL CATEGORIES):
 - Square 1:1 aspect ratio (1024x1024 pixels).
 - Strict 0-degree frontal orthographic eye-level view (0° yaw, 0° pitch, 0° roll), perfectly bilateral mirror symmetry.
 - Absolutely NO 3/4 angle, NO tilted shoulders, NO skewed pose, NO human body, NO skin, NO mannequin stand.
-- MANDATORY PURE TRANSPARENCY: Isolated cutout on pure seamless white studio background or 100% transparent alpha PNG background (RGBA, zero background borders, zero white box, zero rectangular frames).
+- Isolated on pure seamless white studio background (RGB 255,255,255) with zero background borders and zero rectangular frames.
 - Soft balanced commercial studio high-key diffuse lighting, sharp authentic fabric textures and seams.
 
 NEGATIVE PROMPTS (MUST AVOID):
-solid back lining, inner back fabric, inner yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
+text, code, json, severed collar, floating split sleeves, cut neckband, solid back lining inside chest, yellow fabric behind zipper, interior back wall, yellow back panel, closed torso, narrow zipper slit, buttoned coat, closed front jacket, white background box, rectangular frame, photo border, 3/4 view, three-quarter angle, tilted shoulders, slanted hem, skewed perspective, human face, skin, hands, feet, visible mannequin dummy, dark background.
 `.trim();
 
 export const GHOST_MANNEQUIN_IMAGE_PROMPT_FA = `
-پرامپت واحد و همه‌کاره تولید عکس لباس با هوش مصنوعی (تشخیص خودکار تمام دسته‌ها):
+پرامپت طلایی و مستقل تولید عکس لباس ۳بعدی (بدون نیاز به ویرایش یا تایپ متن اضافی):
 
-ویژگی‌های این پرامپت هوشمند:
-این پرامپت به صورت خودکار نوع لباسی که داخل کروشه می‌نویسید را تشخیص می‌دهد و قوانین اختصاصی آن را اجرا می‌کند:
-۱. اگر پالتو یا کت یا کاپشن باشد:
-   - آن را زیپ‌باز یا دکمه‌باز با زاویه بال‌مانند (Winged Drape با زاویه ۳۵ درجه) تولید می‌کند تا حداقل ۴۰٪ عرض سینه کاملاً باز باشد.
-   - فضای خالی مرکزی (Hollow See-Through Void): هیچ آستر یا پارچه پشتی در بین زیپ‌ها کشیده نمی‌شود و پشت لباس کاملاً خالی و شفاف به پس‌زمینه نگاه می‌کند تا تی‌شرت زیرین به زیبایی خودنمایی کند.
-   - عرض سرشانه بر روی ۷۶٪ تنظیم شده تا کاملاً لباس زیرین را در بر بگیرد.
-۲. اگر تی‌شرت، هودی یا پیراهن باشد:
-   - آن را با عرض متناسب (۶۰٪) و یقه خالی ۳بعدی می‌سازد تا دقیقاً در سینه پالتو جا بگیرد.
-   - لبه پایینی کاملاً افقی و در تراز ۵۴٪ تنظیم شده تا با کمر شلوار چفت شود.
-۳. اگر شلوار باشد: خط کمر را کاملاً افقی می‌سازد تا همپوشانی بی‌نقص با تی‌شرت داشته باشد.
-۴. اگر کفش باشد: جفت روبه‌رو با زاویه ۰ درجه استودیویی تحویل می‌دهد.
-۵. تمام خروجی‌ها ایزوله و بدون کادر زائد هستند.
-
-نحوه استفاده:
-تنها کاری که باید بکنید این است که عبارت [EXACT_CLOTHING_ITEM_NAME_AND_COLOR] را با نام لباس و رنگ آن (به انگلیسی، مثلاً: Bright Yellow Softshell Windbreaker Jacket with Black Zippers) پر کنید و کل متن انگلیسی را به Midjourney، Flux، ChatGPT یا Gemini بدهید!
+نحوه استفاده بسیار ساده:
+۱. عکس لباس خود را در ChatGPT (یا Gemini / Midjourney) آپلود کنید.
+۲. کل متن انگلیسی پرامپت را بدون هیچ تغییری کپی و ارسال کنید!
+۳. هوش مصنوعی عکس ارسالی شما را بررسی کرده، نوع لباس را خودش تشخیص می‌دهد و مستقیماً عکس ۳بعدی استودیویی روی مانکن نامرئی را تولید می‌کند (بدون تولید کد یا متن اضافی).
 `.trim();
 
 /**
