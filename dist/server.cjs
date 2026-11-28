@@ -24701,9 +24701,9 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
     slot = "slot_top";
   }
   const defaultPlacement = {
-    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 28, scale: 0.96, z_index: 30 },
-    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 67, scale: 1, z_index: 20 },
-    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 44.5, scale: 1, z_index: 40 },
+    slot_top: { anchor: "torso", offset_x_percent: 0, offset_y_percent: 27, scale: 0.96, z_index: 30 },
+    slot_bottom: { anchor: "waist", offset_x_percent: 0, offset_y_percent: 66.5, scale: 1, z_index: 20 },
+    slot_outer: { anchor: "shoulders", offset_x_percent: 0, offset_y_percent: 47, scale: 1, z_index: 40 },
     slot_shoes: { anchor: "feet", offset_x_percent: 0, offset_y_percent: 92, scale: 0.9, z_index: 22 },
     slot_accessory: { anchor: "head", offset_x_percent: 0, offset_y_percent: 8, scale: 0.6, z_index: 50 }
   }[slot];
@@ -24712,13 +24712,13 @@ function normalizeGarmentAiSpec(inputJson, fallbackName = "\u0644\u0628\u0627\u0
   let targetOffsetY = defaultPlacement.offset_y_percent;
   let customScale = defaultPlacement.scale;
   if (slot === "slot_bottom") {
-    targetOffsetY = isCropped ? 65.5 : 67;
+    targetOffsetY = isCropped ? 65.5 : 66.5;
     customScale = 1;
   } else if (slot === "slot_outer") {
-    targetOffsetY = isLongCoat ? 44.5 : 31.5;
+    targetOffsetY = isLongCoat ? 47 : 31.5;
     customScale = 1;
   } else if (slot === "slot_top") {
-    targetOffsetY = 28;
+    targetOffsetY = 27;
     customScale = 0.96;
   } else if (slot === "slot_shoes") {
     targetOffsetY = 92;

@@ -92,16 +92,16 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Calibrated Golden Proportion Standards)
-  const [topOffsetY, setTopOffsetY] = useState(28.0);
+  const [topOffsetY, setTopOffsetY] = useState(27.0);
   const [topScale, setTopScale] = useState(0.96);
-  const [bottomOffsetY, setBottomOffsetY] = useState(67.0);
+  const [bottomOffsetY, setBottomOffsetY] = useState(66.5);
   const [bottomScale, setBottomScale] = useState(1.00);
-  const [outerOffsetY, setOuterOffsetY] = useState(44.5);
+  const [outerOffsetY, setOuterOffsetY] = useState(47.0);
   const [outerScale, setOuterScale] = useState(1.00);
   const [shoesOffsetY, setShoesOffsetY] = useState(92.0);
   const [shoesScale, setShoesScale] = useState(0.90);
   const [isSleeveTrimActive, setIsSleeveTrimActive] = useState(true);
-  const [sleeveTrimPercent, setSleeveTrimPercent] = useState(18);
+  const [sleeveTrimPercent, setSleeveTrimPercent] = useState(16);
   const [isOuterVoidMaskActive, setIsOuterVoidMaskActive] = useState(false);
   const [outerVoidWidthPercent, setOuterVoidWidthPercent] = useState(24);
   const [hasLayeredCollar, setHasLayeredCollar] = useState(false);
@@ -151,7 +151,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
         setTopScale(0.96);
       } else {
         // Standard crewneck / graphic T-shirt: sits perfectly nested inside coat collar and lapels
-        setTopOffsetY(28.0);
+        setTopOffsetY(27.0);
         setTopScale(0.96);
       }
     } else {
@@ -166,7 +166,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       bottomItem?.title?.includes('کراپ') ||
       bottomItem?.title?.toLowerCase().includes('crop');
 
-    setBottomOffsetY(isCropped ? 65.5 : 67.0);
+    setBottomOffsetY(isCropped ? 65.5 : 66.5);
     setBottomScale(1.00);
   }, [bottomItem?.id, bottomItem?.title]);
 
@@ -178,13 +178,13 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
       outerItem?.title?.toLowerCase().includes('coat') ||
       outerItem?.title?.toLowerCase().includes('trench');
 
-    setOuterOffsetY(isLongCoat ? 44.5 : 31.5);
+    setOuterOffsetY(isLongCoat ? 47.0 : 31.5);
     setOuterScale(1.00);
 
     // Auto-harmonize layering behavior: trim inner sleeves
     if (outerItem) {
       setIsSleeveTrimActive(true);
-      setSleeveTrimPercent(18);
+      setSleeveTrimPercent(16);
       setIsOuterVoidMaskActive(false);
       setOuterVoidWidthPercent(24);
     }
@@ -330,17 +330,17 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             const stageH = 1420;
             const isLongCoat = garment.category === 'coat' || garment.title?.includes('پالتو') || garment.title?.includes('بارانی') || garment.title?.toLowerCase().includes('coat');
             
-            let slotH = stageH * 0.30;
-            let slotW = 590;
+            let slotH = stageH * 0.31;
+            let slotW = 600;
             if (garment.slot === 'slot_bottom') {
               slotH = stageH * 0.51;
-              slotW = 570;
+              slotW = 580;
             } else if (garment.slot === 'slot_shoes') {
               slotH = stageH * 0.12;
               slotW = 530;
             } else if (garment.slot === 'slot_outer') {
-              slotH = isLongCoat ? stageH * 0.62 : stageH * 0.36;
-              slotW = 760;
+              slotH = isLongCoat ? stageH * 0.72 : stageH * 0.36;
+              slotW = isLongCoat ? 800 : 760;
             }
 
             const w = slotW * slotScale;
@@ -675,18 +675,18 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                 const isHoodie = topItem?.category === 'hoodie' || rawTitle.includes('هودی') || rawTitle.includes('hoodie');
                 const isShirtOrPolo = topItem?.category === 'shirt' || rawTitle.includes('پیراهن') || rawTitle.includes('پلوشرت') || rawTitle.includes('polo');
                 const isTurtleneck = rawTitle.includes('اسکی') || rawTitle.includes('turtle') || rawTitle.includes('یقه ایستاده');
-                const targetTopY = outerItem ? (isTurtleneck ? 26.5 : isHoodie ? 27.0 : isShirtOrPolo ? 27.5 : 28.0) : 31.5;
+                const targetTopY = outerItem ? (isTurtleneck ? 26.5 : isHoodie ? 27.0 : isShirtOrPolo ? 27.5 : 27.0) : 31.5;
 
                 setTopOffsetY(targetTopY);
                 setTopScale(0.96);
-                setBottomOffsetY(isCrop ? 65.5 : 67.0);
+                setBottomOffsetY(isCrop ? 65.5 : 66.5);
                 setBottomScale(1.00);
-                setOuterOffsetY(isCoat ? 44.5 : 31.5);
+                setOuterOffsetY(isCoat ? 47.0 : 31.5);
                 setOuterScale(1.00);
                 setShoesOffsetY(92.0);
                 setShoesScale(0.90);
                 setIsSleeveTrimActive(true);
-                setSleeveTrimPercent(18);
+                setSleeveTrimPercent(16);
                 setIsOuterVoidMaskActive(false);
                 setOuterVoidWidthPercent(24);
                 setHasLayeredCollar(false);
@@ -1328,7 +1328,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                 transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
-              className="absolute left-1/2 w-[58%] sm:w-[60%] h-[30%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
+              className="absolute left-1/2 w-[58%] sm:w-[60%] h-[31%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
@@ -1376,7 +1376,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                   transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
                 }}
-                className={`absolute left-1/2 w-[76%] sm:w-[78%] ${isLongCoat ? 'h-[62%]' : 'h-[36%]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]`}
+                className={`absolute left-1/2 w-[78%] sm:w-[80%] ${isLongCoat ? 'h-[72%]' : 'h-[36%]'} transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_22px_32px_rgba(0,0,0,0.35)] drop-shadow-[0_6px_12px_rgba(0,0,0,0.20)]`}
               >
                 <MannequinGarmentImage
                   src={outerItem.imageUrl}

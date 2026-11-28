@@ -54,7 +54,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const [jsonError, setJsonError] = useState<string | null>(null);
 
   // 3. Real-time Calibration Adjustments (Auto-Snap Standard Coordinates)
-  const [offsetY, setOffsetY] = useState<number>(28.0);
+  const [offsetY, setOffsetY] = useState<number>(27.0);
   const [scale, setScale] = useState<number>(0.96);
   const [customTitle, setCustomTitle] = useState<string>('');
   const [customPrice, setCustomPrice] = useState<number>(850000);
@@ -152,16 +152,16 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const applySlotSelection = (slot: GarmentSlot) => {
     setSelectedSlotManual(slot);
     if (slot === 'slot_bottom') {
-      setOffsetY(67.0);
+      setOffsetY(66.5);
       setScale(1.00);
     } else if (slot === 'slot_outer') {
-      setOffsetY(44.5);
+      setOffsetY(47.0);
       setScale(1.00);
     } else if (slot === 'slot_shoes') {
       setOffsetY(92.0);
       setScale(0.90);
     } else {
-      setOffsetY(28.0);
+      setOffsetY(27.0);
       setScale(0.96);
     }
   };
@@ -245,16 +245,16 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
 
       // Canonical Auto-Snap Anchors adhering to 40/60 Golden Anatomy Ratio
       if (normalized.slot === 'slot_bottom') {
-        setOffsetY(67.0);
+        setOffsetY(66.5);
         setScale(1.00);
       } else if (normalized.slot === 'slot_outer') {
-        setOffsetY(44.5);
+        setOffsetY(47.0);
         setScale(1.00);
       } else if (normalized.slot === 'slot_shoes') {
         setOffsetY(92.0);
         setScale(0.90);
       } else {
-        setOffsetY(28.0);
+        setOffsetY(27.0);
         setScale(0.96);
       }
     } catch (e: any) {
