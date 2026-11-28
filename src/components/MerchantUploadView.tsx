@@ -54,7 +54,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
   const [jsonError, setJsonError] = useState<string | null>(null);
 
   // 3. Real-time Calibration Adjustments (Auto-Snap Standard Coordinates)
-  const [offsetY, setOffsetY] = useState<number>(31.0);
+  const [offsetY, setOffsetY] = useState<number>(28.0);
   const [scale, setScale] = useState<number>(0.96);
   const [customTitle, setCustomTitle] = useState<string>('');
   const [customPrice, setCustomPrice] = useState<number>(850000);
@@ -161,7 +161,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
       setOffsetY(92.0);
       setScale(0.90);
     } else {
-      setOffsetY(31.0);
+      setOffsetY(28.0);
       setScale(0.96);
     }
   };
@@ -254,7 +254,7 @@ export const MerchantUploadView: React.FC<MerchantUploadViewProps> = ({
         setOffsetY(92.0);
         setScale(0.90);
       } else {
-        setOffsetY(31.0);
+        setOffsetY(28.0);
         setScale(0.96);
       }
     } catch (e: any) {

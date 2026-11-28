@@ -92,7 +92,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
   const [isExporting, setIsExporting] = useState(false);
 
   // Live Fine-Tuning Overrides (Calibrated Golden Proportion Standards)
-  const [topOffsetY, setTopOffsetY] = useState(31.0);
+  const [topOffsetY, setTopOffsetY] = useState(28.0);
   const [topScale, setTopScale] = useState(0.96);
   const [bottomOffsetY, setBottomOffsetY] = useState(67.0);
   const [bottomScale, setBottomScale] = useState(1.00);
@@ -131,12 +131,35 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
 
   const totalPieces = Object.values(activeOutfit).filter(Boolean).length;
 
-  // Auto-Snap Waistline: Seamless overlap between topwear and pants
+  // Auto-Snap Waistline & Collar: Seamless overlap between topwear, coat collar, and pants
   useEffect(() => {
-    // If outerwear is present, t-shirt fits snugly inside coat collar & lapels
-    setTopOffsetY(outerItem ? 31.0 : 32.5);
-    setTopScale(outerItem ? 0.94 : 0.96);
-  }, [topItem?.id, !!outerItem]);
+    const rawTitle = (topItem?.title || '').toLowerCase();
+    const isHoodie = topItem?.category === 'hoodie' || rawTitle.includes('هودی') || rawTitle.includes('hoodie');
+    const isShirtOrPolo = topItem?.category === 'shirt' || rawTitle.includes('پیراهن') || rawTitle.includes('پلوشرت') || rawTitle.includes('polo');
+    const isTurtleneck = rawTitle.includes('اسکی') || rawTitle.includes('turtle') || rawTitle.includes('یقه ایستاده');
+
+    if (outerItem) {
+      // When outerwear (coat/jacket) is worn, topwear collar snuggles up to match coat neckline with 0 gap
+      if (isTurtleneck) {
+        setTopOffsetY(26.5);
+        setTopScale(0.96);
+      } else if (isHoodie) {
+        setTopOffsetY(27.0);
+        setTopScale(0.96);
+      } else if (isShirtOrPolo) {
+        setTopOffsetY(27.5);
+        setTopScale(0.96);
+      } else {
+        // Standard crewneck / graphic T-shirt: sits perfectly nested inside coat collar and lapels
+        setTopOffsetY(28.0);
+        setTopScale(0.96);
+      }
+    } else {
+      // Worn standalone (no outerwear): sits at natural lower neck / shoulder base
+      setTopOffsetY(31.5);
+      setTopScale(0.96);
+    }
+  }, [topItem?.id, topItem?.title, topItem?.category, !!outerItem]);
 
   useEffect(() => {
     const isCropped =
@@ -307,7 +330,7 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
             const stageH = 1420;
             const isLongCoat = garment.category === 'coat' || garment.title?.includes('پالتو') || garment.title?.includes('بارانی') || garment.title?.toLowerCase().includes('coat');
             
-            let slotH = stageH * 0.28;
+            let slotH = stageH * 0.30;
             let slotW = 590;
             if (garment.slot === 'slot_bottom') {
               slotH = stageH * 0.51;
@@ -648,8 +671,14 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
               onClick={() => {
                 const isCrop = bottomItem?.title?.includes('کراپ') || bottomItem?.title?.toLowerCase().includes('crop');
                 const isCoat = outerItem?.category === 'coat' || outerItem?.title?.includes('پالتو') || outerItem?.title?.includes('بارانی') || outerItem?.title?.toLowerCase().includes('coat');
-                setTopOffsetY(outerItem ? 31.0 : 32.5);
-                setTopScale(outerItem ? 0.94 : 0.96);
+                const rawTitle = (topItem?.title || '').toLowerCase();
+                const isHoodie = topItem?.category === 'hoodie' || rawTitle.includes('هودی') || rawTitle.includes('hoodie');
+                const isShirtOrPolo = topItem?.category === 'shirt' || rawTitle.includes('پیراهن') || rawTitle.includes('پلوشرت') || rawTitle.includes('polo');
+                const isTurtleneck = rawTitle.includes('اسکی') || rawTitle.includes('turtle') || rawTitle.includes('یقه ایستاده');
+                const targetTopY = outerItem ? (isTurtleneck ? 26.5 : isHoodie ? 27.0 : isShirtOrPolo ? 27.5 : 28.0) : 31.5;
+
+                setTopOffsetY(targetTopY);
+                setTopScale(0.96);
                 setBottomOffsetY(isCrop ? 65.5 : 67.0);
                 setBottomScale(1.00);
                 setOuterOffsetY(isCoat ? 44.5 : 31.5);
@@ -1299,17 +1328,20 @@ export const MannequinStage: React.FC<MannequinStageProps> = ({
                     : undefined,
                 transition: 'clip-path 0.3s ease, transform 0.3s ease, top 0.3s ease',
               }}
-              className="absolute left-1/2 w-[58%] sm:w-[60%] h-[28%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
+              className="absolute left-1/2 w-[58%] sm:w-[60%] h-[30%] transition-all duration-300 pointer-events-auto group filter drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] drop-shadow-[0_4px_8px_rgba(0,0,0,0.16)]"
             >
               <MannequinGarmentImage
                 src={topItem.imageUrl}
                 alt={topItem.title}
                 slot="slot_top"
-                className="w-full h-full object-contain object-center"
+                className="w-full h-full object-contain object-top"
               />
-              {/* Natural Ambient Occlusion shadow from open outerwear lapels onto inner t-shirt */}
+              {/* Natural Ambient Occlusion shadow from open outerwear lapels and collar onto inner topwear */}
               {outerItem && (
-                <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/25 pointer-events-none mix-blend-multiply opacity-60 rounded-2xl" />
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 pointer-events-none mix-blend-multiply opacity-60 rounded-2xl" />
+                  <div className="absolute top-0 left-0 right-0 h-10 bg-gradient-to-b from-black/25 via-black/5 to-transparent pointer-events-none mix-blend-multiply opacity-75" />
+                </>
               )}
               <button
                 type="button"

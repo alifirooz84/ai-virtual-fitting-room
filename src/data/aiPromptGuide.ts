@@ -249,7 +249,7 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = 'Ù
 
   // Exact Canonical Golden Ratio Anchors: Sleek 40% Torso + 60% Leg Silhouette
   const defaultPlacement = {
-    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 31.0, scale: 0.96, z_index: 30 },
+    slot_top: { anchor: 'torso' as const, offset_x_percent: 0, offset_y_percent: 28.0, scale: 0.96, z_index: 30 },
     slot_bottom: { anchor: 'waist' as const, offset_x_percent: 0, offset_y_percent: 67.0, scale: 1.00, z_index: 20 },
     slot_outer: { anchor: 'shoulders' as const, offset_x_percent: 0, offset_y_percent: 44.5, scale: 1.00, z_index: 40 },
     slot_shoes: { anchor: 'feet' as const, offset_x_percent: 0, offset_y_percent: 92.0, scale: 0.90, z_index: 22 },
@@ -270,7 +270,7 @@ export function normalizeGarmentAiSpec(inputJson: any, fallbackName: string = 'Ù
     targetOffsetY = isLongCoat ? 44.5 : 31.5;
     customScale = 1.00;
   } else if (slot === 'slot_top') {
-    targetOffsetY = 31.0;
+    targetOffsetY = 28.0;
     customScale = 0.96;
   } else if (slot === 'slot_shoes') {
     targetOffsetY = 92.0;
